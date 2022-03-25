@@ -1,0 +1,26 @@
+.socketStateContainer {
+  margin-top: 2rem;
+}
+
+.socketState {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  height: 2rem;
+  width: 2rem;
+}
+
+.socketStateSvg {
+  width: 2rem;
+  fill: currentColor;
+}
+
+.socketStateText[data-state="connected"] {
+  color: green;
+}
+.socketStateText[data-state="connecting"] {
+  color: orange;
+}
+.socketStateText[data-state="disconnected"] {
+  color: red;
+}
