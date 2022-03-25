@@ -22,6 +22,7 @@
     "typescript": "~4.1.5"
   },
   "scripts": {
+    "sniff": "node ./sniffer/index.js",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
