@@ -20,4 +20,4 @@ function execute(fileName, params, path) {
 if (process.platform === "win32")
     execute("sniffer.exe", null, __dirname);
 else 
-    execute("sudo sniffer", null, __dirname);
+    execute("./sniffer", null, __dirname);
