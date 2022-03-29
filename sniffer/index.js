@@ -17,4 +17,7 @@ function execute(fileName, params, path) {
     return promise;
 }
 
-execute("sniffer.exe", null, __dirname);
+if (process.platform === "win32")
+    execute("sniffer.exe", null, __dirname);
+else 
+    execute("sudo sniffer", null, __dirname);
