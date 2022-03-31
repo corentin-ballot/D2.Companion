@@ -1,0 +1,49 @@
+.fightsHisotry {
+
+}
+
+.fightsHisotry__item {
+    display: block;
+    border: unset;
+    background: unset;
+    cursor: pointer;
+    padding: .75rem 1.5rem .75rem .25rem;
+    width: 100%;
+    text-align: start;
+    position: relative;
+    border-bottom: solid grey 1px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.fightsHisotry__item:hover {
+    background: rgba(0, 0, 0, 0.1);
+}
+
+.fightsHisotry__item::after {
+    position: absolute;
+    content: "";
+    right: .5rem;
+    display: inline-block;
+    width: 15px;
+    height: 15px;
+    border-top: 2px solid #000;
+    border-right: 2px solid #000;
+    transform: rotate(45deg);
+    transition: all 0.5s;
+}
+
+.fightsHisotry__item:hover::after {
+    right: .25rem;
+}
+
+.fightersFilter {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 1rem 0;
+}
+
+.fightersFilter__item {
+    margin: 0 1rem 0 0;
+}

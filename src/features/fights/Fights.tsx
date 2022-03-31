@@ -1,18 +1,20 @@
-import React, {useState, useEffect} from 'react';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, LabelList } from 'recharts';
+import React, { useState, useEffect } from 'react';
+import { useAppSelector } from '../../app/hooks';
+import { selectCurrent, selectHistory } from './fightsSlice';
+import Grid from '@mui/material/Grid';
+import Paper from '@mui/material/Paper';
+
+
+import RecievedDommagesPerRound from '../../components/fightGraphs/dommages/RecievedDommagesPerRound';
+import DealedDommagesPerRound from '../../components/fightGraphs/dommages/DealedDommagesPerRound';
+import TotalDommages from '../../components/fightGraphs/dommages/TotalDommages';
+import DateTime from '../../components/dateTime/DateTime';
 
 import styles from './Fights.module.css';
 
-import { useAppSelector } from '../../app/hooks';
-import {
-    selectCurrent,
-    selectHistory,
-    Dommage
-} from './fightsSlice';
-import DateTime from '../../components/dateTime/DateTime';
-
 function Fight() {
     const [displayedFight, setDisplayedFight] = useState(useAppSelector(selectCurrent));
+    const [fightersFilter, setFightersFilter] = useState(useAppSelector(selectCurrent).turnList);
 
     const currentFight = useAppSelector(selectCurrent);
     const history = useAppSelector(selectHistory);
@@ -21,85 +23,126 @@ function Fight() {
         setDisplayedFight(currentFight);
     }, [currentFight]);
 
-    const data = displayedFight?.turnList.map(id => {
-        const fighter = displayedFight.fighters.find(f => f.contextualId === id);
-        return {
-            name: fighter? fighter.name : id,
-            ...displayedFight.dommages.filter(d => d.sourceId === id).reduce(
-                (previousValue, currentValue: Dommage) => {
-                    if(currentValue.loss) {
-                        if(currentValue.elementId === 0) previousValue.neutre += currentValue.loss;
-                        if(currentValue.elementId === 1) previousValue.terre += currentValue.loss;
-                        if(currentValue.elementId === 2) previousValue.feu += currentValue.loss;
-                        if(currentValue.elementId === 3) previousValue.eau += currentValue.loss;
-                        if(currentValue.elementId === 4) previousValue.air += currentValue.loss;
-                        if(currentValue.elementId === 9) previousValue.invoc += currentValue.loss;
-                        if(currentValue.elementId === 4294967295) previousValue.pou += currentValue.loss;
-                        
-                        previousValue.total += currentValue.loss;
-                    }
-                    return previousValue;
-                }, {neutre: 0, feu: 0, eau: 0, air: 0, terre: 0, pou: 0, invoc: 0, total: 0})
-        }
-    })
+    useEffect(() => {
+        setFightersFilter(displayedFight.turnList);
+    }, [displayedFight]);
+
+    useEffect(() => {
+        setDisplayedFight({
+            dommages: [
+                { round: 1, sourceId: 1, targetId: 5, loss: 90, elementId: 0, actionId: 0, permanentDamages: 0 },
+                { round: 2, sourceId: 1, targetId: 5, loss: 110, elementId: 0, actionId: 0, permanentDamages: 0 },
+                { round: 3, sourceId: 1, targetId: 5, loss: 12, elementId: 2, actionId: 0, permanentDamages: 0 },
+                { round: 4, sourceId: 1, targetId: 5, loss: 40, elementId: 4294967295, actionId: 0, permanentDamages: 0 },
+                { round: 5, sourceId: 1, targetId: 5, loss: 150, elementId: 0, actionId: 0, permanentDamages: 0 },
+                { round: 6, sourceId: 1, targetId: 5, loss: 27, elementId: 0, actionId: 0, permanentDamages: 0 },
+
+                { round: 1, sourceId: 2, targetId: 5, loss: 18, elementId: 3, actionId: 0, permanentDamages: 0 },
+                { round: 2, sourceId: 2, targetId: 5, loss: 300, elementId: 9, actionId: 0, permanentDamages: 0 },
+                { round: 3, sourceId: 2, targetId: 5, loss: 250, elementId: 3, actionId: 0, permanentDamages: 0 },
+                { round: 4, sourceId: 2, targetId: 5, loss: 12, elementId: 4, actionId: 0, permanentDamages: 0 },
+                { round: 5, sourceId: 2, targetId: 5, loss: 300, elementId: 9, actionId: 0, permanentDamages: 0 },
+                { round: 6, sourceId: 2, targetId: 5, loss: 330, elementId: 9, actionId: 0, permanentDamages: 0 },
+
+                { round: 1, sourceId: 3, targetId: 5, loss: 300, elementId: 2, actionId: 0, permanentDamages: 0 },
+                { round: 2, sourceId: 3, targetId: 5, loss: 50, elementId: 1, actionId: 0, permanentDamages: 0 },
+                { round: 3, sourceId: 3, targetId: 5, loss: 200, elementId: 2, actionId: 0, permanentDamages: 0 },
+                { round: 4, sourceId: 3, targetId: 5, loss: 20, elementId: 4294967295, actionId: 0, permanentDamages: 0 },
+                { round: 5, sourceId: 3, targetId: 5, loss: 100, elementId: 2, actionId: 0, permanentDamages: 0 },
+                { round: 6, sourceId: 3, targetId: 5, loss: 112, elementId: 2, actionId: 0, permanentDamages: 0 },
+
+                { round: 1, sourceId: 5, targetId: 5, loss: 100, elementId: 0, actionId: 0, permanentDamages: 0 },
+                { round: 2, sourceId: 5, targetId: 5, loss: 100, elementId: 1, actionId: 0, permanentDamages: 0 },
+                { round: 3, sourceId: 5, targetId: 5, loss: 100, elementId: 2, actionId: 0, permanentDamages: 0 },
+                { round: 4, sourceId: 5, targetId: 5, loss: 100, elementId: 3, actionId: 0, permanentDamages: 0 },
+                { round: 5, sourceId: 5, targetId: 5, loss: 100, elementId: 4, actionId: 0, permanentDamages: 0 },
+                { round: 6, sourceId: 5, targetId: 5, loss: 100, elementId: 4294967295, actionId: 0, permanentDamages: 0 },
+            ],
+            duration: 6,
+            endTime: 0,
+            fighters: [
+                { contextualId: 1, creatureGenericId: 0, name: "Test01", stats: { invisibilityState: 0, summoned: false, summoner: 0, characteristics: { characteristics: [{ characteristicId: 0, total: 0, additional: 0, alignGiftBonus: 0, base: 0, contextModif: 0, objectsAndMountBonus: 0 }] } } },
+                { contextualId: 2, creatureGenericId: 0, name: "Test02", stats: { invisibilityState: 0, summoned: false, summoner: 0, characteristics: { characteristics: [{ characteristicId: 0, total: 0, additional: 0, alignGiftBonus: 0, base: 0, contextModif: 0, objectsAndMountBonus: 0 }] } } },
+                { contextualId: 3, creatureGenericId: 0, name: "Test03", stats: { invisibilityState: 0, summoned: false, summoner: 0, characteristics: { characteristics: [{ characteristicId: 0, total: 0, additional: 0, alignGiftBonus: 0, base: 0, contextModif: 0, objectsAndMountBonus: 0 }] } } },
+                { contextualId: 4, creatureGenericId: 0, name: "Test04", stats: { invisibilityState: 0, summoned: false, summoner: 0, characteristics: { characteristics: [{ characteristicId: 0, total: 0, additional: 0, alignGiftBonus: 0, base: 0, contextModif: 0, objectsAndMountBonus: 0 }] } } },
+                { contextualId: 5, creatureGenericId: 0, name: "Test05", stats: { invisibilityState: 0, summoned: false, summoner: 0, characteristics: { characteristics: [{ characteristicId: 0, total: 0, additional: 0, alignGiftBonus: 0, base: 0, contextModif: 0, objectsAndMountBonus: 0 }] } } },
+                { contextualId: 6, creatureGenericId: 494, name: "Poutch Master", stats: { invisibilityState: 0, summoned: false, summoner: 0, characteristics: { characteristics: [{ characteristicId: 0, total: 0, additional: 0, alignGiftBonus: 0, base: 0, contextModif: 0, objectsAndMountBonus: 0 }] } } },
+            ],
+            round: 6,
+            startTime: 0,
+            turnList: [1, 2, 3, 4, 5, 6]
+        })
+    }, []);
 
     return <div>
-        <h1>Dofus fights.</h1>
-        <div>
-            <div className={styles.fightsHisotry}>
-                <h2>Figths</h2>
-                {currentFight && <button onClick={() => setDisplayedFight(currentFight)}>current</button>}
-                {
-                    history.length > 0 ?
-                        <p>TODO: display history</p> : <p>Empty</p>
-                    }
-                    {history.map(f => <button key={f.startTime} onClick={() => setDisplayedFight(f)}><DateTime timestamp={f.startTime}/></button>)}
-            </div>
-            <div className={styles.selectedFightPanel}>
-                    <BarChart
-                        width={800}
-                        height={300}
-                        layout="vertical"
-                        data={data}
-                        margin={{
-                            top: 20,
-                            right: 30,
-                            left: 20,
-                            bottom: 5,
-                        }}
-                    >
-                        <CartesianGrid strokeDasharray="3 3" />
-                        <YAxis width={90} yAxisId={0} dataKey="name" type="category" axisLine={false} />
-                        <YAxis width={90} yAxisId={1} dataKey="total" type="category" axisLine={false} orientation="right" mirror />
-                        <XAxis hide type="number" />
-                        <Tooltip itemStyle={{display: "inline-block", margin: "0 1rem"}} labelFormatter={() => ''} cursor={false} isAnimationActive={false} offset={0} separator="" formatter={(value: any, name: any, props: any) => [value, null]}/>
-                        <Legend formatter={(value, entry, index) => value[0].toUpperCase() + value.slice(1)} />
-                        {/* dmg deal */}
-                        <Bar dataKey="neutre" stackId="a" fill="#bdc3c7 ">
-                            <LabelList dataKey="neutre" position="center" formatter={(value: number) => value > 0 ? value : ''} />
-                        </Bar>
-                        <Bar dataKey="terre" stackId="a" fill="#e67e22">
-                            <LabelList dataKey="terre" position="center" formatter={(value: number) => value > 0 ? value : ''} />
-                        </Bar>
-                        <Bar dataKey="feu" stackId="a" fill="#e74c3c">
-                            <LabelList dataKey="feu" position="center" formatter={(value: number) => value > 0 ? value : ''} />
-                        </Bar>
-                        <Bar dataKey="eau" stackId="a" fill="#3498db">
-                            <LabelList dataKey="eau" position="center" formatter={(value: number) => value > 0 ? value : ''} />
-                        </Bar>
-                        <Bar dataKey="air" stackId="a" fill="#2ecc71">
-                            <LabelList dataKey="air" position="center" formatter={(value: number) => value > 0 ? value : ''} />
-                        </Bar>
-                        <Bar dataKey="invoc" stackId="a" fill="#f1c40f">
-                            <LabelList dataKey="invoc" position="center" formatter={(value: number) => value > 0 ? value : ''} />
-                        </Bar>
-                        <Bar dataKey="pou" stackId="a" fill="#9b59b6">
-                            <LabelList dataKey="pou" position="center" formatter={(value: number) => value > 0 ? value : ''} />
-                        </Bar>
-                    </BarChart>
-            </div>
-                {displayedFight && <div><pre>{JSON.stringify(displayedFight, null, 2) }</pre></div>}
-        </div>
+        <Grid container spacing={2}>
+            {/* Side bar */}
+            <Grid item xs={2}>
+                <h1>Dofus fights</h1>
+                <div className={styles.fightsHisotry}>
+                    {currentFight.round > 0 && <button className={styles.fightsHisotry__item} onClick={() => setDisplayedFight(currentFight)}>Current fight</button>}
+                    <hr />
+                    <h2>History</h2>
+                    {history.map(fight => <button className={styles.fightsHisotry__item} key={fight.startTime} onClick={() => setDisplayedFight(fight)}><DateTime timestamp={fight.startTime} /> {fight.fighters.filter(f => f.contextualId < 0 && !f.stats.summoned).map(f => f.name).join(", ")}</button>)}
+                </div>
+                <button  className={styles.fightsHisotry__item} style={{backgroundColor: "rgb(0, 127, 255)"}} onClick={async () => {
+                    const fileName = "file";
+                    const json = JSON.stringify(history);
+                    const blob = new Blob([json],{type:'application/json'});
+                    const href = await URL.createObjectURL(blob);
+                    const link = document.createElement('a');
+                    link.href = href;
+                    link.target = "_blank"
+                    link.download = fileName + ".json";
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                }}>Save</button>
+            </Grid>
+
+            {/* Content */}
+            { displayedFight.round > 0 &&
+            <Grid item xs={10}>
+                <Grid container spacing={2}>
+                    {/* Fighters display filter */}
+                    <Grid item xs={12}>
+                        <form className={styles.fightersFilter}>
+                            {displayedFight.turnList.map(fighterId => {
+                                return <div className={styles.fightersFilter__item} data-checked={fightersFilter.includes(fighterId)}>
+                                    <input type="checkbox" id={fighterId.toString()} checked={fightersFilter.includes(fighterId)} onChange={(e) => setFightersFilter(fightersFilter.includes(fighterId) ? fightersFilter.filter(f => f !== fighterId) : [...fightersFilter, fighterId])} />
+                                    <label htmlFor={fighterId.toString()}>{displayedFight.fighters.find(f => f.contextualId === fighterId)?.name}</label>
+                                </div>
+                            })}
+                        </form>
+                    </Grid>
+
+                    {/* Main Graph (dealed dommages with types) */}
+                    <Grid item xs={12}>
+                        <Paper>
+                            <h2>Dommages dealed</h2>
+                            <TotalDommages fight={displayedFight} />
+                        </Paper>
+                    </Grid>
+
+                    {/* Graph (dealed dommages per round) */}
+                    <Grid item xs={12} md={6}>
+                        <Paper>
+                            <h2>Dommages dealed per round</h2>
+                            <DealedDommagesPerRound fight={displayedFight} fightersFilter={fightersFilter} />
+                        </Paper>
+                    </Grid>
+
+                    {/* Graph (recieved dommages per round) */}
+                    <Grid item xs={12} md={6}>
+                        <Paper>
+                            <h2>Dommages recieved per round</h2>
+                            <RecievedDommagesPerRound fight={displayedFight} fightersFilter={fightersFilter} />
+                        </Paper>
+                    </Grid>
+                </Grid>
+            </Grid>
+            }
+        </Grid>
     </div>
 }
 

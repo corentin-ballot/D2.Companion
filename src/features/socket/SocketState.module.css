@@ -1,13 +1,7 @@
-.socketStateContainer {
-  margin-top: 2rem;
-}
-
 .socketState {
-  position: fixed;
-  bottom: 0;
-  right: 0;
-  height: 2rem;
-  width: 2rem;
+  height: 1.5rem;
+  width: 1.5rem;
+  padding: .25rem 1rem .25rem 0;
 }
 
 .socketStateSvg {
