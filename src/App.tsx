@@ -24,6 +24,7 @@ function App() {
             {routes.map(route => <Link className="App-nav-item" to={route.path} key={route.path}>{route.label}</Link>)}
           </div>
         </nav>
+        <SocketState />
       </header>
       <main>
         <Routes>
@@ -31,9 +32,6 @@ function App() {
           {routes.map(route => <Route path={route.path} element={route.element} key={route.path} />)}
         </Routes>
       </main>
-      <div>
-        <SocketState />
-      </div>
     </div>
   );
 }
