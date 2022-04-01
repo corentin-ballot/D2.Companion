@@ -72,6 +72,8 @@ export interface Fighter {
     creatureGenericId: number|undefined; // undefined for players
     name: string; // GameContextActorPositionInformations for monsters, player name else
     stats: FighterStats;
+    breed?: number;
+    sex?: boolean;
 }
 
 export interface GameFightNewRoundMessage {
