@@ -43,7 +43,7 @@ function Fight() {
                 <div className={styles.fightsHisotry}>
                     {currentFight.round > 0 && <button className={styles.fightsHisotry__item} onClick={() => setDisplayedFight(currentFight)}>Current fight</button>}
                     <hr />
-                    <h2>
+                    <h3>
                         History
                         <button onClick={async () => {
                             const fileName = "file";
@@ -58,7 +58,7 @@ function Fight() {
                             link.click();
                             document.body.removeChild(link);
                         }}>Save</button>
-                    </h2>
+                    </h3>
                     {history.map(fight => <button className={styles.fightsHisotry__item} key={fight.startTime} onClick={() => setDisplayedFight(fight)}><DateTime timestamp={fight.startTime} /> {fight.fighters.filter(f => f.contextualId < 0 && !f.stats.summoned).map(f => f.name).join(", ")}</button>)}
                 </div>
             </Grid> */}
@@ -71,7 +71,7 @@ function Fight() {
                             {/* Main Graph (dealed dommages with types) */}
                             <Grid item xs={12}>
                                 <div className={styles.card}>
-                                    <h2 className={styles.widget__title}>Dommages dealed</h2>
+                                    <h3 className={styles.widget__title}>Dommages dealed</h3>
                                     <TotalDommages fight={displayedFight} />
                                 </div>
                             </Grid>
@@ -101,7 +101,7 @@ function Fight() {
                             {/* Graph (dealed dommages per round) */}
                             <Grid item xs={12} md={6}>
                                 <div className={styles.card}>
-                                    <h2 className={styles.widget__title}>Dommages dealed per round</h2>
+                                    <h3 className={styles.widget__title}>Dommages dealed per round</h3>
                                     <DealedDommagesPerRound fight={displayedFight} fightersFilter={fightersFilter} />
                                 </div>
                             </Grid>
@@ -109,7 +109,7 @@ function Fight() {
                             {/* Graph (recieved dommages per round) */}
                             <Grid item xs={12} md={6}>
                                 <div className={styles.card}>
-                                    <h2 className={styles.widget__title}>Dommages recieved per round</h2>
+                                    <h3 className={styles.widget__title}>Dommages recieved per round</h3>
                                     <RecievedDommagesPerRound fight={displayedFight} fightersFilter={fightersFilter} />
                                 </div>
                             </Grid>
@@ -117,7 +117,7 @@ function Fight() {
                             {/* Spells */}
                             <Grid item xs={12} md={6}>
                                 <div className={styles.card}>
-                                    <h2 className={styles.widget__title}>Spells</h2>
+                                    <h3 className={styles.widget__title}>Spells</h3>
                                     <SpellsLog fight={displayedFight} fightersFilter={fightersFilter} />
                                 </div>
                             </Grid>
@@ -125,7 +125,7 @@ function Fight() {
                             {/* Type repartition */}
                             <Grid item xs={12} md={6}>
                                 <div className={styles.card}>
-                                    <h2 className={styles.widget__title}>Type repartition</h2>
+                                    <h3 className={styles.widget__title}>Type repartition</h3>
                                     <TypeRepartition fight={displayedFight} fightersFilter={fightersFilter} />
                                 </div>
                             </Grid>
