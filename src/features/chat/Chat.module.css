@@ -20,19 +20,17 @@
 }
 
 .chat__header__form__input input:focus + .chat__header__form__input__proposals {
-  display: block;
+  visibility: visible;
 }
 
 .chat__header__form__input__proposals {
-  display: none;
+  /*display: none;*/
+  visibility: hidden;
   position: absolute;
   max-height: 10rem;
   overflow: auto;
   width: 100%;
-}
-
-.chat__header__form__input__proposals:hover {
-  display: block;
+  transition: visibility 100ms 50ms;
 }
 
 .chat__header__form__input__proposals__item {
