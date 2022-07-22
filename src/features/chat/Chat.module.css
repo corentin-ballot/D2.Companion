@@ -1,87 +1,81 @@
 .chat {
+  
+}
+
+.chat__header {
+  margin-bottom: 1rem;
+}
+
+.chat__header__form {
   display: flex;
-  flex-direction: column;
-  max-height: 400px;
+}
+
+.chat__header__form__input {
+  position: relative;
+  margin-right: .5rem;
+}
+
+.chat__header__form__input input {
+  margin-right: 0; 
+}
+
+.chat__header__form__input input:focus + .chat__header__form__input__proposals {
+  display: block;
+}
+
+.chat__header__form__input__proposals {
+  display: none;
+  position: absolute;
+  max-height: 10rem;
   overflow: auto;
-  background-color: #242424;
-  padding: 0;
+  width: 100%;
 }
 
-.chatItem {
-  list-style: none;
+.chat__header__form__input__proposals:hover {
+  display: block;
 }
 
-.chatItem::before {
-  font-family: monospace;
+.chat__header__form__input__proposals__item {
+  background: #FFF;
+  border-radius: 0;
+  color: inherit;
+  padding: .5rem;
+  margin: 0;
+  width: 100%;
+  text-align: left;
 }
 
-.chatItem[data-type="0"] {
-  /* chat general */
-  color: #e9e9e9;
-}
-.chatItem[data-type="0"]::before {
-  content: "/s ";
-}
-.chatItem[data-type="1"] {
-  /* chat equipe */
-  color: #ff006c;
-}
-.chatItem[data-type="1"]::before {
-  content: "/t ";
-}
-.chatItem[data-type="2"] {
-  /* chat guilde */
-  color: #975fff;
-}
-.chatItem[data-type="2"]::before {
-  content: "/g ";
-}
-.chatItem[data-type="3"] {
-  /* chat alliance */
-  color: #ffad42;
-}
-.chatItem[data-type="3"]::before {
-  content: "/p ";
-}
-.chatItem[data-type="4"] {
-  /* chat groupe */
-  color: #00e4ff;
-}
-.chatItem[data-type="4"]::before {
-  content: "/g ";
-}
-.chatItem[data-type="5"] {
-  /* chat commerce */
-  color: #b3783e;
-}
-.chatItem[data-type="5"]::before {
-  content: "/b ";
-}
-.chatItem[data-type="6"] {
-  /* chat recrutement */
-  color: #e4a0d5;
-}
-.chatItem[data-type="6"]::before {
-  content: "/r ";
-}
-.chatItem[data-type="9"] {
-  /* chat prive */
-  color: #7d1cfd;
-}
-.chatItem[data-type="9"]::before {
-  content: "/w ";
-}
-.chatItem[data-type="14"] {
-  /* chat comunautee */
-  color: #adea87;
-}
-.chatItem[data-type="14"]::before {
-  content: "/c ";
+.chat__header__form__input__proposals__item:hover {
+  background: #DDD;
 }
 
-.chatFilter {
-  border-radius: 1rem;
-  border: grey solid 1px;
-  padding: .25rem;
-  margin: 0 .5rem;
+.chat__notifications__table {
+  width: 100%;
+  background-color: #FFF;
+  border-collapse: collapse;
+  border-radius: 4px;
+  box-shadow: 0px 2px 1px -1px rgba(0,0,0,0.2),0px 1px 1px 0px rgba(0,0,0,0.14),0px 1px 3px 0px rgba(0,0,0,0.12);
+  text-align: left;
+  overflow: hidden;
+}
+
+.chat__notifications__table td, .chat__notifications__table th {
+  border-bottom: 1px solid #f4f4f4;
+  border-right: 1px solid #f4f4f4;
+  padding : .5rem;
+}
+
+.chat__notifications__table tr:last-child td {
+  border-bottom: unset;
+}
+
+.chat__notifications__table tr td:last-child, .chat__notifications__table tr th:last-child {
+  text-align: right;
+  border-right: unset;
+  width: 1%;
+  white-space: nowrap;
+}
+
+.chat__notifications__table button {
+  margin: 0; 
 }

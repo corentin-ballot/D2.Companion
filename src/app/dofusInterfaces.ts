@@ -1,3 +1,35 @@
+export interface GameActionFightSpellCastMessage {
+    name: string;
+    actionId: number; 
+    sourceId: number; 
+    silentCast: boolean; 
+    verboseCast: boolean; 
+    targetId: number; 
+    destinationCellId: number; 
+    critical: number;  
+    spellId: number;  
+    spellLevel: number;  
+    portalsIds: number[];
+}
+
+export interface ExchangeTypesItemsExchangerDescriptionForUserMessage {
+    itemTypeDescriptions: BidExchangerObjectInfo[];
+    objectType: number;
+}
+
+export interface BidExchangerObjectInfo {
+    effects: ObjectEffectInteger[];
+    objectGID: number;
+    objectType: number;
+    objectUID: number;
+    prices: number[];
+}
+
+export interface ObjectEffectInteger {
+    actionId: number;
+    value: number;
+}
+
 export interface ChatServerMessage {
     name: "ChatServerMessage";
     channel: number;
@@ -54,17 +86,7 @@ export interface FighterStats {
     invisibilityState: number;
     summoned: boolean;
     summoner: number;
-    characteristics: {
-        characteristics: [{
-            characteristicId: number;
-            total: number; // for monsters
-            additional: number; // for players
-            alignGiftBonus: number; // for players
-            base: number; // for players
-            contextModif: number; // for players
-            objectsAndMountBonus: number; // for players
-        }]
-    }
+    characteristics: Characteristics;
 };
 
 export interface Fighter {
@@ -74,6 +96,71 @@ export interface Fighter {
     stats: FighterStats;
     breed?: number;
     sex?: boolean;
+    masterId?: number; // compagnon
+    entityModelId?: number; // compagnon
+    disposition?: Disposition;
+    look?: Look;
+    spawnInfo: SpawnInfo;
+    wave: number;
+    previousPositions: any[];
+    level: number;
+    creatureGrade?: number;
+    creatureLevel?: number;
+    status: Status;
+    leagueId?: number;
+    ladderPosition?: number;
+    hiddenInPrefight?: boolean;
+    alignmentInfos?: AlignmentInfos;
+}
+
+export interface AlignmentInfos {
+    alignmentSide: number;
+    alignmentValue: number;
+    alignmentGrade: number;
+    characterPower: number;
+}
+
+export interface Status {
+    statusId: number;
+}
+
+export interface SpawnInfo {
+    teamId: number;
+    alive: boolean;
+    informations: Informations;
+}
+
+export interface Informations {
+    contextualId: number;
+    disposition: Disposition;
+}
+
+export interface Disposition {
+    cellId: number;
+    direction: number;
+    carryingCharacterId: number;
+}
+
+export interface Look {
+    bonesId: number;
+    skins: number[];
+    indexedColors: number[];
+    scales: number[];
+    subentities: Subentity[];
+}
+
+export interface Subentity {
+    bindingPointCategory: number;
+    bindingPointIndex: number;
+    subEntityLook: SubEntityLook;
+}
+
+export interface SubEntityLook {
+    bonesId: number;
+    skins: any[];
+    indexedColors: any[];
+    scales: any[];
+    subentities: any[];
 }
 
 export interface GameFightNewRoundMessage {
@@ -101,59 +188,52 @@ export interface GameActionFightLifePointsLostMessage  {
 }
 
 export interface GameActionFightMultipleSummonMessage {
-    actionId: 181
-    sourceId: 123783741662
-    summons: [{
-        spawnInformation: {creatureGenericId: number;};
-        stats: FighterStats;
-        summons: [{
-            teamId: number;
-            alive: boolean;
-            informations: {
-                contextualId: number;
-            }
-        }]
-    }]
+    actionId: number;
+    sourceId: number;
+    summons: Summon[];
 }
 
-export const equipmentStats = new Map([
-    [111, "PA"],
-    [112, "Dommages"],
-    [115, "crit"],
-    [116, "-PO"],
-    [117, "PO"],
-    [118, "force"],
-    [119, "Agilité"],
-    [123, "Chance"],
-    [124, "Sagesse"],
-    [125, "Vitalité"],
-    [126, "Intelligence"],
-    [128, "PM"],
-    [138, "puissance"],
-    [152, "-Chance"],
-    [154, "-Agi"],
-    [155, "-Intel"],
-    [157, "-Force"],
-    [158, "Pods"],
-    [161, "esquive PM"],
-    [176, "Prospection"],
-    [182, "Invocation"],
-    [210, "% Résistance Terre"],
-    [211, "% Résistance Eau"],
-    [212, "% Résistance Air"],
-    [213, "% Résistance Feu"],
-    [412, "ret PM"],
-    [416, "res pou"],
-    [418, "Dommages crit"],
-    [420, "Résistance Critiques"],
-    [422, "Dommages Terre"],
-    [424, "Dommages Feu"],
-    [430, "Dommages Neutre"],
-    [752, "fuite"],
-    [753, "tacle"],
-    [754, "-fuite"],
-    [2800, "% dmg cac"],
-    [2801, "-% dmg cac"],
-    [2804, "% dmg dist"],
-    [2806, "-% res dist"],
-]);
+export interface Summon {
+    spawnInformation: SpawnInformation;
+    wave: number;
+    look: Look;
+    stats: SummonStats;
+    summons: SummonInfo[];
+}
+
+export interface SummonInfo {
+    teamId: number;
+    alive: boolean;
+    informations: Informations;
+}
+
+export interface Informations {
+    contextualId: number;
+    disposition: Disposition;
+}
+
+export interface SummonStats {
+    characteristics: Characteristics;
+    summoner: number;
+    summoned: boolean;
+    invisibilityState: number;
+}
+
+export interface Characteristics {
+    characteristics: Characteristic[];
+}
+
+export interface Characteristic {
+    characteristicId: number;
+    total: number; // for monsters
+    additional?: number; // for players
+    alignGiftBonus?: number; // for players
+    base?: number; // for players
+    contextModif?: number; // for players
+    objectsAndMountBonus?: number; // for players
+}
+
+export interface SpawnInformation {
+    creatureGenericId: number;
+    creatureGrade: number;
+}

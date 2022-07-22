@@ -1,13 +1,11 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '../../app/store';
-import { Fighter as DFighter, GameFightEndMessage, GameFightJoinMessage, GameFightNewRoundMessage, GameFightSynchronizeMessage, GameFightTurnListMessage, GameActionFightMultipleSummonMessage, GameActionFightLifePointsLostMessage } from '../../app/dofusInterfaces';
+import { Fighter, GameFightEndMessage, GameFightJoinMessage, GameFightNewRoundMessage, GameFightSynchronizeMessage, GameFightTurnListMessage, GameActionFightMultipleSummonMessage, GameActionFightLifePointsLostMessage, GameActionFightSpellCastMessage } from '../../app/dofusInterfaces';
 import monsters from '../../data/monsters.json';
+import spells from '../../data/spells.json';
 
 export interface Dommage extends GameActionFightLifePointsLostMessage {
   round: number;
-}
-
-interface Fighter extends DFighter {
 }
 
 export interface fight {
@@ -17,6 +15,7 @@ export interface fight {
   fighters: Fighter[];
   turnList: number[];
   dommages: Dommage[],
+  spells: GameActionFightSpellCastMessage[];
   round: number;
 }
 
@@ -32,6 +31,7 @@ const fightModel = {
   fighters: [],
   turnList: [],
   dommages: [],
+  spells: [],
   round: -1,
 }
 
@@ -61,11 +61,21 @@ export const fightsSlice = createSlice({
     setFighters: (state, action: PayloadAction<GameFightSynchronizeMessage>) => {
       state.currentFight.fighters = action.payload.fighters.map(f => {
         if (f.creatureGenericId) {
+          // Monsters
           const monster = monsters.find(m => m.Id === f.creatureGenericId);
           const name = monster ? monster.Name : "Unknown";
-          return { ...f, name: name, dommages: { recv: [], deal: [] } }
+          return { ...f, name: name }
+        } if(f.masterId) {
+          // Compagnons
+          const master = action.payload.fighters.find(_f => _f.contextualId === f.masterId)?.name;
+          const compagnonType = f.entityModelId === 11 ? "Chevalier d'Astrub" 
+                                  : f.entityModelId === 6 ? "Masse" 
+                                    : "Compagnon ("+f.entityModelId+")"
+          const name = compagnonType + " de " + master;
+          return { ...f, name: name }
         } else {
-          return { ...f, dommages: { recv: [], deal: [] } }
+          // Players
+          return { ...f }
         }
       });
     },
@@ -76,8 +86,7 @@ export const fightsSlice = createSlice({
       state.currentFight.dommages = [...state.currentFight.dommages, { ...action.payload, round: state.currentFight.round }]
       // Add dommage line for summoners
       const fighter = state.currentFight.fighters.find(f => f.contextualId === action.payload.sourceId);
-      if (fighter?.stats.summoned) {
-        // @ts-ignore fighter.stats.summoner is difined in this statement
+      if (fighter?.stats.summoner) {
         state.currentFight.dommages = [...state.currentFight.dommages, { ...action.payload, round: state.currentFight.round, sourceId: fighter.stats.summoner, elementId: 9 }]
       }
     },
@@ -91,13 +100,25 @@ export const fightsSlice = createSlice({
         creatureGenericId: action.payload.summons[0].spawnInformation.creatureGenericId,
         name: name + " de " + (summoner ? summoner.name : action.payload.summons[0].stats.summoner),
         stats: action.payload.summons[0].stats,
+        wave: action.payload.summons[0].wave,
+        spawnInfo: {
+          ...action.payload.summons[0].spawnInformation,
+          ...action.payload.summons[0].summons[0]
+        }, 
+        previousPositions: [], 
+        level: summoner?.level ? summoner.level : 0, 
+        status: {statusId: 0}
       }
       state.currentFight.fighters = [...state.currentFight.fighters, summonedFighter]
+    },
+    fightSpellCastAction: (state, action: PayloadAction<GameActionFightSpellCastMessage>) => {
+      const spell = spells.find(spell => spell.Id === action.payload.spellId);
+      state.currentFight.spells = [...state.currentFight.spells, {...action.payload, name: spell ? spell.Name : "Unknow"}]
     },
   }
 });
 
-export const { startFight, endFight, setFightTurnList, setFighters, setRound, fightDommageAction, fightSummonAction } = fightsSlice.actions;
+export const { startFight, endFight, setFightTurnList, setFighters, setRound, fightDommageAction, fightSummonAction, fightSpellCastAction } = fightsSlice.actions;
 
 export const selectHistory = (state: RootState) => state.fights.history as fight[];
 export const selectCurrent = (state: RootState) => state.fights.currentFight as fight;

@@ -1,55 +1,106 @@
-.App {
-  /* text-align: center; */
+.app {
+  display: grid;  
+  grid-template-columns: 14rem 1fr;
+  grid-template-rows: 4rem 1fr;
+  min-height: 100vh;
 }
 
-.App-logo {
-  height: 2rem;
-  pointer-events: none;
+/** HEADER **/
+.app__header {
+  grid-column: 2 / 3;
+  grid-row: 1;
+  padding: 1rem;
+  height: 64px;
+  box-sizing: border-box;
+  background-color: #FFFFFF;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-float infinite 3s ease-in-out;
-  }
+/** NAVIGATION **/
+.app__navigation {
+  padding: 1rem 0;
+  grid-column: 1;
+  grid-row: 1 / 3;
+  
+  border-right: 1px solid #f4f4f4;
 }
-
-.App-header {
-  height: 3rem;
+.app__navigation__header {
+  padding: 0 1rem 1rem 1rem;
+  height: 32px;
+  /* border-bottom: 1px solid #f4f4f4; */
+}
+.app__navigation__items {
   display: flex;
-  /* flex-direction: column; */
-  align-items: stretch;
-  justify-content: space-between;
-  font-size: 2rem;
-  color: #d7d3cb;
-  background-color: #282c34;
-  box-shadow: 0 3px 5px #282c34;
+  flex-direction: column;
+}
+.app__navigation__items__item {
+  padding: 1rem;
+  background-color: #F9F9FB00;
+  transition: all ease .2s;
+}
+.app__navigation__items__item:hover {
+  padding-left: 2rem;
+}
+.app__navigation__items__item[aria-current="true"] {
+  background-color: #F9F9FBFF;
 }
 
-.App-nav {
-  display: flex;
-  width: 100%;
-  align-items: stretch;
-  justify-content: space-between;
+/** MAIN **/
+.app__main {
+  background-color: #F9F9FB;
+  grid-column: 2;
+  grid-row: 2 / 3;
+
+  padding: 1rem;
 }
 
-.App-nav-item {
-  padding: 0.25rem 1rem;
-  transition: all .3s linear;
-  color: inherit;
+/** GLOBAL **/
+
+/** Font **/
+body {
+  font-family: 'Work Sans', sans-serif;
+  font-weight: 300;
 }
 
-.App-nav-item:hover {
-  background-color: rgba(255, 255, 255, 0.05);
+h1, h2, h3, h4, h5 {
+  font-family: Montserrat, Arial, Verdana, "Lucida Grande", sans-serif;
+  font-weight: 600;
+  color: #010035;
+  margin: 0 0 1rem 0;
 }
 
-@keyframes App-logo-float {
-  0% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(10px);
-  }
-  100% {
-    transform: translateY(0px);
-  }
+/** Inputs **/
+input[type="text"], input[type="number"], select {
+  box-shadow: none;
+  border: none;
+  border-bottom-color: currentcolor;
+  border-bottom-style: none;
+  border-bottom-width: medium;
+  border-bottom: 1px solid #999;
+  height: auto;
+  font-size: 1rem;
+  text-align: left;
+  padding: .5rem;
+  background-color: transparent;
+  margin: 0 .5rem .5rem 0;
+}
+
+button {
+  background: #0F172A;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  position: relative;
+  display: inline-block;
+  padding: .5rem 1rem;
+  text-align: center;
+  text-decoration: none;
+  white-space: nowrap;
+  min-width: 100px;
+  max-width: 280px;
+  border-radius: 50px;
+  font-size: 1rem;
+  margin: 0 .5rem .5rem .5rem;
+}
+button:hover {
+  background: #1f2b49;
 }

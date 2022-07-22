@@ -1,0 +1,28 @@
+.log {
+    overflow: auto;
+    max-height: 300px;
+    padding: 1rem;
+    box-sizing: border-box;
+    background-color: #00000010;
+    border-radius: 4px;
+}
+
+.log__message {
+    font-family: monospace;
+}
+
+.log__message__source {
+    font-weight: 700;
+}
+
+.log__message__spell {
+    font-weight: 700;
+}
+
+.log__message__critique {
+    font-weight: 700;
+}
+
+.log__message__target {
+    font-weight: 700;
+}
