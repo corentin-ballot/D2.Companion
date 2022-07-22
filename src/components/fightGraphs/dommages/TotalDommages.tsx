@@ -15,7 +15,7 @@ interface DommagesProps {
     fight: fight;
 }
 
-const teamColor = ["#650505", "#09325E"]
+const teamColor = ["#e60201", "#0073ba"]
 
 function TotalDommages(props: DommagesProps) {
 
@@ -38,7 +38,7 @@ function TotalDommages(props: DommagesProps) {
 
     return <div>
         <ResponsiveContainer width="100%" height={60 * props.fight.turnList.length}>
-            <BarChart width={800} height={500} layout="vertical" data={data} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+            <BarChart width={800} height={500} layout="vertical" data={data} margin={{ top: 0, right: 0, left: 0, bottom: 0 }}>
                 <XAxis hide type="number" />
                 {/* dmg deal */}
                 <Bar barSize={50} dataKey="total" stackId="a" fill="#9029ab">
@@ -47,7 +47,7 @@ function TotalDommages(props: DommagesProps) {
                         <Cell key={entry.name} fill={teamColor[entry.teamId ? entry.teamId : 0]} />
                     ))}
                 </Bar>
-                <YAxis width={90} yAxisId={0} dataKey="total" axisLine={false} orientation="right" mirror fill="#999" tickFormatter={tickFormater(sum)} tick={{fill: '#999'}} type="category"/>
+                <YAxis width={90} yAxisId={0} dataKey="total" axisLine={false} orientation="right" mirror tickFormatter={tickFormater(sum)} tick={{fill: '#000'}} type="category"/>
             </BarChart>
         </ResponsiveContainer>
     </div>
@@ -61,7 +61,7 @@ const customBarLabel = (props: any) => {
     const { x, y, height } = props;
 
     return (
-        <text x={x + 10} y={y + height / 2} fill="#999" dominantBaseline="middle" fontSize="1rem">
+        <text x={x + 10} y={y + height / 2} fill="#000" dominantBaseline="middle" fontSize="1rem">
             {props.name}
         </text>
     );
