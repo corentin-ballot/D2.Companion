@@ -28,7 +28,7 @@ function Fight() {
 
     useEffect(() => {
         setFightersFilter([displayedFight.turnList[0]]);
-    }, [displayedFight]);
+    }, [currentFight]);
 
     useEffect(() => {
         // @ts-ignore
