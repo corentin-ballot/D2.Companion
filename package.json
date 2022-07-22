@@ -22,10 +22,11 @@
     "react-scripts": "5.0.0",
     "rechart": "^0.0.1",
     "recharts": "^2.1.9",
+    "socket.io-client": "^4.5.1",
     "typescript": "~4.1.5"
   },
   "scripts": {
-    "fetch": "node ./src/data/fetch.js",
+    "fetch": "node ./src/data/fetch_all.js",
     "sniff": "node ./sniffer/index.js",
     "start": "react-scripts start",
     "build": "react-scripts build",
