@@ -1,19 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { useAppSelector } from '../../app/hooks';
 import { selectCurrent, selectHistory } from './fightsSlice';
-import Grid from '@mui/material/Grid';
 
-
+import DateTime from '../../components/dateTime/DateTime';
 import RecievedDommagesPerRound from '../../components/fightGraphs/dommages/RecievedDommagesPerRound';
 import DealedDommagesPerRound from '../../components/fightGraphs/dommages/DealedDommagesPerRound';
 import TotalDommages from '../../components/fightGraphs/dommages/TotalDommages';
-import DateTime from '../../components/dateTime/DateTime';
-
-import styles from './Fights.module.css';
 import SpellsLog from '../../components/fightGraphs/dommages/SpellsLog';
 import TypeRepartition from '../../components/fightGraphs/dommages/TypeRepartition';
 
 import sampleFight from '../../data/sample/fight.json';
+import styles from './Fights.module.css';
 
 function Fight() {
     const [displayedFight, setDisplayedFight] = useState(useAppSelector(selectCurrent));
@@ -36,13 +33,11 @@ function Fight() {
     }, []);
 
     return <div>
-        <Grid container spacing={2}>
-            {/* Side bar */}
-            {/* <Grid item xs={2}>
-                <h1>Dofus fights</h1>
-                <div className={styles.fightsHisotry}>
+        {/* Side bar */}
+        
+                {/* <div className={styles.fightsHisotry}>
                     {currentFight.round > 0 && <button className={styles.fightsHisotry__item} onClick={() => setDisplayedFight(currentFight)}>Current fight</button>}
-                    <hr />
+                    
                     <h3>
                         History
                         <button onClick={async () => {
@@ -60,81 +55,72 @@ function Fight() {
                         }}>Save</button>
                     </h3>
                     {history.map(fight => <button className={styles.fightsHisotry__item} key={fight.startTime} onClick={() => setDisplayedFight(fight)}><DateTime timestamp={fight.startTime} /> {fight.fighters.filter(f => f.contextualId < 0 && !f.stats.summoned).map(f => f.name).join(", ")}</button>)}
-                </div>
-            </Grid> */}
+                </div> */}
+        
 
-            {/* Content */}
-            {displayedFight.round > 0 &&
-                <Grid item xs={12}>
-                    <div className={styles.container}>
-                        <Grid container spacing={2}>
-                            {/* Main Graph (dealed dommages with types) */}
-                            <Grid item xs={12}>
-                                <div className={styles.card}>
-                                    <h3 className={styles.widget__title}>Dommages dealed</h3>
-                                    <TotalDommages fight={displayedFight} />
-                                </div>
-                            </Grid>
-
-                            {/* Dofensive */}
-                            <Grid item xs={12}>
-                                <a target="_blank" rel="noreferrer" href={`https://dofensive.com/fr/monster/${displayedFight.fighters.map(fighter => fighter.creatureGenericId).join(",")}`}>Voir les monstres sur Dofensive</a>
-                            </Grid>
-
-                            {/* Fighters display filter */}
-                            <Grid item xs={12}>
-                                <form className={styles.fightersFilter}>
-                                    {displayedFight.turnList.map(fighterId => {
-                                        const fighter = displayedFight.fighters.find(f => f.contextualId === fighterId);
-                                        return <label key={fighterId} htmlFor={fighterId.toString()} className={styles.fightersFilter__item} data-checked={fightersFilter.includes(fighterId)}>
-                                            <img src={
-                                                fighter?.masterId ? "/img/monsters/394" :
-                                                fighter?.creatureGenericId ? `/img/monsters/${fighter?.creatureGenericId}` : `/img/classes/${fighter?.breed}-${fighter?.sex ? 'female' : 'male'}.png`
-                                                } alt={fighter?.name} />
-                                            <input type="checkbox" id={fighterId.toString()} checked={fightersFilter.includes(fighterId)} onChange={(e) => setFightersFilter(fightersFilter.includes(fighterId) ? fightersFilter.filter(f => f !== fighterId) : [fighterId])} />
-                                            <span>{fighter?.name}</span>
-                                        </label>
-                                    })}
-                                </form>
-                            </Grid>
-
-                            {/* Graph (dealed dommages per round) */}
-                            <Grid item xs={12} md={6}>
-                                <div className={styles.card}>
-                                    <h3 className={styles.widget__title}>Dommages dealed per round</h3>
-                                    <DealedDommagesPerRound fight={displayedFight} fightersFilter={fightersFilter} />
-                                </div>
-                            </Grid>
-
-                            {/* Graph (recieved dommages per round) */}
-                            <Grid item xs={12} md={6}>
-                                <div className={styles.card}>
-                                    <h3 className={styles.widget__title}>Dommages recieved per round</h3>
-                                    <RecievedDommagesPerRound fight={displayedFight} fightersFilter={fightersFilter} />
-                                </div>
-                            </Grid>
-
-                            {/* Spells */}
-                            <Grid item xs={12} md={6}>
-                                <div className={styles.card}>
-                                    <h3 className={styles.widget__title}>Spells</h3>
-                                    <SpellsLog fight={displayedFight} fightersFilter={fightersFilter} />
-                                </div>
-                            </Grid>
-
-                            {/* Type repartition */}
-                            <Grid item xs={12} md={6}>
-                                <div className={styles.card}>
-                                    <h3 className={styles.widget__title}>Type repartition</h3>
-                                    <TypeRepartition fight={displayedFight} fightersFilter={fightersFilter} />
-                                </div>
-                            </Grid>
-                        </Grid>
+        {/* Content */}
+        {displayedFight.round > 0 &&
+            <div className={styles.fight}>
+                {/* Main Graph (dealed dommages with types) */}
+                <div className={[styles.fight__card, styles.fight__card_highlight].join(" ")}>
+                    <div className={styles.fight__card__header}>
+                        <h3 className={styles.fight__card__header__title}>Dommages dealed</h3>
+                        {/* Dofensive */}
+                        <a className={styles.fight__card__header__link} target="_blank" rel="noreferrer" href={`https://dofensive.com/fr/monster/${displayedFight.fighters.map(fighter => fighter.creatureGenericId).join(",")}`}>Voir les monstres sur Dofensive</a>
                     </div>
-                </Grid>
-            }
-            {/* {displayedFight && <div><pre>{JSON.stringify(displayedFight.spells, null, 2) }</pre></div>} */}
-        </Grid>
+                    <TotalDommages fight={displayedFight} />
+                </div>
+
+                {/* Fighters display filter */}
+                <form className={styles.fight__fighters}>
+                    {displayedFight.turnList.map(fighterId => {
+                        const fighter = displayedFight.fighters.find(f => f.contextualId === fighterId);
+                        return <label key={fighterId} htmlFor={fighterId.toString()} className={styles.fight__fighters__item} data-checked={fightersFilter.includes(fighterId)}>
+                            <img src={
+                                fighter?.masterId ? "/img/monsters/394" :
+                                    fighter?.creatureGenericId ? `/img/monsters/${fighter?.creatureGenericId}` : `/img/classes/${fighter?.breed}-${fighter?.sex ? 'female' : 'male'}.png`
+                            } alt={fighter?.name} />
+                            <input type="checkbox" id={fighterId.toString()} checked={fightersFilter.includes(fighterId)} onChange={(e) => setFightersFilter(fightersFilter.includes(fighterId) ? fightersFilter.filter(f => f !== fighterId) : [fighterId])} />
+                            <span>{fighter?.name}</span>
+                        </label>
+                    })}
+                </form>
+
+                {/* Graph (dealed dommages per round) */}
+                <div className={styles.fight__card}>
+                    <div className={styles.fight__card__header}>
+                        <h3 className={styles.fight__card__header__title}>Dommages dealed per round</h3>
+                    </div>
+                    <DealedDommagesPerRound fight={displayedFight} fightersFilter={fightersFilter} />
+                </div>
+
+                {/* Graph (recieved dommages per round) */}
+                <div className={styles.fight__card}>
+                    <div className={styles.fight__card__header}>
+                        <h3 className={styles.fight__card__header__title}>Dommages recieved per round</h3>
+                    </div>
+                    <RecievedDommagesPerRound fight={displayedFight} fightersFilter={fightersFilter} />
+                </div>
+
+                {/* Spells */}
+                <div className={styles.fight__card}>
+                    <div className={styles.fight__card__header}>
+                        <h3 className={styles.fight__card__header__title}>Spells</h3>
+                    </div>
+                    <SpellsLog fight={displayedFight} fightersFilter={fightersFilter} />
+                </div>
+
+                {/* Type repartition */}
+                <div className={styles.fight__card}>
+                    <div className={styles.fight__card__header}>
+                        <h3 className={styles.fight__card__header__title}>Type repartition</h3>
+                    </div>
+                    <TypeRepartition fight={displayedFight} fightersFilter={fightersFilter} />
+                </div>
+
+            </div>
+        }
+
         {/* {displayedFight && <div><pre>{JSON.stringify(displayedFight.fighters, null, 2) }</pre></div>} */}
     </div>
 }

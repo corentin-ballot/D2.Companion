@@ -35,10 +35,10 @@ function TypeRepartition(props: TypeRepartitionProps) {
     const formatedData = (Object.keys(data) as ["neutre"|"feu"|"eau"|"air"|"terre"|"pou"|"invoc"]).map((key) => ({ name: key, value: data[key] }));
 
     return <div>
-        <ResponsiveContainer width="100%" height={300}>
-            <PieChart width={730} height={250} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+        <ResponsiveContainer height={300}>
+            <PieChart margin={{ top: 0, right: 0, left: 0, bottom: 0 }}>
                 {/* dmg deal */}
-                <Pie data={formatedData} dataKey="value" cx="50%" cy="50%" innerRadius={60} outerRadius={90} labelLine={false}>
+                <Pie data={formatedData} dataKey="value" cx="50%" cy="50%" innerRadius={80} outerRadius={120} labelLine={false}>
                     <Cell fill={colors.neutre} />
                     <Cell fill={colors.feu} />
                     <Cell fill={colors.eau} />
@@ -55,7 +55,7 @@ function TypeRepartition(props: TypeRepartitionProps) {
 
 const customTooltip = (props: any) => {
     const { active, payload } = props;
-    props.position.x = props.viewBox.width / 2 - 20;
+    props.position.x = props.viewBox.width / 2 - 40;
     props.position.y = props.viewBox.height / 2 - 30;
 
     if (active && payload && payload.length) {
