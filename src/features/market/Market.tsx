@@ -50,7 +50,7 @@ function Market() {
 
             <div className={styles.market__header__item}>
                 <div className={styles.market__header__item__informations}>
-                    <img src={displayedItems[0]?.imgUrl} />
+                    <img src={process.env.PUBLIC_URL + displayedItems[0]?.imgUrl} />
                 </div>
 
                 <div className={styles.market__header__item__effects}>
@@ -107,7 +107,7 @@ function Statistic(props: StatisticProps) {
     const statistic = typeof props.id == "number" ? equipmentStats.get(props.id) : { name: props.id, negative: false };
 
     return <div className={styles.statistic} data-statid={props.id}>
-        <img className={styles.statistic__image} src={statImage.get(statistic?.name)} alt="" />
+        <img className={styles.statistic__image} src={process.env.PUBLIC_URL + statImage.get(statistic?.name)} alt="" />
         <div className={styles.statistic__details} data-negative={statistic?.negative} data-reverse={statistic?.reverse}>
             {typeof props.value == "object" ?
                 <span className={styles.statistic__details__value}>{`${props.value.min} ${props.value.max ? (' à ' + props.value.max) : ""}`}</span>

@@ -77,8 +77,8 @@ function Fight() {
                         const fighter = displayedFight.fighters.find(f => f.contextualId === fighterId);
                         return <label key={fighterId} htmlFor={fighterId.toString()} className={styles.fight__fighters__item} data-checked={fightersFilter.includes(fighterId)}>
                             <img src={
-                                fighter?.masterId ? "/img/monsters/394" :
-                                    fighter?.creatureGenericId ? `/img/monsters/${fighter?.creatureGenericId}` : `/img/classes/${fighter?.breed}-${fighter?.sex ? 'female' : 'male'}.png`
+                                process.env.PUBLIC_URL + (fighter?.masterId ? "/img/monsters/394" :
+                                    fighter?.creatureGenericId ? `/img/monsters/${fighter?.creatureGenericId}` : `/img/classes/${fighter?.breed}-${fighter?.sex ? 'female' : 'male'}.png`)
                             } alt={fighter?.name} />
                             <input type="checkbox" id={fighterId.toString()} checked={fightersFilter.includes(fighterId)} onChange={(e) => setFightersFilter(fightersFilter.includes(fighterId) ? fightersFilter.filter(f => f !== fighterId) : [fighterId])} />
                             <span>{fighter?.name}</span>
