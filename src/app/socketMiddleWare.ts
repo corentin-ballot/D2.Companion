@@ -1,5 +1,5 @@
 import { AnyAction, Middleware } from '@reduxjs/toolkit';
-import { addMessage } from '../features/chat/chatSlice';
+import { processMessage } from '../features/chat/chatSlice';
 import { endFight, fightDommageAction, fightSpellCastAction, fightSummonAction, setFighters, setFightTurnList, setRound, startFight } from '../features/fights/fightsSlice';
 import { setItems } from '../features/market/marketSlice';
 import { setConnected, setConnecting } from '../features/socket/socketSlice';
@@ -34,7 +34,7 @@ const socketMiddleWare: Middleware = (store) => {
                 break;
             case "ChatServerMessage":
             case "ChatServerWithObjectMessage":
-                store.dispatch(addMessage(data.content as ChatServerMessage)); break;
+                store.dispatch(processMessage(data.content as ChatServerMessage)); break;
 
             /* Fights */
             case "GameFightJoinMessage":

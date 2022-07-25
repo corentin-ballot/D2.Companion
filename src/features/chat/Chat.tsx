@@ -1,12 +1,10 @@
-import React, { MutableRefObject, useRef, useState } from 'react';
+import React, { MutableRefObject, useEffect, useRef, useState } from 'react';
 import styles from './Chat.module.css';
-// import equipments from '../../data/equipments.json';
-// import weapons from '../../data/weapons.json';
-// import monsters from '../../data/monsters.json';
 
-import { useAppSelector } from '../../app/hooks';
+import { useAppSelector, useAppDispatch } from '../../app/hooks';
 import {
-    selectNotifications
+    selectNotifications,
+    updateNotifications
 } from './chatSlice';
 
 interface DataObject {
@@ -19,19 +17,22 @@ interface Notification {
     matches: string[];
 }
 
+const data = {monsters: [] as DataObject[], weapons: [] as DataObject[], equipments: [] as DataObject[], achievements: [] as DataObject[], others: [] as DataObject[]}
 const MAX_AUTO_COMPLETE_RESULT = 10;
 
 function Chat() {
-    const [notifications, setNotification] = useState(useAppSelector(selectNotifications));
+    const dispatch = useAppDispatch();
+    const notifications = useAppSelector(selectNotifications);
     const inputRef: MutableRefObject<HTMLInputElement | null> = useRef(null);
     
-    const data = {monsters: [] as DataObject[], weapons: [] as DataObject[], equipments: [] as DataObject[], others: [] as DataObject[]}
-    fetch('/data/monsters.json').then(res => res.json()).then((res: {Id: number, Name: string}[]) => data.monsters = res.map(r => ({id: r.Id, name: r.Name})));
-    fetch('/data/weapons.json').then(res => res.json()).then((res: {_id: number, name: string}[]) => data.weapons = res.map(r => ({id: r._id, name: r.name})));
-    fetch('/data/equipments.json').then(res => res.json()).then((res: {_id: number, name: string}[]) => data.equipments = res.map(r => ({id: r._id, name: r.name})));
-    
-    
-    const scopes = ["monsters","equipments","weapons","others"] as const;
+    useEffect(() => {
+        fetch('/data/monsters.json').then(res => res.json()).then((res: {Id: number, Name: string}[]) => data.monsters = res.map(r => ({id: r.Id, name: r.Name})));
+        fetch('/data/weapons.json').then(res => res.json()).then((res: {_id: number, name: string}[]) => data.weapons = res.map(r => ({id: r._id, name: r.name})));
+        fetch('/data/equipments.json').then(res => res.json()).then((res: {_id: number, name: string}[]) => data.equipments = res.map(r => ({id: r._id, name: r.name})));
+        fetch('/data/achievements.json').then(res => res.json()).then((res: {id: number, name: any}[]) => data.achievements = res.map(r => ({id: r.id, name: r.name.fr})));
+    }, []);
+        
+    const scopes = ["monsters","equipments","weapons","achievements", "others"] as const;
     const [selectedScope, setSelectedScope] = useState(scopes[0] as typeof scopes[number]);
     const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
         setSelectedScope(event.target.value as typeof scopes[number]);
@@ -39,7 +40,8 @@ function Chat() {
 
     const [autoCompleteResult, setAutoCompleteResult] = useState([] as any[]);
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setAutoCompleteResult(data[selectedScope].filter(d => d.name.toLowerCase().includes(event.target.value.toLowerCase())));
+        const proposals = data[selectedScope].filter(d => d.name.toLowerCase().includes(event.target.value.toLowerCase()));
+        setAutoCompleteResult(proposals);
 
         if(inputRef.current) {
             inputRef.current.removeAttribute("data-id");
@@ -56,17 +58,23 @@ function Chat() {
 
     const handleRemoveClicked = (notification: Notification) => {
         const ns = notifications.filter(n => n.label !== notification.label);
-        setNotification(ns);
-        localStorage.setItem('chat.notifications', JSON.stringify(ns));
+        dispatch(updateNotifications(ns));
     }
 
     const handleAddClicked = () => {
         if(inputRef.current) {
             const n = {label: inputRef.current.value, matches: [inputRef.current.value.toLocaleLowerCase()]};
-            if(inputRef.current.hasAttribute("data-id")) n.matches.push(selectedScope === "monsters" ? `{chatmonster,${inputRef.current.getAttribute("data-id")}}` : `${inputRef.current.getAttribute("data-id")}`);
+            if(inputRef.current.hasAttribute("data-id")) {
+                if(selectedScope === "monsters") {
+                    n.matches.push(`{chatmonster,${inputRef.current.getAttribute("data-id")}}`);
+                } else if (selectedScope === "achievements") {
+                    n.matches.push(`{chatachievement,${inputRef.current.getAttribute("data-id")}}`);
+                } else {
+                    n.matches.push(`${inputRef.current.getAttribute("data-id")}`);
+                }
+            }
             const ns = [...notifications, n];
-            setNotification(ns);
-            localStorage.setItem('chat.notifications', JSON.stringify(ns));
+            dispatch(updateNotifications(ns));
         }
     }
 

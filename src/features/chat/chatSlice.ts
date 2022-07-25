@@ -23,16 +23,15 @@ export const chatSlice = createSlice({
   name: 'chat',
   initialState,
   reducers: {
-    addMessage: (state, action: PayloadAction<ChatServerMessage>) => {
+    updateNotifications: (state, action: PayloadAction<Notification[]>) => {
+      localStorage.setItem('chat.notifications', JSON.stringify(action.payload));
+      state.notifications = action.payload;
+    },
+    processMessage: (state, action: PayloadAction<ChatServerMessage>) => {
       // state = {...state, channels: {...state.channels, [channel]: [...state.channels[channel], action.payload]}};
       // state.messages = [...state.messages.slice(-500), {...action.payload, id: ++state.messageCount}];
       const matches = state.notifications.reduce((p, c) => [...p, ...c.matches], [] as string[]);
-      if(action.payload.senderName === "Co-mmotion") {
-        console.log("matches", matches)
-        console.log("content", action.payload.content)
-        console.log("content-format", action.payload.content.toLocaleLowerCase().replace("%20", " "))
-        
-      }
+
 
       if(matches.some(el => action.payload.content.toLocaleLowerCase().replace("%20", " ").includes(el))
           || action.payload.objects?.filter(object => matches.includes(object.objectGID.toString())).length
@@ -54,7 +53,7 @@ export const chatSlice = createSlice({
   },
 });
 
-export const { addMessage } = chatSlice.actions;
+export const { processMessage, updateNotifications } = chatSlice.actions;
 
 export const selectNotifications = (state: RootState) => state.chat.notifications;
 
