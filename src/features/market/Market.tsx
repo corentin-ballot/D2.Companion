@@ -14,8 +14,13 @@ interface StatFilterObject {
 }
 
 function Market() {
-    const [displayedItems, setDisplayedItems] = useState(useAppSelector(selectItems).sort((a, b) => a.prices[0] - b.prices[0]));
+    const items = useAppSelector(selectItems);
+    const [displayedItems, setDisplayedItems] = useState([...items].sort((a, b) => a.prices[0] - b.prices[0]));
     const [statFilters, setStatFilters] = useState([] as StatFilterObject[]);
+
+    useEffect(() => {
+        setDisplayedItems([...items].sort((a, b) => a.prices[0] - b.prices[0]));
+    }, [items]);
 
     useEffect(() => {
         // @ts-ignore
@@ -96,13 +101,12 @@ export default Market;
 interface StatisticProps {
     id: number | string;
     value: number | string | { min: number, max: number };
-    key: string | number;
 }
 
 function Statistic(props: StatisticProps) {
     const statistic = typeof props.id == "number" ? equipmentStats.get(props.id) : { name: props.id, negative: false };
 
-    return <div key={props.key} className={styles.statistic} data-statid={props.id}>
+    return <div className={styles.statistic} data-statid={props.id}>
         <img className={styles.statistic__image} src={statImage.get(statistic?.name)} alt="" />
         <div className={styles.statistic__details} data-negative={statistic?.negative} data-reverse={statistic?.reverse}>
             {typeof props.value == "object" ?
