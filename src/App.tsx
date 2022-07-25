@@ -8,7 +8,6 @@ import Fights from './features/fights/Fights';
 import Market from './features/market/Market';
 
 const routes = [
-  {path: "/", element: <Home />, label: "Home"},
   {path: "/fights", element: <Fights />, label: "Fights"},
   {path: "/market", element: <Market />, label: "Market"},
   {path: "/chat", element: <Chat />, label: "Chat"},
@@ -26,17 +25,19 @@ function App() {
         </div>
 
         <div className="app__navigation__items">
-          {routes.map(route => <Link className="app__navigation__items__item" aria-current={pathname === route.path} to={route.path} key={route.path}>{route.label}</Link>)}
+          <Link className="app__navigation__items__item" aria-current={pathname === "/"} to={"/"}>Home</Link>
+          {routes.map(route => <Link className="app__navigation__items__item" aria-current={pathname.startsWith(route.path)} to={route.path} key={route.path}>{route.label}</Link>)}
         </div>
       </nav>
 
       
       <header className="app__header">
-        <h2>{routes.find(route => route.path === pathname)?.label}</h2>
+        <h2>{routes.find(route => route.path.startsWith(pathname))?.label}</h2>
       </header>
 
       <main className="app__main">
         <Routes>
+          <Route path={"/"} element={<Home />} />
           {routes.map(route => <Route path={route.path} element={route.element} key={route.path} />)}
         </Routes>
       </main>
