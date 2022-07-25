@@ -32,7 +32,9 @@ function App() {
 
       
       <header className="app__header">
-        <h2>{routes.find(route => route.path.startsWith(pathname))?.label}</h2>
+        <h2>{
+          pathname === "/" ? "Home" : routes.find(route => route.path.startsWith(pathname))?.label
+        }</h2>
       </header>
 
       <main className="app__main">
