@@ -33,31 +33,6 @@ function Fight() {
     }, []);
 
     return <div>
-        {/* Side bar */}
-        
-                {/* <div className={styles.fightsHisotry}>
-                    {currentFight.round > 0 && <button className={styles.fightsHisotry__item} onClick={() => setDisplayedFight(currentFight)}>Current fight</button>}
-                    
-                    <h3>
-                        History
-                        <button onClick={async () => {
-                            const fileName = "file";
-                            const json = JSON.stringify(history);
-                            const blob = new Blob([json], { type: 'application/json' });
-                            const href = await URL.createObjectURL(blob);
-                            const link = document.createElement('a');
-                            link.href = href;
-                            link.target = "_blank"
-                            link.download = fileName + ".json";
-                            document.body.appendChild(link);
-                            link.click();
-                            document.body.removeChild(link);
-                        }}>Save</button>
-                    </h3>
-                    {history.map(fight => <button className={styles.fightsHisotry__item} key={fight.startTime} onClick={() => setDisplayedFight(fight)}><DateTime timestamp={fight.startTime} /> {fight.fighters.filter(f => f.contextualId < 0 && !f.stats.summoned).map(f => f.name).join(", ")}</button>)}
-                </div> */}
-        
-
         {/* Content */}
         {displayedFight.round > 0 &&
             <div className={styles.fight}>
@@ -117,10 +92,49 @@ function Fight() {
                     </div>
                     <TypeRepartition fight={displayedFight} fightersFilter={fightersFilter} />
                 </div>
-
             </div>
         }
 
+        {/* History */}
+        <div className={[styles.fight__card, styles.fight__card_highlight].join(" ")}>
+            <div className={styles.fight__card__header}>
+                <h3 className={styles.fight__card__header__title}>History</h3>
+                <div>
+                    {currentFight.round > 0 && <button className={styles.fightsHisotry__item} onClick={() => setDisplayedFight(currentFight)}>Current fight</button>}
+                    <button onClick={async () => {
+                        const fileName = "file";
+                        const json = JSON.stringify(history);
+                        const blob = new Blob([json], { type: 'application/json' });
+                        const href = await URL.createObjectURL(blob);
+                        const link = document.createElement('a');
+                        link.href = href;
+                        link.target = "_blank"
+                        link.download = fileName + ".json";
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                    }}>Save</button>
+                </div>
+            </div>
+
+            <div className={styles.fight__hisotry__items}>
+                {history.map(fight => 
+                    <button 
+                        className={styles.fight__hisotry__item} 
+                        key={fight.startTime} 
+                        onClick={() => setDisplayedFight(fight)}>
+                            <img className={styles.fight__hisotry__item__image} src={process.env.PUBLIC_URL + "/img/monsters/" + fight.fighters.find(f => f.contextualId < 0 && !f.stats.summoned)?.creatureGenericId}/>
+                            <div className={styles.fight__hisotry__item__content}>
+                                <div className={styles.fight__hisotry__item__content__time}><DateTime timestamp={fight.startTime} /></div>
+                                <div className={styles.fight__hisotry__item__content__fighters}>
+                                    {fight.fighters.filter(f => f.contextualId < 0 && !f.stats.summoned).map(f =>    
+                                        <div className={styles.fight__hisotry__item__content__fighter} key={f.contextualId}>{f.name}</div>)}
+                                </div>
+                            </div>
+                    </button>
+                )}
+            </div>
+        </div>
         {/* {displayedFight && <div><pre>{JSON.stringify(displayedFight.fighters, null, 2) }</pre></div>} */}
     </div>
 }

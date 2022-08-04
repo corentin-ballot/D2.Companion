@@ -3,6 +3,7 @@
     grid-template-columns: repeat(2, 1fr);
     column-gap: 1rem;
     row-gap: 1rem;
+    margin-bottom: 1rem;
 }
 
 .fight__card {
@@ -79,4 +80,73 @@
 
 .fight__fighters__item[data-checked="true"] span {
     background-color: goldenrod;
+}
+
+.fight__hisotry__items {
+    overflow: auto;
+    white-space: nowrap;
+    width: 100%;
+    padding: .5rem 0;
+    display: flex;
+    align-items: stretch;
+    justify-content: flex-start;
+    flex-wrap: nowrap;
+}
+
+.fight__hisotry__item {
+    color: inherit;
+    background-color: #fff;
+    border-radius: 4px;
+    box-shadow: 0px 2px 1px -1px rgba(0,0,0,0.2),0px 1px 1px 0px rgba(0,0,0,0.14),0px 1px 3px 0px rgba(0,0,0,0.12);
+    padding: .5rem;
+    display: flex;
+    text-align: start;
+    max-width: 320px;
+    max-height: 4.5rem;
+    overflow: hidden;
+}
+
+.fight__hisotry__item:hover {
+    background-color: #fff;
+}
+
+.fight__hisotry__item__image {
+    max-height: 100%;
+    width: auto;
+}
+
+.fight__hisotry__item__content {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.fight__hisotry__item__content__time {
+    color: lightgray;
+    font-size: .75rem;
+}
+
+.fight__hisotry__item__content__fighters {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.fight__hisotry__item__content__fighter {
+    display: inline-block;
+    color: lightgray;
+    font-size: .75rem;
+    margin-right: .25rem;
+
+}
+
+.fight__hisotry__item__content__fighter:not(:first-child):not(:last-child)::after {
+    content:",";
+}
+
+.fight__hisotry__item__content__fighter:first-child {
+    display: block;
+    font-weight: bold;
+    color: inherit;
+    font-size: 1rem;
 }

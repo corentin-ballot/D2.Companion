@@ -52,7 +52,7 @@ export const fightsSlice = createSlice({
       state.currentFight.duration = action.payload.duration;
       state.currentFight.endTime = Date.now();
 
-      state.history = [...state.history, state.currentFight];
+      if(state.currentFight.startTime !== fightModel.startTime) state.history = [...state.history, state.currentFight];
       state.currentFight = { ...fightModel };
     },
     setFightTurnList: (state, action: PayloadAction<GameFightTurnListMessage>) => {
