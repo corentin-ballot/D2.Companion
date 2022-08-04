@@ -4,7 +4,7 @@ import { equipmentStats } from '../../app/equipmentStats';
 import { RootState } from '../../app/store';
 
 let equipments: any[];
-fetch('/data/equipments.json').then(res => res.json()).then(json => equipments = json);
+fetch(process.env.PUBLIC_URL + '/data/equipments.json').then(res => res.json()).then(json => equipments = json);
 
 interface Item extends BidExchangerObjectInfo {
     name: string;
