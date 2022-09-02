@@ -102,6 +102,7 @@
     display: flex;
     text-align: start;
     max-width: 320px;
+    min-width: 200px;
     max-height: 4.5rem;
     overflow: hidden;
 }
