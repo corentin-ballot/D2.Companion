@@ -28,7 +28,7 @@ export const marketSlice = createSlice({
     setItems: (state, action: PayloadAction<ExchangeTypesItemsExchangerDescriptionForUserMessage>) => {
         state.items = action.payload.itemTypeDescriptions.map(item => {
             const equipment = equipments.find(eq => eq._id === item.objectGID);
-            const statistics = [...equipment.statistics];
+            const statistics = typeof equipment.statistics !== "undefined" ? [...equipment.statistics] : [];
             item.effects.forEach(effect => {
                 const stat = equipmentStats.get(effect.actionId);
                 if(stat) {
