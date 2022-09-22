@@ -237,3 +237,113 @@ export interface SpawnInformation {
     creatureGenericId: number;
     creatureGrade: number;
 }
+
+// BREEDING
+export interface Durability {
+    __name: string;
+    __protocol_id: number;
+    durability: number;
+    durabilityMax: number;
+}
+
+export interface PaddockItemDescription {
+    __name: string;
+    __protocol_id: number;
+    cellId: number;
+    objectGID: number;
+    durability: Durability;
+}
+
+export interface GameDataPaddockObjectAddMessage {
+    __name: string;
+    __protocol_id: number;
+    paddockItemDescription: PaddockItemDescription;
+}
+
+export interface EffectList {
+    __name: string;
+    __protocol_id: number;
+    actionId: number;
+    value: number;
+}
+
+export interface MountsDescription {
+    __name: string;
+    __protocol_id: number;
+    sex: boolean;
+    isRideable: boolean;
+    isWild: boolean;
+    isFecondationReady: boolean;
+    useHarnessColors: boolean;
+    id: number;
+    model: number;
+    ancestor: number[];
+    behaviors: any[];
+    name: string;
+    ownerId: number;
+    experience: number;
+    experienceForLevel: number;
+    experienceForNextLevel: number;
+    level: number;
+    maxPods: number;
+    stamina: number;
+    staminaMax: number;
+    maturity: number;
+    maturityForAdult: number;
+    energy: number;
+    energyMax: number;
+    serenity: number;
+    aggressivityMax: number;
+    serenityMax: number;
+    love: number;
+    loveMax: number;
+    fecondationTime: number;
+    boostLimiter: number;
+    boostMax: number;
+    reproductionCount: number;
+    reproductionCountMax: number;
+    harnessGID: number;
+    effectList: EffectList[];
+}
+
+export interface ExchangeStartOkMountMessage {
+    __name: string;
+    __protocol_id: number;
+    stabledMountsDescription: MountsDescription[];
+    paddockedMountsDescription: MountsDescription[];
+}
+
+export interface BoostToUpdateList {
+    __name: string;
+    __protocol_id: number;
+    type: number;
+    value: number;
+}
+
+export enum BoostToUpdateType {
+    energy = 1,         // sérénité
+    serenity = 2,       // sérénité
+    stamina = 3,        // endurance
+    love = 4,           // amour
+    maturity = 5,       // maturité
+    boostLimiter = 6,   // fatigue
+}
+
+export interface UpdateMountCharacteristicsMessage {
+    __name: string;
+    __protocol_id: number;
+    rideId: number;
+    boostToUpdateList: BoostToUpdateList[];
+}
+
+export interface ExchangeMountsPaddockAddMessage{
+    __name: string;
+    __protocol_id: number;
+    mountDescription: MountsDescription[];
+}
+
+export interface ExchangeMountsPaddockRemoveMessage{
+    __name: string;
+    __protocol_id: number;
+    mountsId: number[];
+}

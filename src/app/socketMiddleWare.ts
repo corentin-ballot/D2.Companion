@@ -2,8 +2,9 @@ import { AnyAction, Middleware } from '@reduxjs/toolkit';
 import { processMessage } from '../features/chat/chatSlice';
 import { endFight, fightDommageAction, fightSpellCastAction, fightSummonAction, setFighters, setFightTurnList, setRound, startFight } from '../features/fights/fightsSlice';
 import { setItems } from '../features/market/marketSlice';
+import { processPaddockObjectAddMessage, processExchangeStartOkMountMessage, processUpdateMountCharacteristicsMessage, processExchangeMountsPaddockAddMessage, processExchangeMountsPaddockRemoveMessage } from '../features/breeding/breedingSlice';
 import { setConnected, setConnecting } from '../features/socket/socketSlice';
-import { ChatServerMessage, GameFightJoinMessage, GameFightTurnListMessage, GameFightSynchronizeMessage, GameFightNewRoundMessage, GameFightEndMessage, GameActionFightLifePointsLostMessage, GameActionFightMultipleSummonMessage, ExchangeTypesItemsExchangerDescriptionForUserMessage, GameActionFightSpellCastMessage } from './dofusInterfaces';
+import { ChatServerMessage, GameFightJoinMessage, GameFightTurnListMessage, GameFightSynchronizeMessage, GameFightNewRoundMessage, GameFightEndMessage, GameActionFightLifePointsLostMessage, GameActionFightMultipleSummonMessage, ExchangeTypesItemsExchangerDescriptionForUserMessage, GameActionFightSpellCastMessage, GameDataPaddockObjectAddMessage, ExchangeStartOkMountMessage, UpdateMountCharacteristicsMessage, ExchangeMountsPaddockAddMessage, ExchangeMountsPaddockRemoveMessage } from './dofusInterfaces';
 
 import { io } from 'socket.io-client';
 
@@ -77,6 +78,24 @@ const socketMiddleWare: Middleware = (store) => {
                 break;
             case "ExchangeTypesItemsExchangerDescriptionForUserMessage":
                 store.dispatch(setItems(data.content as ExchangeTypesItemsExchangerDescriptionForUserMessage))
+                break;
+
+            /* Breeding */
+            case "GameDataPlayFarmObjectAnimationMessage": break; // useless message
+            case "GameDataPaddockObjectAddMessage":
+                store.dispatch(processPaddockObjectAddMessage(data.content as GameDataPaddockObjectAddMessage));
+                break;
+            case "ExchangeStartOkMountMessage":
+                store.dispatch(processExchangeStartOkMountMessage(data.content as ExchangeStartOkMountMessage));
+                break;
+            case "UpdateMountCharacteristicsMessage":
+                store.dispatch(processUpdateMountCharacteristicsMessage(data.content as UpdateMountCharacteristicsMessage));
+                break;
+            case "ExchangeMountsPaddockAddMessage":
+                store.dispatch(processExchangeMountsPaddockAddMessage(data.content as ExchangeMountsPaddockAddMessage));
+                break;
+            case "ExchangeMountsPaddockRemoveMessage":
+                store.dispatch(processExchangeMountsPaddockRemoveMessage(data.content as ExchangeMountsPaddockRemoveMessage));
                 break;
 
             /* Default */

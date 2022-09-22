@@ -6,11 +6,13 @@ import About from './features/about/About';
 import Chat from './features/chat/Chat';
 import Fights from './features/fights/Fights';
 import Market from './features/market/Market';
+import Breeding from './features/breeding/Breeding';
 
 const routes = [
   {path: "/fights", element: <Fights />, label: "Fights"},
   {path: "/market", element: <Market />, label: "Market"},
   {path: "/chat", element: <Chat />, label: "Chat"},
+  {path: "/breeding", element: <Breeding />, label: "Breeding"},
   {path: "/about", element: <About />, label: "About"},
 ]
 
