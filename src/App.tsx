@@ -7,12 +7,14 @@ import Chat from './features/chat/Chat';
 import Fights from './features/fights/Fights';
 import Market from './features/market/Market';
 import Breeding from './features/breeding/Breeding';
+import Quests from './features/quests/Quests';
 
 const routes = [
   {path: "/fights", element: <Fights />, label: "Fights"},
   {path: "/market", element: <Market />, label: "Market"},
   {path: "/chat", element: <Chat />, label: "Chat"},
   {path: "/breeding", element: <Breeding />, label: "Breeding"},
+  {path: "/quests", element: <Quests />, label: "Quests"},
   {path: "/about", element: <About />, label: "About"},
 ]
 

@@ -347,3 +347,30 @@ export interface ExchangeMountsPaddockRemoveMessage{
     __protocol_id: number;
     mountsId: number[];
 }
+
+export interface Objective {
+    __name: string;
+    __protocol_id: number;
+    objectiveId: number;
+    objectiveStatus: boolean;
+    dialogParams: any[];
+    curCompletion?: number;
+    maxCompletion?: number;
+}
+
+export interface ActiveQuest {
+    __name: string;
+    __protocol_id: number;
+    questId: number;
+    stepId: number;
+    objectives: Objective[];
+}
+
+export interface QuestListMessage {
+    __name: string;
+    __protocol_id: number;
+    finishedQuestsIds: number[];
+    finishedQuestsCounts: number[];
+    activeQuests: ActiveQuest[];
+    reinitDoneQuestsIds: number[];
+}

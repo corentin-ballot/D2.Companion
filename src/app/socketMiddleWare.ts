@@ -4,9 +4,10 @@ import { endFight, fightDommageAction, fightSpellCastAction, fightSummonAction, 
 import { setItems } from '../features/market/marketSlice';
 import { processPaddockObjectAddMessage, processExchangeStartOkMountMessage, processUpdateMountCharacteristicsMessage, processExchangeMountsPaddockAddMessage, processExchangeMountsPaddockRemoveMessage } from '../features/breeding/breedingSlice';
 import { setConnected, setConnecting } from '../features/socket/socketSlice';
-import { ChatServerMessage, GameFightJoinMessage, GameFightTurnListMessage, GameFightSynchronizeMessage, GameFightNewRoundMessage, GameFightEndMessage, GameActionFightLifePointsLostMessage, GameActionFightMultipleSummonMessage, ExchangeTypesItemsExchangerDescriptionForUserMessage, GameActionFightSpellCastMessage, GameDataPaddockObjectAddMessage, ExchangeStartOkMountMessage, UpdateMountCharacteristicsMessage, ExchangeMountsPaddockAddMessage, ExchangeMountsPaddockRemoveMessage } from './dofusInterfaces';
+import { ChatServerMessage, GameFightJoinMessage, GameFightTurnListMessage, GameFightSynchronizeMessage, GameFightNewRoundMessage, GameFightEndMessage, GameActionFightLifePointsLostMessage, GameActionFightMultipleSummonMessage, ExchangeTypesItemsExchangerDescriptionForUserMessage, GameActionFightSpellCastMessage, GameDataPaddockObjectAddMessage, ExchangeStartOkMountMessage, UpdateMountCharacteristicsMessage, ExchangeMountsPaddockAddMessage, ExchangeMountsPaddockRemoveMessage, QuestListMessage } from './dofusInterfaces';
 
 import { io } from 'socket.io-client';
+import { processQuestListMessage } from '../features/quests/questsSlice';
 
 const socketMiddleWare: Middleware = (store) => {
     console.log("socketMiddleware::connectingWebsocket");
@@ -98,6 +99,11 @@ const socketMiddleWare: Middleware = (store) => {
                 store.dispatch(processExchangeMountsPaddockRemoveMessage(data.content as ExchangeMountsPaddockRemoveMessage));
                 break;
 
+            /* Quests */
+            case "QuestListMessage":
+                store.dispatch(processQuestListMessage(data.content as QuestListMessage))
+                break;
+                
             /* Default */
             default:
                 console.log(data.content.__name, data.content);
