@@ -30,7 +30,7 @@ const initialState: breedingState = {
     maturity:{ enable:false, limit:10000 },
     energy:{ enable:false, limit:5000 },
     boostLimiter:{ enable:false, limit:240 },
-    ...JSON.parse(localStorage.getItem("breeding.notifications") || "")
+    ...JSON.parse(localStorage.getItem("breeding.notifications") || "{}")
   }
 };
 
