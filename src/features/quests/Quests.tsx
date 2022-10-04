@@ -107,9 +107,15 @@ function Quests() {
                 <button data-open={false} onClick={(event: any) => event.target.dataset.open = !(event.target.dataset.open === "true")}>{categorie.name.fr} ({categorie.questIds.filter(questId => shouldDisplayQuest(questId)).length})</button>
 
                 <ul className={styles.quests__categorie__quests}>
-                    {quests.filter(quest => shouldDisplayQuest(quest.id) && categorie.questIds.includes(quest.id)).map(quest => <li key={quest.id} id={`${quest.id}`} className={styles.quests__categorie__quest} data-active={activeQuestsIds.includes(quest.id)} data-finished={finishedQuestsIds.includes(quest.id)} data-reinit={reinitDoneQuestsIds.includes(quest.id)}>
-                        <a href={`https://dofusdb.fr/fr/database/quest/${quest.id}`}>{quest.name.fr}</a> {categorie.id === 31 && quest.name.fr.startsWith("Offrande à ") ? almanax.find(a => quest.name.fr.includes(a.merydes))?.date : ""}
-                    </li>)}
+                    {quests.filter(quest => shouldDisplayQuest(quest.id) && categorie.questIds.includes(quest.id)).map(quest => {
+                        const almanaxDate = categorie.id === 31 && quest.name.fr.startsWith("Offrande à ") ? almanax.find(a => quest.name.fr.includes(a.merydes))?.date : "";
+
+                        return <li key={quest.id} id={`${quest.id}`} className={styles.quests__categorie__quest} data-active={activeQuestsIds.includes(quest.id)} data-finished={finishedQuestsIds.includes(quest.id)} data-reinit={reinitDoneQuestsIds.includes(quest.id)}>
+                            <a className={styles.quests__categorie__quest__link} href={`https://dofusdb.fr/fr/database/quest/${quest.id}`}>{quest.name.fr}</a> 
+                            
+                            {almanaxDate && <a className={styles.quests__categorie__quest__calendar} href={`https://calendar.google.com/event?action=TEMPLATE&text=${quest.name.fr}&dates=${almanaxDate?.replaceAll("-","")}/${almanaxDate?.replaceAll("-","")}&ctz=Europe%2FBrussels&trp=false&sprop=name:`} target="_blank" rel="nofollow"><img src={process.env.PUBLIC_URL + "/img/pictos/calendar.png"} alt={almanaxDate}/></a>}
+                        </li>
+                    })}
                 </ul>
             </li>)}
         </ul>

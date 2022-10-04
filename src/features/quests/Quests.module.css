@@ -97,13 +97,22 @@
   display: flex;
   align-items: center;
   overflow: hidden;
+  margin-right: 1rem;
 }
 
-.quests__categorie__quest a {
+.quests__categorie__quest__link {
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
   margin: 0 .5rem;
+}
+
+.quests__categorie__quest__calendar {
+  margin-left: auto;
+}
+.quests__categorie__quest__calendar img {
+  width: 16px;
+  height: auto;
 }
 
 .quests__categorie__quest::before {
