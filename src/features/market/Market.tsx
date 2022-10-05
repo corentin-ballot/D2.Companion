@@ -6,8 +6,6 @@ import styles from './Market.module.css';
 import { equipmentStats, statImage } from '../../app/equipmentStats';
 import NumberFormat from '../../components/numberFormat/NumberFormat';
 
-import sampleEquipments from '../../data/sample/equipments.json';
-
 interface StatFilterObject {
     id: number;
     min: number;
@@ -21,11 +19,6 @@ function Market() {
     useEffect(() => {
         setDisplayedItems([...items].sort((a, b) => a.prices[0] - b.prices[0]));
     }, [items]);
-
-    useEffect(() => {
-        // @ts-ignore
-        setDisplayedItems(sampleEquipments);
-    }, []);
 
     const addStatFilter = (stat: StatFilterObject) => {
         setStatFilters([...statFilters, stat]);

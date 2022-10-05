@@ -9,7 +9,6 @@ import TotalDommages from '../../components/fightGraphs/dommages/TotalDommages';
 import SpellsLog from '../../components/fightGraphs/dommages/SpellsLog';
 import TypeRepartition from '../../components/fightGraphs/dommages/TypeRepartition';
 
-import sampleFight from '../../data/sample/fight.json';
 import styles from './Fights.module.css';
 
 function Fight() {
@@ -27,10 +26,6 @@ function Fight() {
         setFightersFilter([displayedFight.turnList[0]]);
     }, [currentFight]);
 
-    useEffect(() => {
-        // @ts-ignore
-        setDisplayedFight(sampleFight)
-    }, []);
 
     return <div>
         {/* Content */}
