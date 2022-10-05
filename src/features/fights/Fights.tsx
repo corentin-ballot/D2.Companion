@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useAppSelector } from '../../app/hooks';
 import { selectCurrent, selectHistory } from './fightsSlice';
 
@@ -17,16 +17,17 @@ function Fight() {
 
     const currentFight = useAppSelector(selectCurrent);
     const history = useAppSelector(selectHistory);
+    
+    // Avoid history check when fighting
+    // useEffect(() => {
+    //     setDisplayedFight(currentFight);
+    // }, [currentFight]);
 
-    useEffect(() => {
-        setDisplayedFight(currentFight);
-    }, [currentFight]);
-
-    useEffect(() => {
-        setFightersFilter([displayedFight.turnList[0]]);
-    }, [currentFight]);
-
-
+    // Cause filter reset on every action
+    // useEffect(() => {
+    //     setFightersFilter([displayedFight.turnList[0]]);
+    // }, [displayedFight]);
+    
     return <div>
         {/* Content */}
         {displayedFight.round > 0 &&
