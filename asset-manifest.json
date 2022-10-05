@@ -1,18 +1,18 @@
 {
   "files": {
-    "main.css": "/D2.Companion/static/css/main.5f152980.css",
-    "main.js": "/D2.Companion/static/js/main.9de665a7.js",
+    "main.css": "/D2.Companion/static/css/main.bfbcc1ef.css",
+    "main.js": "/D2.Companion/static/js/main.b37e6cc9.js",
     "static/media/done.svg": "/D2.Companion/static/media/done.083856526c4794262e14.svg",
     "static/media/egg.svg": "/D2.Companion/static/media/egg.314b61980530ef895445.svg",
     "index.html": "/D2.Companion/index.html",
     "static/media/redoable.svg": "/D2.Companion/static/media/redoable.5b0ca6f9643a0e3f7a69.svg",
     "static/media/close.svg": "/D2.Companion/static/media/close.5fcd93cf0d966cb5d054.svg",
     "static/media/in-progress.svg": "/D2.Companion/static/media/in-progress.181ff0c26bf6fed944b5.svg",
-    "main.5f152980.css.map": "/D2.Companion/static/css/main.5f152980.css.map",
-    "main.9de665a7.js.map": "/D2.Companion/static/js/main.9de665a7.js.map"
+    "main.bfbcc1ef.css.map": "/D2.Companion/static/css/main.bfbcc1ef.css.map",
+    "main.b37e6cc9.js.map": "/D2.Companion/static/js/main.b37e6cc9.js.map"
   },
   "entrypoints": [
-    "static/css/main.5f152980.css",
-    "static/js/main.9de665a7.js"
+    "static/css/main.bfbcc1ef.css",
+    "static/js/main.b37e6cc9.js"
   ]
 }
