@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useAppSelector } from '../../app/hooks';
-import { selectCurrent, selectHistory } from './fightsSlice';
+import { fightModel, selectCurrent, selectHistory } from './fightsSlice';
 
 import DateTime from '../../components/dateTime/DateTime';
 import RecievedDommagesPerRound from '../../components/fightGraphs/dommages/RecievedDommagesPerRound';
@@ -12,16 +12,16 @@ import TypeRepartition from '../../components/fightGraphs/dommages/TypeRepartiti
 import styles from './Fights.module.css';
 
 function Fight() {
-    const [displayedFight, setDisplayedFight] = useState(useAppSelector(selectCurrent));
-    const [fightersFilter, setFightersFilter] = useState([useAppSelector(selectCurrent).turnList[0]]);
+    const [displayedFight, setDisplayedFight] = useState(fightModel);
+    const [fightersFilter, setFightersFilter] = useState([] as number[]);
 
     const currentFight = useAppSelector(selectCurrent);
     const history = useAppSelector(selectHistory);
     
     // Avoid history check when fighting
-    // useEffect(() => {
-    //     setDisplayedFight(currentFight);
-    // }, [currentFight]);
+    useEffect(() => {
+        setDisplayedFight(currentFight);
+    }, [currentFight]);
 
     // Cause filter reset on every action
     // useEffect(() => {

@@ -24,7 +24,7 @@ export interface fightsState {
   history: fight[];
 }
 
-const fightModel = {
+export const fightModel = {
   startTime: -1,
   endTime: -1,
   duration: -1,
@@ -33,7 +33,7 @@ const fightModel = {
   dommages: [],
   spells: [],
   round: -1,
-}
+} as fight
 
 const initialState: fightsState = {
   currentFight: { ...fightModel },
@@ -56,10 +56,10 @@ export const fightsSlice = createSlice({
       state.currentFight = { ...fightModel };
     },
     setFightTurnList: (state, action: PayloadAction<GameFightTurnListMessage>) => {
-      state.currentFight.turnList = action.payload.ids;
+      state.currentFight = {...state.currentFight, turnList: action.payload.ids};
     },
     setFighters: (state, action: PayloadAction<GameFightSynchronizeMessage>) => {
-      state.currentFight.fighters = action.payload.fighters.map(f => {
+      state.currentFight = {...state.currentFight, fighters: action.payload.fighters.map(f => {
         if (f.creatureGenericId) {
           // Monsters
           const monster = monsters.find(m => m.Id === f.creatureGenericId);
@@ -77,17 +77,17 @@ export const fightsSlice = createSlice({
           // Players
           return { ...f }
         }
-      });
+      })};
     },
     setRound: (state, action: PayloadAction<GameFightNewRoundMessage>) => {
-      state.currentFight.round = action.payload.roundNumber;
+      state.currentFight = {...state.currentFight, round: action.payload.roundNumber};
     },
     fightDommageAction: (state, action: PayloadAction<GameActionFightLifePointsLostMessage>) => {
       state.currentFight.dommages = [...state.currentFight.dommages, { ...action.payload, round: state.currentFight.round }]
       // Add dommage line for summoners
       const fighter = state.currentFight.fighters.find(f => f.contextualId === action.payload.sourceId);
       if (fighter?.stats.summoner) {
-        state.currentFight.dommages = [...state.currentFight.dommages, { ...action.payload, round: state.currentFight.round, sourceId: fighter.stats.summoner, elementId: 9 }]
+        state.currentFight = {...state.currentFight, dommages: [...state.currentFight.dommages, { ...action.payload, round: state.currentFight.round, sourceId: fighter.stats.summoner, elementId: 9 }]}
       }
     },
     fightSummonAction: (state, action: PayloadAction<GameActionFightMultipleSummonMessage>) => {
@@ -109,11 +109,11 @@ export const fightsSlice = createSlice({
         level: summoner?.level ? summoner.level : 0, 
         status: {statusId: 0}
       }
-      state.currentFight.fighters = [...state.currentFight.fighters, summonedFighter]
+      state.currentFight = {...state.currentFight, fighters: [...state.currentFight.fighters, summonedFighter]}
     },
     fightSpellCastAction: (state, action: PayloadAction<GameActionFightSpellCastMessage>) => {
       const spell = spells.find(spell => spell.Id === action.payload.spellId);
-      state.currentFight.spells = [...state.currentFight.spells, {...action.payload, name: spell ? spell.Name : "Unknow"}]
+      state.currentFight = {...state.currentFight, spells: [...state.currentFight.spells, {...action.payload, name: spell ? spell.Name : "Unknow"}]}
     },
   }
 });
