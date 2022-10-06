@@ -134,11 +134,11 @@ function Fight() {
                             className={styles.fight__hisotry__item} 
                             key={fight.startTime} 
                             onClick={() => setDisplayedFight(fight)}>
-                                <img className={styles.fight__hisotry__item__image} src={process.env.PUBLIC_URL + "/img/monsters/" + fight.fighters.find(f => f.contextualId < 0 && !f.stats.summoned)?.creatureGenericId}/>
+                                <img className={styles.fight__hisotry__item__image} src={process.env.PUBLIC_URL + "/img/monsters/" + fight.fighters.find(f => f.contextualId < 0 && !f.stats.summoned && f.spawnInfo.teamId > 0)?.creatureGenericId}/>
                                 <div className={styles.fight__hisotry__item__content}>
                                     <div className={styles.fight__hisotry__item__content__time}><DateTime timestamp={fight.startTime} /></div>
                                     <div className={styles.fight__hisotry__item__content__fighters}>
-                                        {fight.fighters.filter(f => f.contextualId < 0 && !f.stats.summoned).map(f =>    
+                                        {fight.fighters.filter(f => f.contextualId < 0 && !f.stats.summoned && f.spawnInfo.teamId > 0).map(f =>    
                                             <div className={styles.fight__hisotry__item__content__fighter} key={f.contextualId}>{f.name}</div>)}
                                     </div>
                                 </div>
