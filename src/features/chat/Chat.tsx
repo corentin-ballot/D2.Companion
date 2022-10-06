@@ -96,6 +96,13 @@ function Chat() {
             </div>
         </div>
 
+
+        {/* No chat notification to display */}
+        {notifications.length === 0 &&
+            <div className={styles.no_chat_notifications}>
+                Add some things to get notified if it's mentionned in chat.
+            </div>
+        }
         
         <div className={styles.chat__notifications}>
             {notifications.length > 0 && <table className={styles.chat__notifications__table}>

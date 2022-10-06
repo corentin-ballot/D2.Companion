@@ -1,3 +1,14 @@
+.no_fight, .prepare_to_fight {
+    padding: 3rem 1rem;
+    border-radius: 4px;
+    background-color: #dadff7;
+    text-align: center;
+    font-weight: bold;
+    font-size: 1.5rem;
+    color: #5946d3;
+    margin-bottom: 1rem;
+}
+
 .fight {
     display: grid;
     grid-template-columns: repeat(2, 1fr);

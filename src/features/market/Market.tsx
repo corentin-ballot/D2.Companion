@@ -37,55 +37,67 @@ function Market() {
         }
     }
 
-    return <div className={styles.market}>
-        <div className={styles.market__header}>
-            <h3>{displayedItems[0]?.name}</h3>
-
-            <div className={styles.market__header__item}>
-                <div className={styles.market__header__item__informations}>
-                    <img src={process.env.PUBLIC_URL + displayedItems[0]?.imgUrl} />
-                </div>
-
-                <div className={styles.market__header__item__effects}>
-                    {displayedItems[0] && displayedItems[0].statistics.filter(stat => Object.keys(stat)[0] !== "undefined").map(stat => {
-                        const key = Object.keys(stat)[0];
-                        return <Statistic id={key} value={{ min: stat[key].min, max: stat[key].max }} key={key} />
-                    })}
-                </div>
+    return <div>
+        {/* Not item to display */}
+        {displayedItems.length === 0 &&
+            <div className={styles.no_items}>
+                Go to the equipments shop to get advanced filters.
             </div>
-            <div className={styles.market__header__filter}>
-                <h4 className={styles.market__header__filter__title}>Filter items effects</h4>
-                <div className={styles.market__header__filter__add}>
-                    <input type="number" placeholder="min" className={styles.market__header__filter__add__mininput} ref={currentStatMinRef} />
-                    <select className={styles.market__header__filter__add__select} ref={currentStatIdRef}>
-                        {Array.from(equipmentStats.keys()).filter(statId => !equipmentStats.get(statId)?.negative && statId && equipmentStats.get(statId)?.name).map(statId => <option key={statId} value={statId}>{equipmentStats.get(statId)?.name}</option>)}
-                    </select>
-                    <button className={styles.market__header__filter__add__btn} onClick={handleAddCurrentStatClicked}>Add</button>
-                </div>
-                <div className={styles.market__header__filter__effects}>
-                    {statFilters.map(stat => <div key={stat.id} className={styles.market__header__filter__effects__effect}><Statistic id={stat.id} value={stat.min} key={stat.id} /><button className={styles.market__header__filter__effects__remove} onClick={() => removeStatFilter(stat)}>Remove</button></div>)}
-                </div>
-            </div>
-        </div>
+        }
 
+        {/* Items display */}
+        {displayedItems && displayedItems.length > 0 &&
+            <div className={styles.market}>
+                <div className={styles.market__header}>
+                    <h3>{displayedItems[0]?.name}</h3>
 
-        <div className={styles.market__items}>
-            {displayedItems.filter(
-                item => item.effects.filter(
-                    effect => statFilters.filter(
-                        filter => effect.actionId === filter.id && effect.value >= filter.min
-                    ).length
-                ).length === statFilters.length
-            )
-                .map(item => <div key={item.objectUID} className={styles.market__items__item}>
-                    <div className={styles.market__items__item__effects}>
-                        {item.effects.map(effect => <Statistic id={effect.actionId} value={effect.value} key={effect.actionId} />)}
+                    <div className={styles.market__header__item}>
+                        <div className={styles.market__header__item__informations}>
+                            <img src={process.env.PUBLIC_URL + displayedItems[0]?.imgUrl} />
+                        </div>
+
+                        <div className={styles.market__header__item__effects}>
+                            {displayedItems[0] && displayedItems[0].statistics.filter(stat => Object.keys(stat)[0] !== "undefined").map(stat => {
+                                const key = Object.keys(stat)[0];
+                                return <Statistic id={key} value={{ min: stat[key].min, max: stat[key].max }} key={key} />
+                            })}
+                        </div>
                     </div>
-                    <span className={styles.market__items__item__price}><NumberFormat value={item.prices[0]} /></span>
-                </div>)}
-        </div>
+                    <div className={styles.market__header__filter}>
+                        <h4 className={styles.market__header__filter__title}>Filter items effects</h4>
+                        <div className={styles.market__header__filter__add}>
+                            <input type="number" placeholder="min" className={styles.market__header__filter__add__mininput} ref={currentStatMinRef} />
+                            <select className={styles.market__header__filter__add__select} ref={currentStatIdRef}>
+                                {Array.from(equipmentStats.keys()).filter(statId => !equipmentStats.get(statId)?.negative && statId && equipmentStats.get(statId)?.name).map(statId => <option key={statId} value={statId}>{equipmentStats.get(statId)?.name}</option>)}
+                            </select>
+                            <button className={styles.market__header__filter__add__btn} onClick={handleAddCurrentStatClicked}>Add</button>
+                        </div>
+                        <div className={styles.market__header__filter__effects}>
+                            {statFilters.map(stat => <div key={stat.id} className={styles.market__header__filter__effects__effect}><Statistic id={stat.id} value={stat.min} key={stat.id} /><button className={styles.market__header__filter__effects__remove} onClick={() => removeStatFilter(stat)}>Remove</button></div>)}
+                        </div>
+                    </div>
+                </div>
 
-        {/* {displayedItems && <div><pre>{JSON.stringify(displayedItems, null, 2) }</pre></div>} */}
+
+                <div className={styles.market__items}>
+                    {displayedItems.filter(
+                        item => item.effects.filter(
+                            effect => statFilters.filter(
+                                filter => effect.actionId === filter.id && effect.value >= filter.min
+                            ).length
+                        ).length === statFilters.length
+                    )
+                        .map(item => <div key={item.objectUID} className={styles.market__items__item}>
+                            <div className={styles.market__items__item__effects}>
+                                {item.effects.map(effect => <Statistic id={effect.actionId} value={effect.value} key={effect.actionId} />)}
+                            </div>
+                            <span className={styles.market__items__item__price}><NumberFormat value={item.prices[0]} /></span>
+                        </div>)}
+                </div>
+
+                {/* {displayedItems && <div><pre>{JSON.stringify(displayedItems, null, 2) }</pre></div>} */}
+            </div>
+        }
     </div>
 }
 

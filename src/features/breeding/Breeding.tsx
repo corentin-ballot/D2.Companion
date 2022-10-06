@@ -52,35 +52,44 @@ function Breeding() {
             )}
         </div>
 
-        <div className={styles.breeding__mounts}>
-            {paddockedMounts.map(mount =>
-                <div key={mount.id} className={styles.breeding__mount}>
-                    <div className={styles.breeding__mount__name}>{Mounts?.find(m => mount.model === m._id)?.name}</div>
+        {paddockedMounts && paddockedMounts.length > 0 &&
+            <div className={styles.breeding__mounts}>
+                {paddockedMounts.map(mount =>
+                    <div key={mount.id} className={styles.breeding__mount}>
+                        <div className={styles.breeding__mount__name}>{Mounts?.find(m => mount.model === m._id)?.name}</div>
 
-                    <div className={styles.breeding__content}>
-                        <div className={styles.breeding__mount__overview}>
-                            <div className={styles.breeding__mount__model}><img src={process.env.PUBLIC_URL + "/img/mounts/" + mount.model + ".png"} alt="" /></div>
+                        <div className={styles.breeding__content}>
+                            <div className={styles.breeding__mount__overview}>
+                                <div className={styles.breeding__mount__model}><img src={process.env.PUBLIC_URL + "/img/mounts/" + mount.model + ".png"} alt="" /></div>
 
-                            <div className={styles.breeding__mount__details}>
-                                <div className={styles.breeding__mount__level}>{mount.level}</div>
-                                <div><img className={styles.breeding__mount__sex} src={process.env.PUBLIC_URL + "/img/pictos/" + (mount.sex ? "femelle" : "male") + ".png"} alt={mount.sex ? "femelle" : "male"} /></div>
-                                <div><img className={styles.breeding__mount__rideable} src={process.env.PUBLIC_URL + "/img/pictos/saddle.png"} data-rideable={mount.isRideable} alt={mount.isRideable ? "Rideable" : "not Rideable"}/></div>
-                                <div className={styles.breeding__mount__reproduction}>{mount.reproductionCount}/{mount.reproductionCountMax}</div>
+                                <div className={styles.breeding__mount__details}>
+                                    <div className={styles.breeding__mount__level}>{mount.level}</div>
+                                    <div><img className={styles.breeding__mount__sex} src={process.env.PUBLIC_URL + "/img/pictos/" + (mount.sex ? "femelle" : "male") + ".png"} alt={mount.sex ? "femelle" : "male"} /></div>
+                                    <div><img className={styles.breeding__mount__rideable} src={process.env.PUBLIC_URL + "/img/pictos/saddle.png"} data-rideable={mount.isRideable} alt={mount.isRideable ? "Rideable" : "not Rideable"}/></div>
+                                    <div className={styles.breeding__mount__reproduction}>{mount.reproductionCount}/{mount.reproductionCountMax}</div>
+                                </div>
+                            </div>
+
+                            <div className={styles.breeding__mount__stats}>
+                                <div className={styles.breeding__mount__stat}>Energie: <Progress value={mount.energy} max={mount.energyMax} low={mount.energyMax / 2} high={mount.energyMax - 1} optimum={mount.energyMax} /></div>
+                                <div className={styles.breeding__mount__stat}>Amour: <Progress value={mount.love} max={mount.loveMax} low={2500} high={mount.loveMax - 2500} optimum={mount.loveMax} /></div>
+                                <div className={styles.breeding__mount__stat}>Maturité: <Progress value={mount.maturity} max={mount.maturityForAdult} low={mount.maturityForAdult / 2} high={mount.maturityForAdult - 1} optimum={mount.maturityForAdult} /></div>
+                                <div className={styles.breeding__mount__stat}>Endurance: <Progress value={mount.stamina} max={mount.staminaMax} low={2500} high={mount.staminaMax - 2500} optimum={mount.staminaMax} /></div>
+                                <div className={styles.breeding__mount__stat}>Fatigue: <Progress value={mount.boostLimiter} max={mount.boostMax} low={mount.boostMax - 0.1 * mount.boostMax} high={mount.boostMax / 2} optimum={0} /></div>
+                                <div className={styles.breeding__mount__stat}>serenity: <div className={styles.breeding__mount__serenity__value}>{mount.serenity}</div></div>
                             </div>
                         </div>
-
-                        <div className={styles.breeding__mount__stats}>
-                            <div className={styles.breeding__mount__stat}>Energie: <Progress value={mount.energy} max={mount.energyMax} low={mount.energyMax / 2} high={mount.energyMax - 1} optimum={mount.energyMax} /></div>
-                            <div className={styles.breeding__mount__stat}>Amour: <Progress value={mount.love} max={mount.loveMax} low={2500} high={mount.loveMax - 2500} optimum={mount.loveMax} /></div>
-                            <div className={styles.breeding__mount__stat}>Maturité: <Progress value={mount.maturity} max={mount.maturityForAdult} low={mount.maturityForAdult / 2} high={mount.maturityForAdult - 1} optimum={mount.maturityForAdult} /></div>
-                            <div className={styles.breeding__mount__stat}>Endurance: <Progress value={mount.stamina} max={mount.staminaMax} low={2500} high={mount.staminaMax - 2500} optimum={mount.staminaMax} /></div>
-                            <div className={styles.breeding__mount__stat}>Fatigue: <Progress value={mount.boostLimiter} max={mount.boostMax} low={mount.boostMax - 0.1 * mount.boostMax} high={mount.boostMax / 2} optimum={0} /></div>
-                            <div className={styles.breeding__mount__stat}>serenity: <div className={styles.breeding__mount__serenity__value}>{mount.serenity}</div></div>
-                        </div>
                     </div>
-                </div>
-            )}
-        </div>
+                )}
+            </div>
+        }
+
+        {/* Not mount to display */}
+        {paddockedMounts.length === 0 &&
+            <div className={styles.no_mount}>
+                Go to the paddock to get mounts overview and notifications.
+            </div>
+        }
     </div>
 }
 
