@@ -106,7 +106,7 @@ const socketMiddleWare: Middleware = (store) => {
                 
             /* Default */
             default:
-                console.log(data.content.__name, data.content);
+                break;
         }
     });
 

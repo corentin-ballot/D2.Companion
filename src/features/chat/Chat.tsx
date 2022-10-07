@@ -3,9 +3,11 @@ import styles from './Chat.module.css';
 
 import { useAppSelector, useAppDispatch } from '../../app/hooks';
 import {
+    selectMessages,
     selectNotifications,
     updateNotifications
 } from './chatSlice';
+import DateTime from '../../components/dateTime/DateTime';
 
 interface DataObject {
     id: number;
@@ -23,6 +25,7 @@ const MAX_AUTO_COMPLETE_RESULT = 10;
 function Chat() {
     const dispatch = useAppDispatch();
     const notifications = useAppSelector(selectNotifications);
+    const messages = useAppSelector(selectMessages);
     const inputRef: MutableRefObject<HTMLInputElement | null> = useRef(null);
     
     useEffect(() => {
@@ -124,6 +127,19 @@ function Chat() {
                 </tbody>
             </table>}
             {/* {<div><pre>Notifications : {JSON.stringify(notifications, null, 2) }</pre></div>} */}
+        </div>
+
+        <div className={styles.history}>
+            {messages.map((message) => {
+                const content = message.objects ? message.objects.reduce((_content, object) => _content.replace("\ufffc", `[${data.equipments.find(e => e.id === object.objectGID)?.name}]`), message.content) : message.content;
+
+                return <div className={styles.message} key={message.id}>
+                    <span className={styles.message__time}><DateTime timestamp={message.timestamp}/></span>
+                    <a className={styles.message__sender} onClick={() => navigator.clipboard.writeText(`/w ${message.senderName} `)}>{message.senderName}</a>
+                    <span className={styles.message__content}>{content}</span>
+                </div>
+                }
+            )}
         </div>
     </div>
 }

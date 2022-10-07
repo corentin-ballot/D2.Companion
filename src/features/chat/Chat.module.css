@@ -54,6 +54,10 @@
   background: #DDD;
 }
 
+.chat__notifications {
+  margin-bottom: 1rem;
+}
+
 .chat__notifications__table {
   width: 100%;
   background-color: #FFF;
@@ -83,4 +87,22 @@
 
 .chat__notifications__table button {
   margin: 0; 
+}
+
+.message {
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.message__time {
+  margin-right: .5rem;
+}
+
+.message__sender {
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.message__content::before {
+  content: " : ";
 }

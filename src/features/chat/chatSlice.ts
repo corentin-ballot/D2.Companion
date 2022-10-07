@@ -36,6 +36,7 @@ export const chatSlice = createSlice({
       if(matches.some(el => action.payload.content.toLocaleLowerCase().replace("%20", " ").includes(el))
           || action.payload.objects?.filter(object => matches.includes(object.objectGID.toString())).length
       ) {
+        state.messages = [...state.messages, action.payload]
         const message = `${action.payload.senderName} : ${action.payload.content}`;
         if (Notification.permission === 'granted') {
           // Si tout va bien, créons une notification
@@ -56,5 +57,6 @@ export const chatSlice = createSlice({
 export const { processMessage, updateNotifications } = chatSlice.actions;
 
 export const selectNotifications = (state: RootState) => state.chat.notifications;
+export const selectMessages = (state: RootState) => state.chat.messages;
 
 export default chatSlice.reducer;
