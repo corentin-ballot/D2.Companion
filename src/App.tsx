@@ -8,6 +8,7 @@ import Fights from './features/fights/Fights';
 import Market from './features/market/Market';
 import Breeding from './features/breeding/Breeding';
 import Quests from './features/quests/Quests';
+import Settings from './features/settings/Settings';
 
 const routes = [
   {path: "/fights", element: <Fights />, label: "Fights"},
@@ -16,6 +17,7 @@ const routes = [
   {path: "/breeding", element: <Breeding />, label: "Breeding"},
   {path: "/quests", element: <Quests />, label: "Quests"},
   {path: "/about", element: <About />, label: "About"},
+  {path: "/settings", element: <Settings />, label: "Settings", menu: false},
 ]
 
 function App() {
@@ -30,7 +32,7 @@ function App() {
 
         <div className="app__navigation__items">
           <Link className="app__navigation__items__item" aria-current={pathname === "/"} to={"/"}>Home</Link>
-          {routes.map(route => <Link className="app__navigation__items__item" aria-current={pathname.startsWith(route.path)} to={route.path} key={route.path}>{route.label}</Link>)}
+          {routes.filter(route => route.menu != false).map(route => <Link className="app__navigation__items__item" aria-current={pathname.startsWith(route.path)} to={route.path} key={route.path}>{route.label}</Link>)}
         </div>
       </nav>
 
@@ -39,6 +41,8 @@ function App() {
         <h2>{
           pathname === "/" ? "Home" : routes.find(route => route.path.startsWith(pathname))?.label
         }</h2>
+
+        <Link className="app__header__settings" to={"/settings"}><img src={process.env.PUBLIC_URL + "/img/pictos/settings.svg"} alt="settings"/></Link>
       </header>
 
       <main className="app__main">

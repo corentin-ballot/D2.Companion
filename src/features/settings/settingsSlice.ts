@@ -1,30 +1,22 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '../../app/store';
 import { ChatServerMessage } from '../../app/dofusInterfaces';
-import Notifications from '../../app/notifications';
 
 export interface chatState {
   messageCount: number,
   messages: ChatServerMessage[];
   notifications: Notification[];
-  redirections: Redirection[];
 }
 
-export interface Notification {
+interface Notification {
   label: string;
   matches: string[];
-}
-
-export interface Redirection {
-  channel: number;
-  webhook: string;
 }
 
 const initialState: chatState = {
   messageCount: 0,
   messages: [],
   notifications: JSON.parse(localStorage.getItem("chat.notifications") || "[]") as Notification[],
-  redirections: JSON.parse(localStorage.getItem("chat.redirections") || "[]") as Redirection[],
 };
 
 export const chatSlice = createSlice({
@@ -35,33 +27,36 @@ export const chatSlice = createSlice({
       localStorage.setItem('chat.notifications', JSON.stringify(action.payload));
       state.notifications = action.payload;
     },
-    updateRedirections: (state, action: PayloadAction<Redirection[]>) => {
-      localStorage.setItem('chat.redirections', JSON.stringify(action.payload));
-      state.redirections = action.payload;
-    },
     processMessage: (state, action: PayloadAction<ChatServerMessage>) => {
-      // Channel redirection
-      if (state.redirections.map(r => r.channel).includes(action.payload.channel)) {
-        const redirection = state.redirections.find(r => r.channel === action.payload.channel);
-        if (redirection) new Notifications(action.payload.content, action.payload.senderName, redirection.webhook).sendDiscord();
-      }
-      // Chat notification
+      // state = {...state, channels: {...state.channels, [channel]: [...state.channels[channel], action.payload]}};
+      // state.messages = [...state.messages.slice(-500), {...action.payload, id: ++state.messageCount}];
       const matches = state.notifications.reduce((p, c) => [...p, ...c.matches], [] as string[]);
+
 
       if(matches.some(el => action.payload.content.toLocaleLowerCase().replace("%20", " ").includes(el))
           || action.payload.objects?.filter(object => matches.includes(object.objectGID.toString())).length
       ) {
         state.messages = [...state.messages, action.payload]
-        new Notifications(action.payload.content, action.payload.senderName).send();
+        const message = `${action.payload.senderName} : ${action.payload.content}`;
+        if (Notification.permission === 'granted') {
+          // Si tout va bien, créons une notification
+          const notification = new Notification(message);
+          notification.onclick = (event) => {
+            navigator.clipboard.writeText(`/w ${action.payload.senderName}`).then(function() {
+                console.log('Async: Copying to clipboard was successful!');
+              }, function(err) {
+              console.error('Async: Could not copy text: ', err);
+            });
+          };
+        }
       }
     },
   },
 });
 
-export const { processMessage, updateNotifications, updateRedirections } = chatSlice.actions;
+export const { processMessage, updateNotifications } = chatSlice.actions;
 
 export const selectNotifications = (state: RootState) => state.chat.notifications;
-export const selectRedirections = (state: RootState) => state.chat.redirections;
 export const selectMessages = (state: RootState) => state.chat.messages;
 
 export default chatSlice.reducer;

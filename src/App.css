@@ -13,6 +13,20 @@
   height: 64px;
   box-sizing: border-box;
   background-color: #FFFFFF;
+  position: relative;
+}
+.app__header__settings {
+  background-color: #1f2b4900;
+  position: absolute;
+  right: 1rem;
+  top: 1rem;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  padding: 5px;
+}
+.app__header__settings:hover {
+  background-color: #1f2b4911;
 }
 
 /** NAVIGATION **/
@@ -83,6 +97,24 @@ input[type="text"], input[type="number"], select {
   padding: .5rem;
   background-color: transparent;
   margin: 0 .5rem .5rem 0;
+}
+
+.input__container {
+  position: relative;
+  margin-bottom: 1rem;;
+}
+
+input[type="text"] + label {
+  position: absolute;
+  transform: translate(0, 0) scale(1);
+  transition: all linear .1s;
+  top: .5rem;
+  left: .5rem;
+  cursor: text;
+}
+
+input[type="text"]:focus + label,  input[type="text"]:not(:placeholder-shown) + label{
+  transform: translate(-1.3rem, -.9rem) scale(.7);
 }
 
 button {
