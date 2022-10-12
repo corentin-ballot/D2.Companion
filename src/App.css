@@ -19,11 +19,11 @@
   background-color: #1f2b4900;
   position: absolute;
   right: 1rem;
-  top: 1rem;
+  top: .75rem;
   width: 2rem;
   height: 2rem;
   border-radius: 50%;
-  padding: 5px;
+  padding: .25rem;
 }
 .app__header__settings:hover {
   background-color: #1f2b4911;
