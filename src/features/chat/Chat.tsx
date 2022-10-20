@@ -146,7 +146,7 @@ function Chat() {
                 {/* {<div><pre>Notifications : {JSON.stringify(notifications, null, 2) }</pre></div>} */}
             </div>
 
-            <div className={styles.history}>
+            {/* <div className={styles.history}>
                 {messages.map((message) => {
                     const content = message.objects ? message.objects.reduce((_content, object) => _content.replace("\ufffc", `[${data.equipments.find(e => e.id === object.objectGID)?.name}]`), message.content) : message.content;
 
@@ -157,7 +157,7 @@ function Chat() {
                     </div>
                     }
                 )}
-            </div>
+            </div> */}
         </div>
 
         <div className={styles.chat__redirection}>
