@@ -5,13 +5,11 @@ import { useAppSelector, useAppDispatch } from '../../app/hooks';
 import {
     Notification,
     Redirection,
-    selectMessages,
     selectNotifications,
     selectRedirections,
     updateNotifications,
     updateRedirections
 } from './chatSlice';
-import DateTime from '../../components/dateTime/DateTime';
 
 interface DataObject {
     id: number;
@@ -25,7 +23,6 @@ function Chat() {
     const dispatch = useAppDispatch();
     const notifications = useAppSelector(selectNotifications);
     const redirections = useAppSelector(selectRedirections);
-    const messages = useAppSelector(selectMessages);
     const inputNotificationRef: MutableRefObject<HTMLInputElement | null> = useRef(null);
     const inputWebhookRef: MutableRefObject<HTMLInputElement | null> = useRef(null);
     const inputChannelRef: MutableRefObject<HTMLSelectElement | null> = useRef(null);
@@ -54,7 +51,7 @@ function Chat() {
     }
 
     const handleProposalClicked = (event: React.MouseEvent<HTMLButtonElement>) => {
-        const result = autoCompleteResult.find(res => res.id == (event.target as HTMLButtonElement).getAttribute("data-value"));
+        const result = autoCompleteResult.find(res => res.id === (event.target as HTMLButtonElement).getAttribute("data-value"));
         if(inputNotificationRef.current) {
             inputNotificationRef.current.value = result.name;
             inputNotificationRef.current.setAttribute("data-id", result.id);
@@ -145,19 +142,6 @@ function Chat() {
                 </table>}
                 {/* {<div><pre>Notifications : {JSON.stringify(notifications, null, 2) }</pre></div>} */}
             </div>
-
-            {/* <div className={styles.history}>
-                {messages.map((message) => {
-                    const content = message.objects ? message.objects.reduce((_content, object) => _content.replace("\ufffc", `[${data.equipments.find(e => e.id === object.objectGID)?.name}]`), message.content) : message.content;
-
-                    return <div className={styles.message} key={message.id}>
-                        <span className={styles.message__time}><DateTime timestamp={message.timestamp}/></span>
-                        <a className={styles.message__sender} onClick={() => navigator.clipboard.writeText(`/w ${message.senderName} `)}>{message.senderName}</a>
-                        <span className={styles.message__content}>{content}</span>
-                    </div>
-                    }
-                )}
-            </div> */}
         </div>
 
         <div className={styles.chat__redirection}>
@@ -206,17 +190,6 @@ function Chat() {
             </div>
         </div>
     </div>
-}
-
-interface TimeProps {
-    timestamp: number;
-}
-
-function Time(props:TimeProps) {
-    const date = new Date(props.timestamp*1000);
-    const formater = new Intl.DateTimeFormat('fr-FR', { hour: "2-digit", minute: "2-digit" })
-
-    return <span className={styles.chatItemTime}>[{formater.format(date)}]</span>
 }
 
 export default Chat;

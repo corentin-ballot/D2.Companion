@@ -53,7 +53,7 @@ function Market() {
 
                     <div className={styles.market__header__item}>
                         <div className={styles.market__header__item__informations}>
-                            <img src={process.env.PUBLIC_URL + displayedItems[0]?.imgUrl} />
+                            <img src={process.env.PUBLIC_URL + displayedItems[0]?.imgUrl} alt="" />
                         </div>
 
                         <div className={styles.market__header__item__effects}>

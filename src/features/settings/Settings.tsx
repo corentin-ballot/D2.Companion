@@ -6,14 +6,14 @@ function Settings() {
     const [nativeNotifications, setNativeNotifications] = useState(JSON.parse(localStorage.getItem("notifications.native") || "true"));
     const [discordNotifications, setDiscordNotifications] = useState(JSON.parse(localStorage.getItem("notifications.discord.enable") || "true"));
     const [discordWebhook, setDiscordWebhook] = useState(JSON.parse(localStorage.getItem("notifications.discord.webhook") || "null"));
-    const [discordUsername, setDiscordUsername] = useState(JSON.parse(localStorage.getItem("notifications.discord.username") || "null"));
+    // const [discordUsername, setDiscordUsername] = useState(JSON.parse(localStorage.getItem("notifications.discord.username") || "null"));
 
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         localStorage.setItem(event.target.id, JSON.stringify(event.target.type === "checkbox" ? event.target.checked : event.target.value));
         if (event.target.id === "notifications.native") setNativeNotifications(event.target.checked);
         if (event.target.id === "notifications.discord.enable") setDiscordNotifications(event.target.checked);
         if (event.target.id === "notifications.discord.webhook") setDiscordWebhook(event.target.value);
-        if (event.target.id === "notifications.discord.username") setDiscordUsername(event.target.value);
+        // if (event.target.id === "notifications.discord.username") setDiscordUsername(event.target.value);
     }
     
     

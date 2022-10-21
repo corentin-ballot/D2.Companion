@@ -32,7 +32,7 @@ function App() {
 
         <div className="app__navigation__items">
           <Link className="app__navigation__items__item" aria-current={pathname === "/"} to={"/"}>Home</Link>
-          {routes.filter(route => route.menu != false).map(route => <Link className="app__navigation__items__item" aria-current={pathname.startsWith(route.path)} to={route.path} key={route.path}>{route.label}</Link>)}
+          {routes.filter(route => route.menu !== false).map(route => <Link className="app__navigation__items__item" aria-current={pathname.startsWith(route.path)} to={route.path} key={route.path}>{route.label}</Link>)}
         </div>
       </nav>
 

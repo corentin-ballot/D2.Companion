@@ -1,10 +1,9 @@
-import React, { MutableRefObject, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styles from './Quests.module.css';
 
-import { useAppSelector, useAppDispatch } from '../../app/hooks';
+import { useAppSelector } from '../../app/hooks';
 import {
     selectActiveQuestsIds, 
-    selectFinishedQuestsCounts, 
     selectFinishedQuestsIds, 
     selectReinitDoneQuestsIds
 } from './questsSlice';
@@ -62,7 +61,6 @@ export interface Almanax {
 }
 
 function Quests() {
-    const dispatch = useAppDispatch();
     const [questCategories, setQuestCategories] = useState<QuestCategorie[]>([]);
     const [quests, setQuests] = useState<Quest[]>([]);
     const [almanax, setAlmanax] = useState<Almanax[]>([]);
@@ -71,7 +69,6 @@ function Quests() {
     ]);
 
     const activeQuestsIds = useAppSelector(selectActiveQuestsIds);
-    const finishedQuestsCounts = useAppSelector(selectFinishedQuestsCounts);
     const finishedQuestsIds = useAppSelector(selectFinishedQuestsIds);
     const reinitDoneQuestsIds = useAppSelector(selectReinitDoneQuestsIds);
     
@@ -111,9 +108,9 @@ function Quests() {
                         const almanaxDate = categorie.id === 31 && quest.name.fr.startsWith("Offrande à ") ? almanax.find(a => quest.name.fr.includes(a.merydes))?.date : "";
 
                         return <li key={quest.id} id={`${quest.id}`} className={styles.quests__categorie__quest} data-active={activeQuestsIds.includes(quest.id)} data-finished={finishedQuestsIds.includes(quest.id)} data-reinit={reinitDoneQuestsIds.includes(quest.id)}>
-                            <a className={styles.quests__categorie__quest__link} href={`https://dofusdb.fr/fr/database/quest/${quest.id}`}>{quest.name.fr}</a> 
+                            <a className={styles.quests__categorie__quest__link} href={`https://dofusdb.fr/fr/database/quest/${quest.id}`} target="_blank" rel="noreferrer">{quest.name.fr}</a> 
                             
-                            {almanaxDate && <a className={styles.quests__categorie__quest__calendar} href={`https://calendar.google.com/event?action=TEMPLATE&text=${quest.name.fr}&dates=${almanaxDate?.replaceAll("-","")}/${almanaxDate?.replaceAll("-","")}&ctz=Europe%2FBrussels&trp=false&sprop=name:`} target="_blank" rel="nofollow"><img src={process.env.PUBLIC_URL + "/img/pictos/calendar.png"} alt={almanaxDate}/></a>}
+                            {almanaxDate && <a className={styles.quests__categorie__quest__calendar} href={`https://calendar.google.com/event?action=TEMPLATE&text=${quest.name.fr}&dates=${almanaxDate?.replaceAll("-","")}/${almanaxDate?.replaceAll("-","")}&ctz=Europe%2FBrussels&trp=false&sprop=name:`} target="_blank" rel="noreferrer"><img src={process.env.PUBLIC_URL + "/img/pictos/calendar.png"} alt={almanaxDate}/></a>}
                         </li>
                     })}
                 </ul>

@@ -21,7 +21,7 @@ export default class Notifications {
 
     send() {
         if (this.isNativeNotificationEnable && Notification.permission === 'granted') {
-            const notification = new Notification((this.username ? this.username + " : " : "") + this.message);
+            new Notification((this.username ? this.username + " : " : "") + this.message);
         }
 
         if (this.isDiscordNotificationEnable && this.discordWebhook !== null) {
@@ -50,7 +50,7 @@ export default class Notifications {
     };
 
     sendNative() {
-        const notification = new Notification((this.username ? this.username + " : " : "") + this.message);
+        new Notification((this.username ? this.username + " : " : "") + this.message);
     }
 
     sendDiscord() {

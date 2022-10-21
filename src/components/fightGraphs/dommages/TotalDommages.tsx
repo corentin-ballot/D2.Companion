@@ -8,7 +8,6 @@ import {
     ResponsiveContainer,
     Cell,
 } from 'recharts';
-import { Props } from 'recharts/types/cartesian/Bar';
 import { Dommage, fight } from '../../../features/fights/fightsSlice';
 
 interface DommagesProps {

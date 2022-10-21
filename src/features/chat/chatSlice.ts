@@ -3,6 +3,19 @@ import { RootState } from '../../app/store';
 import { ChatServerMessage } from '../../app/dofusInterfaces';
 import Notifications from '../../app/notifications';
 
+const data = {
+  monsters: [] as any[],
+  weapons: [] as any[],
+  equipments: [] as any[],
+  achievements: [] as any[],
+};
+
+fetch(process.env.PUBLIC_URL + '/data/monsters.json').then(res => res.json()).then((res: {Id: number, Name: string}[]) => data.monsters = res.map(r => ({id: r.Id, name: r.Name})));
+fetch(process.env.PUBLIC_URL + '/data/weapons.json').then(res => res.json()).then((res: {_id: number, name: string}[]) => data.weapons = res.map(r => ({id: r._id, name: r.name})));
+fetch(process.env.PUBLIC_URL + '/data/equipments.json').then(res => res.json()).then((res: {_id: number, name: string}[]) => data.equipments = res.map(r => ({id: r._id, name: r.name})));
+fetch(process.env.PUBLIC_URL + '/data/achievements.json').then(res => res.json()).then((res: {id: number, name: any}[]) => data.achievements = res.map(r => ({id: r.id, name: r.name.fr})));
+    
+
 export interface chatState {
   messageCount: number,
   messages: ChatServerMessage[];
@@ -40,6 +53,10 @@ export const chatSlice = createSlice({
       state.redirections = action.payload;
     },
     processMessage: (state, action: PayloadAction<ChatServerMessage>) => {
+      const chatMessage = {...action.payload};
+      if (chatMessage.objects && chatMessage.objects.length && chatMessage.objects.length > 0) {
+        chatMessage.content = chatMessage.objects ? chatMessage.objects.reduce((_content, object) => _content.replace("\ufffc", `[${data.equipments.find(e => e.id === object.objectGID)?.name}]`), chatMessage.content) : chatMessage.content;
+      }
       // Channel redirection
       if (state.redirections.map(r => r.channel).includes(action.payload.channel)) {
         const redirection = state.redirections.find(r => r.channel === action.payload.channel);
