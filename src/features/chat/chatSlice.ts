@@ -54,13 +54,46 @@ export const chatSlice = createSlice({
     },
     processMessage: (state, action: PayloadAction<ChatServerMessage>) => {
       const chatMessage = {...action.payload};
+
+      // equipments
       if (chatMessage.objects && chatMessage.objects.length && chatMessage.objects.length > 0) {
-        chatMessage.content = chatMessage.objects ? chatMessage.objects.reduce((_content, object) => _content.replace("\ufffc", `[${data.equipments.find(e => e.id === object.objectGID)?.name}]`), chatMessage.content) : chatMessage.content;
+        chatMessage.content = chatMessage.objects ? chatMessage.objects.reduce((_content, object) => _content.replace("\ufffc", `[${
+          data.equipments.find(e => e.id === object.objectGID)?.name || data.weapons.find(e => e.id === object.objectGID)?.name
+        }]`), chatMessage.content) : chatMessage.content;
       }
+
+      // positions
+      if(chatMessage.content.includes("{map,")) {
+        chatMessage.content = unescape(chatMessage.content.replaceAll(/{(map,)([-\d]+,[-\d]+)(,[\d,]+)([a-zA-Z%\d]*)}/g, "[$2]$4"));
+      }
+
+      // monsters {chatmonster,460}
+      if(chatMessage.content.includes("{chatmonster,")) {
+        const match = chatMessage.content.match(/{chatmonster,([\d]+)}/);
+        if (match && match[1]) {
+          const monster = data.monsters.find(e => e.id == match[1]);
+          chatMessage.content = chatMessage.content.replace(/{chatmonster,([\d]+)}/, `[${monster.name}]`);
+        }
+      }
+
+      // monsters group {monsterGroup,25,28,17,Shokkoth,-20001;0;5x4450x212|2x4450x203}
+      if(chatMessage.content.includes("{monsterGroup,")) {
+        chatMessage.content = unescape(chatMessage.content.replaceAll(/{monsterGroup,([-\d]+,[-\d]+),[-\d]+,([a-zA-Z%\d]*),[-\d]+;[-\d]+;[x\d|]+}/g, "$2[$1]"));
+      }
+
+      // achievment {chatachievement,2288}
+      if(chatMessage.content.includes("{chatachievement,")) {
+        const match = chatMessage.content.match(/{chatachievement,([\d]+)}/);
+        if (match && match[1]) {
+          const achievement = data.achievements.find(e => e.id == match[1]);
+          chatMessage.content = chatMessage.content.replace(/{chatachievement,([\d]+)}/, `[${achievement.name}]`);
+        }
+      }
+
       // Channel redirection
-      if (state.redirections.map(r => r.channel).includes(action.payload.channel)) {
-        const redirection = state.redirections.find(r => r.channel === action.payload.channel);
-        if (redirection) new Notifications(action.payload.content, action.payload.senderName, redirection.webhook).sendDiscord();
+      if (state.redirections.map(r => r.channel).includes(chatMessage.channel)) {
+        const redirection = state.redirections.find(r => r.channel === chatMessage.channel);
+        if (redirection) new Notifications(chatMessage.content, chatMessage.senderName, redirection.webhook).sendDiscord();
       }
       // Chat notification
       const matches = state.notifications.reduce((p, c) => [...p, ...c.matches], [] as string[]);
@@ -68,8 +101,8 @@ export const chatSlice = createSlice({
       if(matches.some(el => action.payload.content.toLocaleLowerCase().replace("%20", " ").includes(el))
           || action.payload.objects?.filter(object => matches.includes(object.objectGID.toString())).length
       ) {
-        state.messages = [...state.messages, action.payload]
-        new Notifications(action.payload.content, action.payload.senderName).send();
+        state.messages = [...state.messages, chatMessage]
+        new Notifications(chatMessage.content, chatMessage.senderName).send();
       }
     },
   },
