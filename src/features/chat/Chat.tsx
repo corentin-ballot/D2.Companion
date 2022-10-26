@@ -51,7 +51,8 @@ function Chat() {
     }
 
     const handleProposalClicked = (event: React.MouseEvent<HTMLButtonElement>) => {
-        const result = autoCompleteResult.find(res => res.id === (event.target as HTMLButtonElement).getAttribute("data-value"));
+        console.log("handleProposalClicked", autoCompleteResult, (event.target as HTMLButtonElement).getAttribute("data-value"))
+        const result = autoCompleteResult.find(res => res.id == (event.target as HTMLButtonElement).getAttribute("data-value"));
         if(inputNotificationRef.current) {
             inputNotificationRef.current.value = result.name;
             inputNotificationRef.current.setAttribute("data-id", result.id);
