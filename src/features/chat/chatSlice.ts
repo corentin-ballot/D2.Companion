@@ -72,7 +72,7 @@ export const chatSlice = createSlice({
         const match = chatMessage.content.match(/{chatmonster,([\d]+)}/);
         if (match && match[1]) {
           const monster = data.monsters.find(e => e.id == match[1]);
-          chatMessage.content = chatMessage.content.replace(/{chatmonster,([\d]+)}/, `[${monster.name}]`);
+          if(typeof monster != "undefined") chatMessage.content = chatMessage.content.replace(/{chatmonster,([\d]+)}/, `[${monster.name}]`);
         }
       }
 
@@ -86,7 +86,7 @@ export const chatSlice = createSlice({
         const match = chatMessage.content.match(/{chatachievement,([\d]+)}/);
         if (match && match[1]) {
           const achievement = data.achievements.find(e => e.id == match[1]);
-          chatMessage.content = chatMessage.content.replace(/{chatachievement,([\d]+)}/, `[${achievement.name}]`);
+          if(typeof achievement != "undefined") chatMessage.content = chatMessage.content.replace(/{chatachievement,([\d]+)}/, `[${achievement.name}]`);
         }
       }
 
