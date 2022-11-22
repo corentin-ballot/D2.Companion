@@ -68,11 +68,11 @@ export const chatSlice = createSlice({
       }
 
       // monsters {chatmonster,460}
-      if(chatMessage.content.includes("{chatmonster,")) {
+      while(chatMessage.content.includes("{chatmonster,")) {
         const match = chatMessage.content.match(/{chatmonster,([\d]+)}/);
         if (match && match[1]) {
           const monster = data.monsters.find(e => e.id == match[1]);
-          if(typeof monster != "undefined") chatMessage.content = chatMessage.content.replace(/{chatmonster,([\d]+)}/, `[${monster.name}]`);
+          chatMessage.content = chatMessage.content.replace(/{chatmonster,([\d]+)}/, `[${typeof monster != "undefined" ? monster.name : ("chatmonster,"+match[1])}]`);
         }
       }
 
@@ -82,11 +82,11 @@ export const chatSlice = createSlice({
       }
 
       // achievment {chatachievement,2288}
-      if(chatMessage.content.includes("{chatachievement,")) {
+      while(chatMessage.content.includes("{chatachievement,")) {
         const match = chatMessage.content.match(/{chatachievement,([\d]+)}/);
         if (match && match[1]) {
           const achievement = data.achievements.find(e => e.id == match[1]);
-          if(typeof achievement != "undefined") chatMessage.content = chatMessage.content.replace(/{chatachievement,([\d]+)}/, `[${achievement.name}]`);
+          chatMessage.content = chatMessage.content.replace(/{chatachievement,([\d]+)}/, `[${typeof achievement != "undefined" ? achievement.name : ("chatachievement,"+match[1]) }]`);
         }
       }
 
