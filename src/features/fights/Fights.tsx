@@ -7,7 +7,8 @@ import RecievedDommagesPerRound from '../../components/fightGraphs/dommages/Reci
 import DealedDommagesPerRound from '../../components/fightGraphs/dommages/DealedDommagesPerRound';
 import TotalDommages from '../../components/fightGraphs/dommages/TotalDommages';
 import SpellsLog from '../../components/fightGraphs/dommages/SpellsLog';
-import TypeRepartition from '../../components/fightGraphs/dommages/TypeRepartition';
+import DealedTypeRepartition from '../../components/fightGraphs/dommages/DealedTypeRepartition';
+import RecievedTypeRepartition from '../../components/fightGraphs/dommages/RecievedTypeRepartition';
 
 import styles from './Fights.module.css';
 
@@ -87,20 +88,28 @@ function Fight() {
                     <RecievedDommagesPerRound fight={displayedFight} fightersFilter={fightersFilter} />
                 </div>
 
+                {/* Type repartition deal */}
+                <div className={styles.fight__card}>
+                    <div className={styles.fight__card__header}>
+                        <h3 className={styles.fight__card__header__title}>Type repartition dealed</h3>
+                    </div>
+                    <DealedTypeRepartition fight={displayedFight} fightersFilter={fightersFilter} />
+                </div>
+
+                {/* Type repartition recieves */}
+                <div className={styles.fight__card}>
+                    <div className={styles.fight__card__header}>
+                        <h3 className={styles.fight__card__header__title}>Type repartition recieves</h3>
+                    </div>
+                    <RecievedTypeRepartition fight={displayedFight} fightersFilter={fightersFilter} />
+                </div>
+
                 {/* Spells */}
                 <div className={styles.fight__card}>
                     <div className={styles.fight__card__header}>
                         <h3 className={styles.fight__card__header__title}>Spells</h3>
                     </div>
                     <SpellsLog fight={displayedFight} fightersFilter={fightersFilter} />
-                </div>
-
-                {/* Type repartition */}
-                <div className={styles.fight__card}>
-                    <div className={styles.fight__card__header}>
-                        <h3 className={styles.fight__card__header__title}>Type repartition</h3>
-                    </div>
-                    <TypeRepartition fight={displayedFight} fightersFilter={fightersFilter} />
                 </div>
             </div>
         }

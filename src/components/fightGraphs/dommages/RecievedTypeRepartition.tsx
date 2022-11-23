@@ -15,9 +15,9 @@ interface TypeRepartitionProps {
 
 const colors = { neutre: "#bdc3c7", feu: "#e74c3c", eau: "#3498db", air: "#2ecc71", terre: "#e67e22", pou: "#9b59b6", invoc: "#f1c40f" }
 
-function TypeRepartition(props: TypeRepartitionProps) {
+function RecievedTypeRepartition(props: TypeRepartitionProps) {
 
-    const data = props.fight.dommages.filter(d => props.fightersFilter.includes(d.sourceId)).reduce(
+    const data = props.fight.dommages.filter(d => props.fightersFilter.includes(d.targetId)).reduce(
         (previousValue, currentValue: Dommage) => {
             if (currentValue.loss) {
                 if (currentValue.elementId === 0) previousValue.neutre += currentValue.loss;
@@ -69,4 +69,4 @@ const customTooltip = (props: any) => {
     }
 }
 
-export default TypeRepartition;
+export default RecievedTypeRepartition;
