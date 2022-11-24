@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import styles from './Breeding.module.css';
 
 import { useAppSelector, useAppDispatch } from '../../app/hooks';
@@ -16,10 +16,25 @@ const NOTIFICATION_KEYS = [
     { name: "Energie", key: "energy" },
 ]
 
+type Order = "serenity" | "boostLimiter" | "love" | "stamina" | "maturity" | "energy";
+
 function Breeding() {
     const dispatch = useAppDispatch();
     const paddockedMounts = useAppSelector(selectPaddockedMounts);
     const notifications = useAppSelector(selectNotifications);
+
+    const [mountsOrder, setMountsOrder] = useState((localStorage.getItem("breeding.order") || "serenity") as Order);
+    const [displayedMounts, setDisplayedMounts] = useState([...paddockedMounts].sort((a, b) => a[mountsOrder] - b[mountsOrder]));
+
+    useEffect(() => {
+        setDisplayedMounts([...paddockedMounts].sort((a, b) => a[mountsOrder] - b[mountsOrder]));
+    }, [paddockedMounts]);
+
+    const handleOrderChanged = (order: Order) => {
+        localStorage.setItem("breeding.order", order);
+        setMountsOrder(order);
+        setDisplayedMounts([...paddockedMounts].sort((a, b) => a[mountsOrder] - b[mountsOrder]));
+    }
 
     const handleEnableChanged = (event: React.ChangeEvent<HTMLInputElement>) => {
         const targetNotification = event.target.name.split(".")[0];
@@ -36,12 +51,12 @@ function Breeding() {
     return <div className={styles.breeding}>
         <div className={styles.notifications}>
             {NOTIFICATION_KEYS.map(notification => <div key={notification.key} className={styles.notifications__item}>
-                <h3>{notification.name}</h3>
+                <h3 onClick={() => handleOrderChanged(notification.key as Order)}>{notification.name}</h3>
                 <div className={styles.notifications__item__fields}>
                     <div className={styles.notifications__item__fields__field}>
                         {/* @ts-ignore */}
                         <input type="checkbox" id={notification.key + ".enable"} name={notification.key + ".enable"} checked={notifications[notification.key].enable} onChange={handleEnableChanged} />
-                        <label htmlFor={notification.key + ".enable"}>Enable</label>
+                        <label htmlFor={notification.key + ".enable"}>Notification</label>
                     </div>
                     <div className={styles.notifications__item__fields__field}>
                         {/* @ts-ignore */}
@@ -52,9 +67,9 @@ function Breeding() {
             )}
         </div>
 
-        {paddockedMounts && paddockedMounts.length > 0 &&
+        {displayedMounts && displayedMounts.length > 0 &&
             <div className={styles.breeding__mounts}>
-                {paddockedMounts.map(mount =>
+                {displayedMounts.map(mount =>
                     <div key={mount.id} className={styles.breeding__mount}>
                         <div className={styles.breeding__mount__name}>{Mounts?.find(m => mount.model === m._id)?.name}</div>
 
@@ -85,7 +100,7 @@ function Breeding() {
         }
 
         {/* Not mount to display */}
-        {paddockedMounts.length === 0 &&
+        {displayedMounts.length === 0 &&
             <div className={styles.no_mount}>
                 Go to the paddock to get mounts overview and notifications.
             </div>
