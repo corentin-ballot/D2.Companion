@@ -374,3 +374,26 @@ export interface QuestListMessage {
     activeQuests: ActiveQuest[];
     reinitDoneQuestsIds: number[];
 }
+
+// FM / craft
+export interface ExchangeObjectAddedMessage {
+    remote: boolean;
+    object: ObjectInfo;
+}
+
+export interface ObjectInfo {
+    position?: number;
+    objectGID: number;
+    effects: ObjectEffectInteger[];
+    objectUID: number;
+    quantity: number;
+}
+
+export interface ExchangeCraftResultMagicWithObjectDescMessage {
+    __name: string;
+    __protocol_id: number;
+    craftResult: number;
+    objectInfo: ObjectInfo;
+    magicPoolStatus: number;
+}
+

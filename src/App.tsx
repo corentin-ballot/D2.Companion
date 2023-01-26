@@ -9,10 +9,12 @@ import Market from './features/market/Market';
 import Breeding from './features/breeding/Breeding';
 import Quests from './features/quests/Quests';
 import Settings from './features/settings/Settings';
+import Forgemagie from './features/forgemagie/Forgemagie';
 
 const routes = [
   {path: "/fights", element: <Fights />, label: "Fights"},
   {path: "/market", element: <Market />, label: "Market"},
+  {path: "/forgemagie", element: <Forgemagie />, label: "Forgemagie"},
   {path: "/chat", element: <Chat />, label: "Chat"},
   {path: "/breeding", element: <Breeding />, label: "Breeding"},
   {path: "/quests", element: <Quests />, label: "Quests"},
