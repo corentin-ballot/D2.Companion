@@ -68,7 +68,8 @@ export const chatSlice = createSlice({
 
               const possibleEffect = item.possibleEffects.find((pe: any) => pe.effectId === effect.actionId);
 
-              if(!possibleEffect) return undefined;
+              // EXO
+              if(!possibleEffect) return `**${effect.value * (stat.negative ? -1 : 1)} ${stat.name}**`;
 
               return `${effect.value * (stat.negative ? -1 : 1)} ${stat.name} [${possibleEffect.diceNum} à ${possibleEffect.diceSide}]`}).join("\n"),
           });
