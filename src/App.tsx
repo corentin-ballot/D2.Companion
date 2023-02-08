@@ -10,6 +10,7 @@ import Breeding from './features/breeding/Breeding';
 import Quests from './features/quests/Quests';
 import Settings from './features/settings/Settings';
 import Forgemagie from './features/forgemagie/Forgemagie';
+import Achievements from './features/achievements/Achievements';
 
 const routes = [
   {path: "/fights", element: <Fights />, label: "Fights"},
@@ -18,6 +19,7 @@ const routes = [
   {path: "/chat", element: <Chat />, label: "Chat"},
   {path: "/breeding", element: <Breeding />, label: "Breeding"},
   {path: "/quests", element: <Quests />, label: "Quests"},
+  {path: "/achievements", element: <Achievements />, label: "Achievements"},
   {path: "/about", element: <About />, label: "About"},
   {path: "/settings", element: <Settings />, label: "Settings", menu: false},
 ]

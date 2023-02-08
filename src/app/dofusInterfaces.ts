@@ -397,3 +397,47 @@ export interface ExchangeCraftResultMagicWithObjectDescMessage {
     magicPoolStatus: number;
 }
 
+export interface FinishedObjective {
+    __name: string;
+    __protocol_id: number;
+    id: number;
+    maxValue: number;
+}
+
+export interface StartedObjective {
+    __name: string;
+    __protocol_id: number;
+    id: number;
+    maxValue: number;
+    value: number;
+}
+
+export interface StartedAchievement {
+    __name: string;
+    __protocol_id: number;
+    id: number;
+    finishedObjective: FinishedObjective[];
+    startedObjectives: StartedObjective[];
+}
+
+export interface FinishedObjective2 {
+    __name: string;
+    __protocol_id: number;
+    id: number;
+    maxValue: number;
+}
+
+export interface FinishedAchievement {
+    __name: string;
+    __protocol_id: number;
+    id: number;
+    finishedObjective: FinishedObjective2[];
+    startedObjectives: any[];
+}
+
+export interface AchievementDetailedListMessage {
+    __name: string;
+    __protocol_id: number;
+    startedAchievements: StartedAchievement[];
+    finishedAchievements: FinishedAchievement[];
+}

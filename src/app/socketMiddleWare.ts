@@ -4,10 +4,12 @@ import { endFight, fightDommageAction, fightSpellCastAction, fightSummonAction, 
 import { setItems } from '../features/market/marketSlice';
 import { processPaddockObjectAddMessage, processExchangeStartOkMountMessage, processUpdateMountCharacteristicsMessage, processExchangeMountsPaddockAddMessage, processExchangeMountsPaddockRemoveMessage } from '../features/breeding/breedingSlice';
 import { setConnected, setConnecting } from '../features/socket/socketSlice';
-import { ChatServerMessage, GameFightJoinMessage, GameFightTurnListMessage, GameFightSynchronizeMessage, GameFightNewRoundMessage, GameFightEndMessage, GameActionFightLifePointsLostMessage, GameActionFightMultipleSummonMessage, ExchangeTypesItemsExchangerDescriptionForUserMessage, GameActionFightSpellCastMessage, GameDataPaddockObjectAddMessage, ExchangeStartOkMountMessage, UpdateMountCharacteristicsMessage, ExchangeMountsPaddockAddMessage, ExchangeMountsPaddockRemoveMessage, QuestListMessage } from './dofusInterfaces';
+import { ChatServerMessage, GameFightJoinMessage, GameFightTurnListMessage, GameFightSynchronizeMessage, GameFightNewRoundMessage, GameFightEndMessage, GameActionFightLifePointsLostMessage, GameActionFightMultipleSummonMessage, ExchangeTypesItemsExchangerDescriptionForUserMessage, GameActionFightSpellCastMessage, GameDataPaddockObjectAddMessage, ExchangeStartOkMountMessage, UpdateMountCharacteristicsMessage, ExchangeMountsPaddockAddMessage, ExchangeMountsPaddockRemoveMessage, QuestListMessage, ExchangeObjectAddedMessage, ExchangeCraftResultMagicWithObjectDescMessage, AchievementDetailedListMessage } from './dofusInterfaces';
 
 import { io } from 'socket.io-client';
 import { processQuestListMessage } from '../features/quests/questsSlice';
+import { passRune, setItem } from '../features/forgemagie/forgemagieSlice';
+import { processAchievementDetailedListMessage } from '../features/achievements/achievementsSlice';
 
 const socketMiddleWare: Middleware = (store) => {
     console.log("socketMiddleware::connectingWebsocket");
@@ -32,6 +34,25 @@ const socketMiddleWare: Middleware = (store) => {
             case "BasicAckMessage":
             case "GameMapMovementMessage":
             case "GameMapMovementConfirmMessage":
+            case "GameContextRefreshEntityLookMessage":
+            case "SetCharacterRestrictionsMessage":
+            case "GameContextRemoveElementMessage":
+            case "UpdateMapPlayersAgressableStatusMessage":
+            case "GameRolePlayShowActorMessageInteractiveUsedMessage":
+            case "InteractiveUsedMessage":
+            case "GameRolePlayShowActorMessage":
+            case "GameRolePlayDelayedObjectUseMessage":
+            case "GameRolePlayDelayedActionFinishedMessage":
+            case "PrismsListUpdateMessage":
+            case "BasicTimeMessage":
+            case "GameMapChangeOrientationMessage":
+            case "MapComplementaryInformationsDataMessage":
+            case "JobMultiCraftAvailableSkillsMessage":
+            case "ExchangeBidHouseInListUpdatedMessage":
+            case "CurrentMapMessage":
+            case "ListMapNpcsQuestStatusUpdateMessage":
+            case "GuildMemberOnlineStatusMessage":
+                
                 //ignore
                 break;
             case "ChatServerMessage":
@@ -101,9 +122,149 @@ const socketMiddleWare: Middleware = (store) => {
 
             /* Quests */
             case "QuestListMessage":
-                store.dispatch(processQuestListMessage(data.content as QuestListMessage))
+                store.dispatch(processQuestListMessage(data.content as QuestListMessage));
                 break;
-                
+            
+                break;
+            /* Forgemagie */
+            case "ExchangeStartOkCraftWithInformationMessage":
+                // Start fm
+                // { __name: "ExchangeStartOkCraftWithInformationMessage", __protocol_id: 4494, skillId: 166 }
+                break;
+            case "ExchangeObjectAddedMessage":
+                store.dispatch(setItem(data.content as ExchangeObjectAddedMessage));
+                break;
+                // Item FM
+                // {
+                //   "__name": "ExchangeObjectAddedMessage",
+                //   "__protocol_id": 8555,
+                //   "remote": false,
+                //   "object": {
+                //     "__name": "ObjectItem",
+                //     "__protocol_id": 4970,
+                //     "position": 63,
+                //     "objectGID": 7143,
+                //     "effects": [
+                //       {
+                //         "__name": "ObjectEffectInteger",
+                //         "__protocol_id": 5629,
+                //         "actionId": 125,
+                //         "value": 232
+                //       },
+                //       {
+                //         "__name": "ObjectEffectInteger",
+                //         "__protocol_id": 5629,
+                //         "actionId": 174,
+                //         "value": 41
+                //       },
+                //       {
+                //         "__name": "ObjectEffectInteger",
+                //         "__protocol_id": 5629,
+                //         "actionId": 119,
+                //         "value": 36
+                //       },
+                //       {
+                //         "__name": "ObjectEffectInteger",
+                //         "__protocol_id": 5629,
+                //         "actionId": 118,
+                //         "value": 35
+                //       },
+                //       {
+                //         "__name": "ObjectEffectInteger",
+                //         "__protocol_id": 5629,
+                //         "actionId": 225,
+                //         "value": 30
+                //       },
+                //       {
+                //         "__name": "ObjectEffectInteger",
+                //         "__protocol_id": 5629,
+                //         "actionId": 138,
+                //         "value": 16
+                //       },
+                //       {
+                //         "__name": "ObjectEffectInteger",
+                //         "__protocol_id": 5629,
+                //         "actionId": 112,
+                //         "value": 10
+                //       }
+                //     ],
+                //     "objectUID": 909212473,
+                //     "quantity": 1
+                //   }
+                // }
+
+            case "ExchangeCraftResultMagicWithObjectDescMessage":
+                store.dispatch(passRune(data.content as ExchangeCraftResultMagicWithObjectDescMessage));
+                break;
+                // rune
+                // -34 vitalité, -3 initiative, -2 puissance, +reliquat
+                // craftResult: 1, magicPoolStatus: 2 // Echec + reliquat
+                // craftResult: 2, magicPoolStatus: 1 // Réussite
+                // craftResult: 2, magicPoolStatus: 2 // Réussite + reliquat
+                // craftResult: 2, magicPoolStatus: 3 // Réussite - reliquat
+                // craftResult: 1, magicPoolStatus: 3 // Echec - reliquat
+
+                // {
+                //     "__name": "ExchangeCraftResultMagicWithObjectDescMessage",
+                //     "__protocol_id": 8579,
+                //     "craftResult": 1,
+                //     "objectInfo": {
+                //       "__name": "ObjectItemNotInContainer",
+                //       "__protocol_id": 9381,
+                //       "objectGID": 7143,
+                //       "effects": [
+                //         {
+                //           "__name": "ObjectEffectInteger",
+                //           "__protocol_id": 5629,
+                //           "actionId": 125,
+                //           "value": 198
+                //         },
+                //         {
+                //           "__name": "ObjectEffectInteger",
+                //           "__protocol_id": 5629,
+                //           "actionId": 174,
+                //           "value": 38
+                //         },
+                //         {
+                //           "__name": "ObjectEffectInteger",
+                //           "__protocol_id": 5629,
+                //           "actionId": 119,
+                //           "value": 36
+                //         },
+                //         {
+                //           "__name": "ObjectEffectInteger",
+                //           "__protocol_id": 5629,
+                //           "actionId": 118,
+                //           "value": 35
+                //         },
+                //         {
+                //           "__name": "ObjectEffectInteger",
+                //           "__protocol_id": 5629,
+                //           "actionId": 225,
+                //           "value": 30
+                //         },
+                //         {
+                //           "__name": "ObjectEffectInteger",
+                //           "__protocol_id": 5629,
+                //           "actionId": 138,
+                //           "value": 14
+                //         },
+                //         {
+                //           "__name": "ObjectEffectInteger",
+                //           "__protocol_id": 5629,
+                //           "actionId": 112,
+                //           "value": 10
+                //         }
+                //       ],
+                //       "objectUID": 909212473,
+                //       "quantity": 1
+                //     },
+                //     "magicPoolStatus": 2
+                //   }
+            
+            case "AchievementDetailedListMessage":
+                store.dispatch(processAchievementDetailedListMessage(data.content as AchievementDetailedListMessage));
+                break;
             /* Default */
             default:
                 break;

@@ -1,5 +1,6 @@
 const fs = require('fs')
 const https = require('https');
+const Stream = require('stream').Transform;
 
 const LIMIT = 50;
 
@@ -61,7 +62,8 @@ fetchAchievments = (a=[], skip=0) => {
                         console.error(err);
                         return;
                     } else {
-                        console.log("OK");
+                        console.log("Images : ");
+                        getAchievementsIcon(achievements);
                     }
                 })
             } else {
@@ -73,3 +75,34 @@ fetchAchievments = (a=[], skip=0) => {
         console.error(err.message);
     });
 }
+
+function getAchievementsIcon(achievements, index = 0) {
+    if(!achievements[index]) return;
+    const fileName = achievements[index].img.replace("https://api.dofusdb.fr/img/achievements/", "");
+    const file = "public/img/achievements/" + fileName;
+
+    console.log(achievements[index].img);
+
+    downloadImageToUrl(achievements[index].img, file, () => {getAchievementsIcon(achievements, index + 1)});
+}
+
+let downloaded = [];
+var downloadImageToUrl = (url, filename, callback) => {
+    if(downloaded.includes(url)) {
+        callback();
+    } else {
+        https.request(url, function(response) {                                        
+            var data = new Stream();                                                    
+
+            response.on('data', function(chunk) {                                       
+                data.push(chunk);                                                         
+            });                                                                         
+
+            response.on('end', function() {                                             
+                fs.writeFileSync(filename, data.read());
+                downloaded.push(url);
+                callback();                          
+            });                                                                         
+        }).end();
+    }
+};
