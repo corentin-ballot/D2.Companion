@@ -69,7 +69,7 @@ export const chatSlice = createSlice({
               const possibleEffect = item.possibleEffects.find((pe: any) => pe.effectId === effect.actionId);
 
               // EXO
-              if(!possibleEffect) return `**${effect.value * (stat.negative ? -1 : 1)} ${stat.name}**`;
+              if(!possibleEffect) return stat.reverse ? `**${stat.name} ${effect.value}**` : `**${effect.value} ${stat.name}**`;
 
               return `${effect.value * (stat.negative ? -1 : 1)} ${stat.name} [${possibleEffect.diceNum} à ${possibleEffect.diceSide}]`}).join("\n"),
           });
