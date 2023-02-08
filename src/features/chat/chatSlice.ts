@@ -117,7 +117,7 @@ export const chatSlice = createSlice({
           || action.payload.objects?.filter(object => matches.includes(object.objectGID.toString())).length
       ) {
         state.messages = [...state.messages, chatMessage]
-        new Notifications(chatMessage.content, chatMessage.senderName).send();
+        new Notifications(chatMessage.content, chatMessage.senderName, null, payload).send();
       }
     },
   },
