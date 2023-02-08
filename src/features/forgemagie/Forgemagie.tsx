@@ -113,8 +113,6 @@ function HistoryItem (props: {effects: ObjectEffectInteger[], craftResult: numbe
         return prev + curr.value * (stat ? stat.density : 0);
     }, 0));
 
-    console.log(props.effects);
-
     return <div className={styles.market__fmline} data-result={props.craftResult} data-reliquat={props.magicPoolStatus}>
         {props.effects.map(effect => <div key={effect.actionId} className={styles.market__fmline_effect}>{(effect.value > 0 ? `+${effect.value}` : `${effect.value}`) + ` ${equipmentStats.get(effect.actionId)?.name}`}</div>)}
         {props.magicPoolStatus === 2 && <div className={styles.market__fmline_reliquat}>+{reliquat} reliquat</div>}

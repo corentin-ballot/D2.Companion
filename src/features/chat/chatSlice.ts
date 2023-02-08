@@ -59,7 +59,6 @@ export const chatSlice = createSlice({
       if (chatMessage.objects && chatMessage.objects.length && chatMessage.objects.length > 0) {
         chatMessage.content = chatMessage.objects ? chatMessage.objects.reduce((_content, object) => {
           const item = data.items.find(item => item.id === object.objectGID);
-          console.log(object, item);
           if(item) payload.push({
             title: item.name,
             description: object.effects.map((effect: dofusObjectEffect) => {
