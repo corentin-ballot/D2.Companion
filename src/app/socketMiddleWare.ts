@@ -4,12 +4,13 @@ import { endFight, fightDommageAction, fightSpellCastAction, fightSummonAction, 
 import { setItems } from '../features/market/marketSlice';
 import { processPaddockObjectAddMessage, processExchangeStartOkMountMessage, processUpdateMountCharacteristicsMessage, processExchangeMountsPaddockAddMessage, processExchangeMountsPaddockRemoveMessage } from '../features/breeding/breedingSlice';
 import { setConnected, setConnecting } from '../features/socket/socketSlice';
-import { ChatServerMessage, GameFightJoinMessage, GameFightTurnListMessage, GameFightSynchronizeMessage, GameFightNewRoundMessage, GameFightEndMessage, GameActionFightLifePointsLostMessage, GameActionFightMultipleSummonMessage, ExchangeTypesItemsExchangerDescriptionForUserMessage, GameActionFightSpellCastMessage, GameDataPaddockObjectAddMessage, ExchangeStartOkMountMessage, UpdateMountCharacteristicsMessage, ExchangeMountsPaddockAddMessage, ExchangeMountsPaddockRemoveMessage, QuestListMessage, ExchangeObjectAddedMessage, ExchangeCraftResultMagicWithObjectDescMessage, AchievementDetailedListMessage } from './dofusInterfaces';
+import { ChatServerMessage, GameFightJoinMessage, GameFightTurnListMessage, GameFightSynchronizeMessage, GameFightNewRoundMessage, GameFightEndMessage, GameActionFightLifePointsLostMessage, GameActionFightMultipleSummonMessage, ExchangeTypesItemsExchangerDescriptionForUserMessage, GameActionFightSpellCastMessage, GameDataPaddockObjectAddMessage, ExchangeStartOkMountMessage, UpdateMountCharacteristicsMessage, ExchangeMountsPaddockAddMessage, ExchangeMountsPaddockRemoveMessage, QuestListMessage, ExchangeObjectAddedMessage, ExchangeCraftResultMagicWithObjectDescMessage, AchievementDetailedListMessage, HousePropertiesMessage } from './dofusInterfaces';
 
 import { io } from 'socket.io-client';
 import { processQuestListMessage } from '../features/quests/questsSlice';
 import { passRune, setItem } from '../features/forgemagie/forgemagieSlice';
 import { processAchievementDetailedListMessage } from '../features/achievements/achievementsSlice';
+import Notifications from './notifications';
 
 const socketMiddleWare: Middleware = (store) => {
     console.log("socketMiddleware::connectingWebsocket");
@@ -125,6 +126,11 @@ const socketMiddleWare: Middleware = (store) => {
                 store.dispatch(processQuestListMessage(data.content as QuestListMessage));
                 break;
             
+            /* Houses */
+            case "HousePropertiesMessage":
+                const d = data.content as HousePropertiesMessage;
+                if(!d.properties.hasOwner && !d.properties.isSaleLocked)
+                    new Notifications("House on sale !").sendNative();
                 break;
             /* Forgemagie */
             case "ExchangeStartOkCraftWithInformationMessage":
@@ -267,6 +273,7 @@ const socketMiddleWare: Middleware = (store) => {
                 break;
             /* Default */
             default:
+                console.log(data.content.__name, data.content)
                 break;
         }
     });

@@ -5,6 +5,7 @@ import styles from './Settings.module.css';
 function Settings() {
     const [nativeNotifications, setNativeNotifications] = useState(JSON.parse(localStorage.getItem("notifications.native") || "true"));
     const [discordNotifications, setDiscordNotifications] = useState(JSON.parse(localStorage.getItem("notifications.discord.enable") || "true"));
+    const [housesSellableNotifications, setHousesSellableNotifications] = useState(JSON.parse(localStorage.getItem("notifications.houses.sellable") || "true"));
     const [discordWebhook, setDiscordWebhook] = useState(JSON.parse(localStorage.getItem("notifications.discord.webhook") || "null"));
     // const [discordUsername, setDiscordUsername] = useState(JSON.parse(localStorage.getItem("notifications.discord.username") || "null"));
 
@@ -13,6 +14,7 @@ function Settings() {
         if (event.target.id === "notifications.native") setNativeNotifications(event.target.checked);
         if (event.target.id === "notifications.discord.enable") setDiscordNotifications(event.target.checked);
         if (event.target.id === "notifications.discord.webhook") setDiscordWebhook(event.target.value);
+        if (event.target.id === "notifications.houses.sellable") setHousesSellableNotifications(event.target.value);
         // if (event.target.id === "notifications.discord.username") setDiscordUsername(event.target.value);
     }
     
@@ -41,6 +43,16 @@ function Settings() {
                 <div className="input__container">
                     <input type="text" id="notifications.discord.webhook" onChange={handleInputChange} defaultValue={discordWebhook} placeholder=" " />
                     <label htmlFor="notifications.discord.webhook">Discord webhook</label>
+                </div>
+
+                <button onClick={() => new Notifications("Test").sendDiscord()}>Test</button>
+            </section>
+            
+            <section>
+                <h4>Discord notifications</h4>
+                <div className="input__container">
+                    <input type="checkbox" id="notifications.houses.sellable" checked={discordNotifications} onChange={handleInputChange} />
+                    <label htmlFor="notifications.houses.sellable">Enable abandonned house sellable notification</label>
                 </div>
 
                 <button onClick={() => new Notifications("Test").sendDiscord()}>Test</button>

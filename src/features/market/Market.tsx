@@ -113,7 +113,7 @@ function Statistic(props: StatisticProps) {
 
     return <div className={styles.statistic} data-statid={props.id}>
         <img className={styles.statistic__image} src={process.env.PUBLIC_URL + statImage.get(statistic?.name)} alt="" />
-        <div className={styles.statistic__details} data-negative={statistic?.negative} data-reverse={statistic?.reverse}>
+        <div className={styles.statistic__details} data-negative={statistic?.negative}>
             {typeof props.value == "object" ?
                 <span className={styles.statistic__details__value}>{`${props.value.min} ${props.value.max ? (' à ' + props.value.max) : ""}`}</span>
                 : <span className={styles.statistic__details__value}>{statistic?.negative ? -props.value : props.value}</span>

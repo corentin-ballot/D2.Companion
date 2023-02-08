@@ -441,3 +441,33 @@ export interface AchievementDetailedListMessage {
     startedAchievements: StartedAchievement[];
     finishedAchievements: FinishedAchievement[];
 }
+
+// HOUSES
+
+export interface OwnerTag {
+    __name: string;
+    __protocol_id: number;
+    nickname: string;
+    tagNumber: string;
+}
+
+export interface Properties {
+    __name: string;
+    __protocol_id: number;
+    secondHand: boolean;
+    isLocked: boolean;
+    hasOwner: boolean;
+    isSaleLocked: boolean;
+    isAdminLocked: boolean;
+    instanceId: number;
+    ownerTag: OwnerTag;
+    price: number;
+}
+
+export interface HousePropertiesMessage {
+    __name: string;
+    __protocol_id: number;
+    houseId: number;
+    doorsOnMap: number[];
+    properties: Properties;
+}

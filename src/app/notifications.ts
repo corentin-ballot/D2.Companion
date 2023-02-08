@@ -5,13 +5,15 @@ export default class Notifications {
     isNativeNotificationEnable: boolean;
     isDiscordNotificationEnable: boolean;
     discordWebhook: string | null;
+    payload: any[];
 
-    constructor(message: string, username: string | null = null, webhook: string | null = null) {
+    constructor(message: string, username: string | null = null, webhook: string | null = null, payload: any[] | null = null) {
         this.message = message;
         this.isNativeNotificationEnable = JSON.parse(localStorage.getItem("notifications.native") || "true");
         this.isDiscordNotificationEnable = JSON.parse(localStorage.getItem("notifications.discord.enable") || "true");
         this.discordWebhook = webhook ? webhook : JSON.parse(localStorage.getItem("notifications.discord.webhook") || "null");
         this.username = username;
+        this.payload = payload ? payload : [];
 
         // Request Notification Permission
         if ('Notification' in window && Notification.permission !== 'denied' && Notification.permission !== 'granted') {
@@ -21,31 +23,11 @@ export default class Notifications {
 
     send() {
         if (this.isNativeNotificationEnable && Notification.permission === 'granted') {
-            new Notification((this.username ? this.username + " : " : "") + this.message);
+            this.sendNative();
         }
 
         if (this.isDiscordNotificationEnable && this.discordWebhook !== null) {
-            const content = {
-                content: this.message,
-                username: this.username,
-                // tts: true,
-                // content: "Hello <@247675082699309058> !",
-                // embeds: [{
-                //    title: undefined,
-                //    description: undefined,
-                //    footer: {
-                //        text: undefined
-                //    }
-                // }]
-            };
-            
-            fetch(this.discordWebhook, {
-                method: "POST",
-                body: JSON.stringify(content),
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            });
+            this.sendDiscord();
         }
     };
 
@@ -58,6 +40,7 @@ export default class Notifications {
             const content = {
                 content: this.message,
                 username: this.username,
+                embeds: this.payload,
                 // tts: true,
                 // content: "Hello <@247675082699309058> !",
                 // embeds: [{
