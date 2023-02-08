@@ -3,14 +3,14 @@ import { BidExchangerObjectInfo, ExchangeTypesItemsExchangerDescriptionForUserMe
 import { equipmentStats } from '../../app/equipmentStats';
 import { RootState } from '../../app/store';
 
-let equipments: any[];
-fetch(process.env.PUBLIC_URL + '/data/equipments.json').then(res => res.json()).then(json => equipments = json);
+let items: any[] = [];
+fetch(process.env.PUBLIC_URL + '/data/items.json').then(res => res.json()).then(json => items = json);
 
 interface Item extends BidExchangerObjectInfo {
     name: string;
     level: number;
     imgUrl: string;
-    statistics: any[]
+    possibleEffects: any[]
 }
 
 interface marketState {
@@ -26,26 +26,9 @@ export const marketSlice = createSlice({
   initialState,
   reducers: {
     setItems: (state, action: PayloadAction<ExchangeTypesItemsExchangerDescriptionForUserMessage>) => {
-        state.items = action.payload.itemTypeDescriptions.map(item => {
-            const equipment = equipments.find(eq => eq._id === item.objectGID);
-            const statistics = typeof equipment !== "undefined" && typeof equipment.statistics !== "undefined" ? [...equipment.statistics] : [];
-            item.effects.forEach(effect => {
-                const stat = equipmentStats.get(effect.actionId);
-                if(stat) {
-                    const statistic = statistics.findIndex(s => typeof s[stat.name] !== "undefined")
-                    if(statistic > 0) {
-                        console.log("if(statistic)", stat, stat.name, statistic);
-                        statistics[statistic].value = stat.negative ? -1 * effect.value : effect.value;
-                    } else if(stat && ![988, 985, 2825].includes(effect.actionId)) {
-                        // EXO
-                        console.log("else if(stat)", stat, stat.name, statistic);
-                        statistics.push({[statistic]: {min:0, max:0, value: stat.negative ? -1 * effect.value : effect.value, exo: true}})
-                    }
-                } else if(![1151, 1152, 1176].includes(effect.actionId)) {
-                    console.error("Effect with id " + effect.actionId + " is nos defined.", item.effects);
-                }
-            })
-            return {...item, name: equipment?.name, level: equipment?.level, statistics: statistics, imgUrl: equipment?.imgUrl.replace("https://s.ankama.com/www/static.ankama.com/dofus/www/game/items/200/", "/img/equipments/")}
+        state.items = action.payload.itemTypeDescriptions.map(i => {
+            const item:any = items.find(eq => eq._id === i.objectGID);
+            return {...i, name: item?.name, level: item?.level, possibleEffects: [...item.possibleEffects], imgUrl: "/img/items/" + item?.iconId + ".png"};
         });
     },
   }

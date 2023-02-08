@@ -48,6 +48,7 @@ function Market() {
         {/* Items display */}
         {displayedItems && displayedItems.length > 0 &&
             <div className={styles.market}>
+                {/* Default item */}
                 <div className={styles.market__header}>
                     <h3>{displayedItems[0]?.name}</h3>
 
@@ -57,9 +58,9 @@ function Market() {
                         </div>
 
                         <div className={styles.market__header__item__effects}>
-                            {displayedItems[0] && displayedItems[0].statistics.filter(stat => Object.keys(stat)[0] !== "undefined").map(stat => {
-                                const key = Object.keys(stat)[0];
-                                return <Statistic id={key} value={{ min: stat[key].min, max: stat[key].max }} key={key} />
+                            {displayedItems[0] && displayedItems[0].possibleEffects.map(stat => {
+                                const key = equipmentStats.get(stat.effectId);
+                                return <Statistic id={stat.effectId} value={{ min: stat.diceNum, max: stat.diceSide }} key={key?.name} />
                             })}
                         </div>
                     </div>
@@ -78,7 +79,7 @@ function Market() {
                     </div>
                 </div>
 
-
+                {/* Item list */}
                 <div className={styles.market__items}>
                     {displayedItems.filter(
                         item => item.effects.filter(
@@ -109,16 +110,17 @@ interface StatisticProps {
 }
 
 function Statistic(props: StatisticProps) {
-    const statistic = typeof props.id == "number" ? equipmentStats.get(props.id) : { name: props.id, negative: false };
+    const statistic = typeof props.id == "number" ? equipmentStats.get(props.id) : { name: props.id, negative: false, reverse: false };
 
-    return <div className={styles.statistic} data-statid={props.id}>
+    return <div className={styles.statistic} data-statid={props.id} key={props.id}>
         <img className={styles.statistic__image} src={process.env.PUBLIC_URL + statImage.get(statistic?.name)} alt="" />
+        {statistic?.reverse && <span className={styles.statistic__details__name}>{statistic?.name}</span>}
         <div className={styles.statistic__details} data-negative={statistic?.negative}>
             {typeof props.value == "object" ?
                 <span className={styles.statistic__details__value}>{`${props.value.min} ${props.value.max ? (' à ' + props.value.max) : ""}`}</span>
                 : <span className={styles.statistic__details__value}>{statistic?.negative ? -props.value : props.value}</span>
             }
-            <span className={styles.statistic__details__name}>{statistic?.name}</span>
+            {!statistic?.reverse && <span className={styles.statistic__details__name}>{statistic?.name}</span>}
         </div>
     </div>
 }
