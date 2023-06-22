@@ -49,13 +49,11 @@ function Settings() {
             </section>
             
             <section>
-                <h4>Discord notifications</h4>
+                <h4>Houses notifications</h4>
                 <div className="input__container">
                     <input type="checkbox" id="notifications.houses.sellable" checked={discordNotifications} onChange={handleInputChange} />
                     <label htmlFor="notifications.houses.sellable">Enable abandonned house sellable notification</label>
                 </div>
-
-                <button onClick={() => new Notifications("Test").sendDiscord()}>Test</button>
             </section>
         </section>
         
