@@ -9,7 +9,7 @@ const LIMIT = 50;
  * run `npm run fetch` to refresh data
  */
 module.exports = fetchAchievmentCategories = (ac=[], skip=0) => {
-    https.get(`https://api.dofusdb.fr/achievement-categories?$skip=${skip}&$limit=${LIMIT}&$sort=parentId&$select[]=name&$select[]=order&$select[]=parentId&$select[]=achievementIds&$select[]=id&$select[]=icon&$populate=false&lang=fr`, (resp) => {
+    https.get(`https://api.beta.dofusdb.fr/achievement-categories?$skip=${skip}&$limit=${LIMIT}&$sort=parentId&$select[]=name&$select[]=order&$select[]=parentId&$select[]=achievementIds&$select[]=id&$select[]=icon&$populate=false&lang=fr`, (resp) => {
         let data = '';
 
         // A chunk of data has been received.
@@ -42,7 +42,7 @@ module.exports = fetchAchievmentCategories = (ac=[], skip=0) => {
 }
 
 fetchAchievments = (a=[], skip=0) => {
-    https.get(`https://api.dofusdb.fr/achievements?$skip=${skip}&$populate=false&$limit=${LIMIT}&lang=fr`, (resp) => {
+    https.get(`https://api.beta.dofusdb.fr/achievements?$skip=${skip}&$populate=false&$limit=${LIMIT}&lang=fr`, (resp) => {
         let data = '';
 
         // A chunk of data has been received.
@@ -78,7 +78,7 @@ fetchAchievments = (a=[], skip=0) => {
 
 function getAchievementsIcon(achievements, index = 0) {
     if(!achievements[index]) return;
-    const fileName = achievements[index].img.replace("https://api.dofusdb.fr/img/achievements/", "");
+    const fileName = achievements[index].img.replace("https://api.beta.dofusdb.fr/img/achievements/", "");
     const file = "public/img/achievements/" + fileName;
 
     console.log(achievements[index].img);
