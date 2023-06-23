@@ -41,30 +41,16 @@ function TotalDommages(props: DommagesProps) {
                 <XAxis hide type="number" />
                 {/* dmg deal */}
                 <Bar barSize={50} dataKey="total" stackId="a" fill="#9029ab">
-                    <LabelList position="center" content={customBarLabel} />
                     {data.map((entry) => (
                         <Cell key={entry.name} fill={teamColor[entry.teamId ? entry.teamId : 0]} />
                     ))}
                 </Bar>
-                <YAxis width={90} yAxisId={0} dataKey="total" axisLine={false} orientation="right" mirror tickFormatter={tickFormater(sum)} tick={{fill: '#000'}} type="category"/>
+                <YAxis width={90} yAxisId={0} dataKey="total" axisLine={false} orientation="right" tickFormatter={tickFormater(sum)} tick={{fill: '#000'}} type="category"/>
+                <YAxis width={90} yAxisId={1} dataKey="name" axisLine={false} mirror orientation="left" tick={{fill: '#000'}} type="category"/>
             </BarChart>
         </ResponsiveContainer>
     </div>
 }
-
-/**
- * Custom Label inside chart with reduced font-size
- * @param props 
- */
-const customBarLabel = (props: any) => {
-    const { x, y, height } = props;
-
-    return (
-        <text x={x + 10} y={y + height / 2} fill="#000" dominantBaseline="middle" fontSize="1rem">
-            {props.name}
-        </text>
-    );
-};
 
 const tickFormater = (sum:number) => (value: number) => {
     let tickedValue;

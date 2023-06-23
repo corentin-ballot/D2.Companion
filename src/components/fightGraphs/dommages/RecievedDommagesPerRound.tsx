@@ -28,7 +28,7 @@ function DealedDommagesPerRound(props: DealedDommagesPerRoundProps) {
         <LineChart width={730} height={250} data={data} margin={{ top: 5, right: 5, left: 0, bottom: 0 }}>
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="round" />
-            <YAxis />
+            <YAxis mirror />
             <Tooltip />
             <Legend />
             {

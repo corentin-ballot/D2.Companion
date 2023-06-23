@@ -10,15 +10,25 @@ import SpellsLog from '../../components/fightGraphs/dommages/SpellsLog';
 import DealedTypeRepartition from '../../components/fightGraphs/dommages/DealedTypeRepartition';
 import RecievedTypeRepartition from '../../components/fightGraphs/dommages/RecievedTypeRepartition';
 
-import styles from './Fights.module.css';
+import { Box } from '@mui/system';
+import { Grid, Link, Typography, Paper, AvatarGroup, Avatar, Tooltip, Button } from '@mui/material';
+
+import EmptyState from '../../components/empty-state/EmptyState';
+import { useTheme } from '@material-ui/core/styles';
+import Stack from '@mui/material/Stack';
+import HistoryCard from '../../components/history-card/HistoryCard';
+
+const styles = {};
 
 function Fight() {
+    const theme = useTheme();
+
     const [displayedFight, setDisplayedFight] = useState(fightModel);
     const [fightersFilter, setFightersFilter] = useState([] as number[]);
 
     const currentFight = useAppSelector(selectCurrent);
     const history = useAppSelector(selectHistory);
-    
+
     // Avoid history check when fighting
     useEffect(() => {
         setDisplayedFight(currentFight);
@@ -28,98 +38,122 @@ function Fight() {
     // useEffect(() => {
     //     setFightersFilter([displayedFight.turnList[0]]);
     // }, [displayedFight]);
-    
-    return <div>
-        {/* Not fighting */}
-        {displayedFight.round === -1 &&
-            <div className={styles.no_fight}>
-                No active fight, start fighting{history && history.length ? " or select a fight in the history" : ""} to see statistics.
-            </div>
-        }
 
-        {/* Fight preparation */}
-        {displayedFight.round === 0 &&
-            <div className={styles.prepare_to_fight}>
-                Preparation phase, get ready!
-            </div>
-        }
+    return <Box sx={{ flexGrow: 1 }}>
+        <Grid container spacing={2}>
+            {/* Not fighting */}
+            {displayedFight.round === -1 &&
+                <Grid item xs={12}>
+                    <EmptyState>
+                        No active fight, start fighting{history && history.length ? " or select a fight in the history" : ""} to see statistics.
+                    </EmptyState>
+                </Grid>
+            }
 
-        {/* Fight view */}
-        {displayedFight.round > 0 &&
-            <div className={styles.fight}>
-                {/* Main Graph (dealed dommages with types) */}
-                <div className={[styles.fight__card, styles.fight__card_highlight].join(" ")}>
-                    <div className={styles.fight__card__header}>
-                        <h3 className={styles.fight__card__header__title}>Dommages dealed</h3>
-                        {/* Dofensive */}
-                        <a className={styles.fight__card__header__link} target="_blank" rel="noreferrer" href={`https://dofensive.com/fr/monster/${displayedFight.fighters.map(fighter => fighter.creatureGenericId).join(",")}`}>Voir les monstres sur Dofensive</a>
-                    </div>
-                    <TotalDommages fight={displayedFight} />
-                </div>
+            {/* Fight preparation */}
+            {displayedFight.round === 0 &&
+                <Grid item xs={12}>
+                    <EmptyState>
+                        Preparation phase, get ready!
+                    </EmptyState>
+                </Grid>
+            }
 
-                {/* Fighters display filter */}
-                <form className={styles.fight__fighters}>
-                    {displayedFight.turnList.map(fighterId => {
-                        const fighter = displayedFight.fighters.find(f => f.contextualId === fighterId);
-                        return <label key={fighterId} htmlFor={fighterId.toString()} className={styles.fight__fighters__item} data-checked={fightersFilter.includes(fighterId)}>
-                            <img src={
-                                process.env.PUBLIC_URL + (fighter?.masterId ? "/img/monsters/394" :
-                                    fighter?.creatureGenericId ? `/img/monsters/${fighter?.creatureGenericId}` : `/img/classes/${fighter?.breed}-${fighter?.sex ? 'female' : 'male'}.png`)
-                            } alt={fighter?.name} />
-                            <input type="checkbox" id={fighterId.toString()} checked={fightersFilter.includes(fighterId)} onChange={(e) => setFightersFilter(fightersFilter.includes(fighterId) ? fightersFilter.filter(f => f !== fighterId) : [fighterId])} />
-                            <span>{fighter?.name}</span>
-                        </label>
-                    })}
-                </form>
+            {/* Fight view */}
+            {displayedFight.round > 0 &&
+                <>
+                    {/* Main Graph (dealed dommages with types) */}
+                    <Grid item xs={12}>
+                        <Paper sx={{ padding: (theme) => theme.spacing(2) }}>
+                            <Grid container justifyContent="space-between" alignItems="center">
+                                <Typography variant="h6">Dommages dealed</Typography>
+                                {/* Dofensive */}
+                                <Link target="_blank" rel="noreferrer" href={`https://dofensive.com/fr/monster/${displayedFight.fighters.map(fighter => fighter.creatureGenericId).join(",")}`}>Voir les monstres sur Dofensive</Link>
+                            </Grid>
+                            <TotalDommages fight={displayedFight} />
+                        </Paper>
+                    </Grid>
 
-                {/* Graph (dealed dommages per round) */}
-                <div className={styles.fight__card}>
-                    <div className={styles.fight__card__header}>
-                        <h3 className={styles.fight__card__header__title}>Dommages dealed per round</h3>
-                    </div>
-                    <DealedDommagesPerRound fight={displayedFight} fightersFilter={fightersFilter} />
-                </div>
+                    {/* Fighters display filter */}
+                    <Grid item xs={12}>
+                        <Stack direction="row" justifyContent="center" spacing={4}>
+                            {displayedFight.turnList.map(fighterId => {
+                                const fighter = displayedFight.fighters.find(f => f.contextualId === fighterId);
+                                return (
+                                    <Tooltip title={fighter?.name}>
+                                        <Avatar
+                                            alt={fighter?.name}
+                                            sx={{
+                                                width: 96, height: 96,
+                                                cursor: "pointer",
+                                                bgcolor: fightersFilter.includes(fighterId) ? theme.palette.primary.main : theme.palette.grey[100],
+                                                ":hover": {
+                                                    bgcolor: fightersFilter.includes(fighterId) ? theme.palette.primary.main : theme.palette.grey[300],
+                                                    "img": {
+                                                        transform: "scale(1.6)",
+                                                    }
+                                                }
+                                            }}
+                                            onClick={(e) => setFightersFilter(fightersFilter.includes(fighterId) ? fightersFilter.filter(f => f !== fighterId) : [fighterId])}
+                                            src={process.env.PUBLIC_URL + (fighter?.masterId ? "/img/monsters/394" : fighter?.creatureGenericId ? `/img/monsters/${fighter?.creatureGenericId}` : `/img/classes/${fighter?.breed}-${fighter?.sex ? 'female' : 'male'}.png`)} />
+                                    </Tooltip>
+                                )
+                            })}
+                        </Stack>
+                    </Grid>
 
-                {/* Graph (recieved dommages per round) */}
-                <div className={styles.fight__card}>
-                    <div className={styles.fight__card__header}>
-                        <h3 className={styles.fight__card__header__title}>Dommages recieved per round</h3>
-                    </div>
-                    <RecievedDommagesPerRound fight={displayedFight} fightersFilter={fightersFilter} />
-                </div>
+                    {/* Graph (dealed dommages per round) */}
+                    {fightersFilter.length > 0 && 
+                    <Grid item xs={12} md={6}>
+                        <Paper sx={{ padding: (theme) => theme.spacing(2) }}>
+                            <Typography variant="h6">Dommages dealed per round</Typography>
+                            <DealedDommagesPerRound fight={displayedFight} fightersFilter={fightersFilter} />
+                        </Paper>
+                    </Grid>}
 
-                {/* Type repartition deal */}
-                <div className={styles.fight__card}>
-                    <div className={styles.fight__card__header}>
-                        <h3 className={styles.fight__card__header__title}>Type repartition dealed</h3>
-                    </div>
-                    <DealedTypeRepartition fight={displayedFight} fightersFilter={fightersFilter} />
-                </div>
+                    {/* Graph (recieved dommages per round) */}
+                    {fightersFilter.length > 0 && 
+                    <Grid item xs={12} md={6}>
+                        <Paper sx={{ padding: (theme) => theme.spacing(2) }}>
+                            <Typography variant="h6">Dommages recieved per round</Typography>
+                            <RecievedDommagesPerRound fight={displayedFight} fightersFilter={fightersFilter} />
+                        </Paper>
+                    </Grid>}
 
-                {/* Type repartition recieves */}
-                <div className={styles.fight__card}>
-                    <div className={styles.fight__card__header}>
-                        <h3 className={styles.fight__card__header__title}>Type repartition recieves</h3>
-                    </div>
-                    <RecievedTypeRepartition fight={displayedFight} fightersFilter={fightersFilter} />
-                </div>
+                    {/* Type repartition deal */}
+                    {fightersFilter.length > 0 && 
+                    <Grid item xs={12} md={6}>
+                        <Paper sx={{ padding: (theme) => theme.spacing(2) }}>
+                            <Typography variant="h6">Type repartition dealed</Typography>
+                            <DealedTypeRepartition fight={displayedFight} fightersFilter={fightersFilter} />
+                        </Paper>
+                    </Grid>}
 
-                {/* Spells */}
-                <div className={styles.fight__card}>
-                    <div className={styles.fight__card__header}>
-                        <h3 className={styles.fight__card__header__title}>Spells</h3>
-                    </div>
-                    <SpellsLog fight={displayedFight} fightersFilter={fightersFilter} />
-                </div>
-            </div>
-        }
+                    {/* Type repartition recieves */}
+                    {fightersFilter.length > 0 && 
+                    <Grid item xs={12} md={6}>
+                        <Paper sx={{ padding: (theme) => theme.spacing(2) }}>
+                            <Typography variant="h6">Type repartition recieves</Typography>
+                            <RecievedTypeRepartition fight={displayedFight} fightersFilter={fightersFilter} />
+                        </Paper>
+                    </Grid>}
 
-        {/* History */}
-        {history && history.length > 0 && 
-            <div className={[styles.fight__card, styles.fight__card_highlight].join(" ")}>
-                <div className={styles.fight__card__header}>
-                    <h3 className={styles.fight__card__header__title}>History</h3>
-                    <div>
+                    {/* Spells */}
+                    <Grid item xs={12} md={6}>
+                        <Paper sx={{ padding: (theme) => theme.spacing(2) }}>
+                            <Typography variant="h6">Spells</Typography>
+                            <SpellsLog fight={displayedFight} fightersFilter={fightersFilter} />
+                        </Paper>
+                    </Grid>
+                </>
+            }
+
+            {/* History */}
+            {history && history.length > 0 &&
+                <Grid item xs={12}>
+                    <Box>
+                        <Typography variant="h6">History</Typography>
+                        {/* <div>
                         {currentFight.round > 0 && <button className={styles.fightsHisotry__item} onClick={() => setDisplayedFight(currentFight)}>Current fight</button>}
                         <button onClick={async () => {
                             const fileName = "file";
@@ -134,30 +168,26 @@ function Fight() {
                             link.click();
                             document.body.removeChild(link);
                         }}>Save</button>
-                    </div>
-                </div>
+                    </div> */}
 
-                <div className={styles.fight__hisotry__items}>
-                    {history.map(fight => 
-                        <button 
-                            className={styles.fight__hisotry__item} 
-                            key={fight.startTime} 
-                            onClick={() => setDisplayedFight(fight)}>
-                                <img className={styles.fight__hisotry__item__image} alt="" src={process.env.PUBLIC_URL + "/img/monsters/" + fight.fighters.find(f => f.contextualId < 0 && !f.stats.summoned && f.spawnInfo.teamId > 0)?.creatureGenericId}/>
-                                <div className={styles.fight__hisotry__item__content}>
-                                    <div className={styles.fight__hisotry__item__content__time}><DateTime timestamp={fight.startTime} /></div>
-                                    <div className={styles.fight__hisotry__item__content__fighters}>
-                                        {fight.fighters.filter(f => f.contextualId < 0 && !f.stats.summoned && f.spawnInfo.teamId > 0).map(f =>    
-                                            <div className={styles.fight__hisotry__item__content__fighter} key={f.contextualId}>{f.name}</div>)}
-                                    </div>
-                                </div>
-                        </button>
-                    )}
-                </div>
-            </div>
-        }
-        {/* {displayedFight && <div><pre>{JSON.stringify(displayedFight.fighters, null, 2) }</pre></div>} */}
-    </div>
+                        <Grid container spacing={2} sx={{ alignItems: "stretch", flexWrap: "nowrap", overflow: "auto", whiteSpace: "nowrap", width: "100%", paddingBottom: theme.spacing(.25) }}>
+                            {history.map(fight =>
+                                <Grid item xs={2} onClick={() => setDisplayedFight(fight)} sx={{ flexShrink: 0 }}>
+                                    <HistoryCard
+                                        key={fight.startTime}
+                                        startTime={fight.startTime}
+                                        figthers={fight.fighters.filter(f => f.contextualId < 0 && !f.stats.summoned && f.spawnInfo.teamId > 0).map(f => f.name)}
+                                        imgSrc={process.env.PUBLIC_URL + "/img/monsters/" + fight.fighters.find(f => f.contextualId < 0 && !f.stats.summoned && f.spawnInfo.teamId > 0)?.creatureGenericId}
+                                    />
+                                </Grid>
+                            )}
+                        </Grid>
+                    </Box>
+                </Grid>
+            }
+            {/* {displayedFight && <div><pre>{JSON.stringify(displayedFight.fighters, null, 2) }</pre></div>} */}
+        </Grid>
+    </Box>
 }
 
 export default Fight;
