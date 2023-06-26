@@ -1,8 +1,14 @@
 import React, { useState, useEffect } from 'react';
+import {
+    Box, Grid, Typography, Card, Stack,
+    CardMedia,
+    CardContent, Tooltip,
+} from '@mui/material';
+import EmptyState from '../../components/empty-state/EmptyState';
+
 import { useAppSelector } from '../../app/hooks';
 import { selectItem } from './forgemagieSlice';
 
-import styles from './Forgemagie.module.css';
 import { equipmentStats, statImage } from '../../app/equipmentStats';
 import { ObjectEffectInteger } from '../../app/dofusInterfaces';
 
@@ -11,111 +17,129 @@ function Forgemagie() {
 
     const [equipment, setEquipment] = useState<any>(null);
     const [equipments, setEquipments] = useState<any[]>([]);
-    
+
     useEffect(() => {
-        fetch(process.env.PUBLIC_URL + '/data/equipments.json').then(res => res.json()).then(res => setEquipments(res));
-        if(item) setEquipment(equipments.find(e => e._id === item.objectGID));
+        fetch(process.env.PUBLIC_URL + '/data/items.json').then(res => res.json()).then(res => setEquipments(res));
+        if (item) setEquipment(equipments.find(e => e._id === item.objectGID));
     }, []);
 
     useEffect(() => {
-        if(item && equipments.length)  {
+        if (item && equipments.length) {
             const eq = equipments.find(e => e._id === item.objectGID);
-            if(typeof eq !== "undefined") setEquipment(eq);
+            if (typeof eq !== "undefined") setEquipment(eq);
         }
     }, [item, equipments]);
 
-    return <div>
-    {/* Not item to display */}
-    {item === null &&
-        <div className={styles.no_items}>
-            Go to the fm interface and select an item.
-        </div>
-    }
+    return (
+        <Box sx={{ flexGrow: 1 }}>
+            <Grid container spacing={2} sx={{ alignItems: "stretch" }}>
+                {/* Not item to display */}
+                {item === null &&
+                    <Grid item xs={12}>
+                        <EmptyState>
+                            Go to the fm interface and select an item.
+                        </EmptyState>
+                    </Grid>
+                }
 
-    {/* Not item to display */}
-    {typeof equipment === "undefined" &&
-        <div className={styles.no_items}>
-            Equipment is undefined.
-        </div>
-    }
+                {/* Not item to display */}
+                {typeof equipment === "undefined" &&
+                    <Grid item xs={12}>
+                        <EmptyState>
+                            Equipment is undefined.
+                        </EmptyState>
+                    </Grid>
+                }
 
-        {/* Items display */}
-        {item !== null && equipment &&
-            <div className={styles.market}>
-                <div className={styles.market__header}>
-                    <h3>{equipment.name}</h3>
+                {/* Items display */}
+                {item !== null && equipment &&
+                    <>
+                        <Grid item xs={12}><Typography variant="h6">{equipment.name}</Typography></Grid>
+                        <Grid item xs={4}>
 
-                    <div className={styles.market__header__item}>
-                        <div className={styles.market__header__item__informations}>
-                            <img src={process.env.PUBLIC_URL + equipment.imgUrl} alt="" />
-                        </div>
+                            <Card sx={{ display: 'flex', alignItems: "center" }}>
+                                <CardMedia
+                                    component="img"
+                                    sx={{ maxWidth: 60, flexShrink: 0 }}
+                                    image={process.env.PUBLIC_URL + "/img/items/" + equipment?.iconId + ".png"}
+                                    alt=""
+                                />
+                                <CardContent>
+                                    {equipment.possibleEffects.map((stat: any) => {
+                                        const effect = item.effects.find(effect => effect.actionId === stat.effectId);
 
-                        <div className={styles.market__header__item__effects}>
-                            {equipment.statistics.map((stat: { [x: string]: { max: number; min: number; }; }) => {
-                                const key = Object.keys(stat)[0];
-                                const effect = item.effects.find(effect => equipmentStats.get(effect.actionId)?.name === key);
+                                        return <Stack key={stat.effectId} direction="row" spacing={2} sx={{ justifyContent: "space-between" }}>
+                                            <Statistic id={stat.effectId} possibleEffects={equipment.possibleEffects} key={stat.effectId} />
+                                            <Progress min={stat.diceNum} max={stat.diceSide} low={stat.diceNum} high={stat.diceSide} optimum={stat.diceSide} value={effect ? effect.value : 0} />
+                                        </Stack>
+                                    })}
+                                </CardContent>
+                            </Card>
+                        </Grid>
 
-                                return <div className={styles.market__header__item__effect} key={key}>
-                                    <Statistic id={key} value={{ min: stat[key].min, max: stat[key].max }} />
-                                    <Progress min={stat[key].min} max={stat[key].max}  low={stat[key].min} high={stat[key].max} optimum={stat[key].max} value={effect ? effect.value : 0} />
-                                </div>
-                            })}
-                        </div>
-                    </div>
+                        <Grid item xs={8}>
+                            <Typography variant="h2">Reliquat : {Math.floor(item.magicPool)}</Typography>
+                        </Grid>
 
-                    <div className={styles.market__header__pool}>
-                        <span>{Math.floor(item.magicPool)}</span>
-                    </div>
-                </div>
-
-
-                <div className={styles.market__history}>
-                    {item.history.map((h, index) => <HistoryItem key={index} craftResult={h.craftResult} effects={h.objectInfo.effects} magicPoolStatus={h.magicPoolStatus} />)}
-                </div>
-            </div>
-        }
-    </div>
+                        <Grid item xs={12}>
+                            {item.history.map((h, index) => <HistoryItem key={index} craftResult={h.craftResult} effects={h.objectInfo.effects} magicPoolStatus={h.magicPoolStatus} />)}
+                        </Grid>
+                    </>
+                }
+            </Grid>
+        </Box >)
 }
 
 export default Forgemagie;
 
 interface StatisticProps {
     id: number | string;
-    value: number | string | { min: number, max: number };
+    value?: number | string;
+    possibleEffects: {
+        effectId: number,
+        diceNum: number,
+        diceSide: number,
+    }[];
 }
 
 function Statistic(props: StatisticProps) {
-    const statistic = typeof props.id == "number" ? equipmentStats.get(props.id) : { name: props.id, negative: false };
+    const effect = props.possibleEffects.find((e) => e.effectId === props.id);
+    const statistic = typeof props.id == "number" ? equipmentStats.get(props.id) : { name: props.id, negative: false, reverse: false };
 
-    return <div className={styles.statistic} data-statid={props.id}>
-        <img className={styles.statistic__image} src={process.env.PUBLIC_URL + statImage.get(statistic?.name)} alt="" />
-        <div className={styles.statistic__details} data-negative={statistic?.negative}>
-            {typeof props.value == "object" ?
-                <span className={styles.statistic__details__value}>{`${props.value.min} ${props.value.max ? (' à ' + props.value.max) : ""}`}</span>
-                : <span className={styles.statistic__details__value}>{statistic?.negative ? -props.value : props.value}</span>
+    return <Box data-statid={props.id} key={props.id} sx={{display: "flex", alignItems: "center"}}>
+        {/* @ts-ignore */}
+        <img src={process.env.PUBLIC_URL + statImage.get(statistic?.name)} alt="" />
+        <Box data-negative={statistic?.negative}>
+            {typeof props.value == "undefined" ?
+                <Typography component="span">{`${statistic?.reverse ? statistic?.name + " " : ""}${statistic?.negative ? "-" : ""}${effect?.diceNum} ${effect?.diceSide ? (' à ' + (statistic?.negative ? "-" : "") + effect?.diceSide) : ""}${!statistic?.reverse ? " " + statistic?.name + " " : ""}`}</Typography>
+                : <Typography component="span"
+                    sx={{
+                        fontWeight: !effect || effect?.diceSide && props.value >= effect?.diceSide ? 700 : 300,
+                        color: effect ? (effect.diceSide && props.value > effect?.diceSide ? "green" : "inherit") : "blue",
+                    }}
+                >{statistic?.reverse ? statistic?.name + " " : ""}{statistic?.negative ? -props.value : props.value}{!statistic?.reverse ? " " + statistic?.name + " " : ""}</Typography>
             }
-            <span className={styles.statistic__details__name}>{statistic?.name}</span>
-        </div>
-    </div>
+        </Box>
+    </Box>
 }
 
-function Progress(props: {min: number, max: number, low: number, high: number, optimum: number, value: number}) {
-    return <div className={styles.progress}>
-        <meter className={styles.progress__progressbar} min={props.min} max={props.max} low={props.low} high={props.high} optimum={props.optimum} value={props.value}></meter>
-        {/* <progress value={props.value} max={props.max}>{props.value}</progress> */}
-        <span className={styles.progress__label}>{props.value}</span>
-    </div>
+function Progress(props: { min: number, max: number, low: number, high: number, optimum: number, value: number }) {
+    return <Box>
+        <Tooltip title={props.value} placement="right">
+            <meter min={props.min} max={props.max} low={props.low} high={props.high} optimum={props.optimum} value={props.value}></meter>
+        </Tooltip>
+    </Box>
 }
 
-function HistoryItem (props: {effects: ObjectEffectInteger[], craftResult: number, magicPoolStatus: number}) {
+function HistoryItem(props: { effects: ObjectEffectInteger[], craftResult: number, magicPoolStatus: number }) {
     const reliquat = (props.effects.reduce((prev, curr) => {
         const stat = equipmentStats.get(curr.actionId);
         return prev + curr.value * (stat ? stat.density : 0);
     }, 0));
 
-    return <div className={styles.market__fmline} data-result={props.craftResult} data-reliquat={props.magicPoolStatus}>
-        {props.effects.map(effect => <div key={effect.actionId} className={styles.market__fmline_effect}>{(effect.value > 0 ? `+${effect.value}` : `${effect.value}`) + ` ${equipmentStats.get(effect.actionId)?.name}`}</div>)}
-        {props.magicPoolStatus === 2 && <div className={styles.market__fmline_reliquat}>+{reliquat} reliquat</div>}
-        {props.magicPoolStatus === 3 && <div className={styles.market__fmline_reliquat}>{reliquat} reliquat</div>}
-    </div>
+    return <Box data-result={props.craftResult} data-reliquat={props.magicPoolStatus}>
+        {props.effects.map(effect => <Box key={effect.actionId}>{(effect.value > 0 ? `+${effect.value}` : `${effect.value}`) + ` ${equipmentStats.get(effect.actionId)?.name}`}</Box>)}
+        {props.magicPoolStatus === 2 && <Box>+{reliquat} reliquat</Box>}
+        {props.magicPoolStatus === 3 && <Box>{reliquat} reliquat</Box>}
+    </Box>
 }

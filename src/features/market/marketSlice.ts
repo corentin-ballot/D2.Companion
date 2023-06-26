@@ -1,6 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { BidExchangerObjectInfo, ExchangeTypesItemsExchangerDescriptionForUserMessage } from '../../app/dofusInterfaces';
-import { equipmentStats } from '../../app/equipmentStats';
 import { RootState } from '../../app/store';
 
 let items: any[] = [];
