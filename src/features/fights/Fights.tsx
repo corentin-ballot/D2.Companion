@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { useAppSelector } from '../../app/hooks';
 import { fightModel, selectCurrent, selectHistory } from './fightsSlice';
 
-import DateTime from '../../components/dateTime/DateTime';
 import RecievedDommagesPerRound from '../../components/fightGraphs/dommages/RecievedDommagesPerRound';
 import DealedDommagesPerRound from '../../components/fightGraphs/dommages/DealedDommagesPerRound';
 import TotalDommages from '../../components/fightGraphs/dommages/TotalDommages';
@@ -17,8 +16,6 @@ import EmptyState from '../../components/empty-state/EmptyState';
 import { useTheme } from '@material-ui/core/styles';
 import Stack from '@mui/material/Stack';
 import HistoryCard from '../../components/history-card/HistoryCard';
-
-const styles = {};
 
 function Fight() {
     const theme = useTheme();

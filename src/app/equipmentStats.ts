@@ -77,6 +77,7 @@ export const equipmentStats = new Map([
     [418, {name: "Dommages Critiques", density: 4, negative: false}],
     [419, {name: "Dommages Critiques", density: 4, negative: true}],
     [420, {name: "Résistance Critique", density: 2, negative: false}],
+    [421, {name: "Résistance Critique", density: 2, negative: true}],
     [422, {name: "Dommages Terre", density: 5, negative: false}],
     [423, {name: "Dommages Terre", density: 5, negative: true}],
     [424, {name: "Dommages Feu", density: 5, negative: false}],
@@ -96,11 +97,15 @@ export const equipmentStats = new Map([
     [2800, {name: "% Dommages mêlée", density: 15, negative: false}],
     [2801, {name: "% Dommages mêlée", density: 15, negative: true}],
     [2802, {name: "% Résistance mêlée", density: 15, negative: true}],
+    [2803, {name: "% Résistance mêlée", density: 15, negative: false}],
     [2804, {name: "% Dommages distance", density: 15, negative: false}],
+    [2805, {name: "% Dommages distance", density: 15, negative: true}],
     [2806, {name: "% Résistance distance", density: 15, negative: true}],
     [2807, {name: "% Résistance distance", density: 15, negative: false}],
+    [2808, {name: "% Dommages d'armes", density: 15, negative: false}],
     [2809, {name: "% Dommages d'armes", density: 15, negative: true}],
     [2812, {name: "% Dommages aux sorts", density: 15, negative: false}],
+    [2813, {name: "% Dommages aux sorts", density: 15, negative: true}],
     [2825, {name: "Empêche les futures forgemagies", density: 0, negative: false, reverse: true}],
 ]);
 

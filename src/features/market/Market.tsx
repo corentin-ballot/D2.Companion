@@ -1,10 +1,11 @@
-import React, { useState, MutableRefObject, useRef, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
+import { Box, Button, Chip, Grid, Stack, Typography, Card, CardContent, CardMedia, CardActions, MenuItem, TextField } from '@mui/material';
+
 import { useAppSelector } from '../../app/hooks';
 import { selectItems } from './marketSlice';
-
-import styles from './Market.module.css';
 import { equipmentStats, statImage } from '../../app/equipmentStats';
 import NumberFormat from '../../components/numberFormat/NumberFormat';
+import EmptyState from '../../components/empty-state/EmptyState';
 
 interface StatFilterObject {
     id: number;
@@ -14,10 +15,14 @@ interface StatFilterObject {
 function Market() {
     const items = useAppSelector(selectItems);
     const [displayedItems, setDisplayedItems] = useState([...items].sort((a, b) => a.prices[0] - b.prices[0]));
+    const [possibleEffects, setPossibleEffects] = useState(displayedItems.length ? displayedItems[0].possibleEffects : []);
     const [statFilters, setStatFilters] = useState([] as StatFilterObject[]);
-
+    const [minStatInputValue, setMinStatInputValue] = useState("");
+    const [statInputValue, setStatInputValue] = useState("");
+    
     useEffect(() => {
         setDisplayedItems([...items].sort((a, b) => a.prices[0] - b.prices[0]));
+        setPossibleEffects(displayedItems.length ? displayedItems[0].possibleEffects : []);
     }, [items]);
 
     const addStatFilter = (stat: StatFilterObject) => {
@@ -28,59 +33,85 @@ function Market() {
         setStatFilters(statFilters.filter(s => s.id !== stat.id));
     }
 
-    const currentStatIdRef: MutableRefObject<HTMLSelectElement | null> = useRef(null);
-    const currentStatMinRef: MutableRefObject<HTMLInputElement | null> = useRef(null);
-
     const handleAddCurrentStatClicked = () => {
-        if (currentStatIdRef.current?.value && currentStatMinRef.current?.value) {
-            addStatFilter({ id: Number(currentStatIdRef.current?.value), min: Number(currentStatMinRef.current?.value) });
+        console.log("minStatInputValue", typeof minStatInputValue, "statInputValue", typeof statInputValue);
+        if (typeof statInputValue === "number") {
+            addStatFilter({ id: Number(statInputValue), min: Number(minStatInputValue) });
         }
     }
 
-    return <div>
-        {/* Not item to display */}
-        {displayedItems.length === 0 &&
-            <div className={styles.no_items}>
-                Go to the equipments shop to get advanced filters.
-            </div>
-        }
+    return <Box sx={{ flexGrow: 1 }}>
+        <Grid container spacing={2} sx={{ alignItems: "stretch"}}>
+            {/* Not item to display */}
+            {displayedItems.length === 0 &&
+                <Grid item xs={12}>
+                    <EmptyState>
+                        Go to the equipments shop to get advanced filters.
+                    </EmptyState>
+                </Grid>
+            }
 
-        {/* Items display */}
-        {displayedItems && displayedItems.length > 0 &&
-            <div className={styles.market}>
-                {/* Default item */}
-                <div className={styles.market__header}>
-                    <h3>{displayedItems[0]?.name}</h3>
+            {/* Items display */}
+            {displayedItems && displayedItems.length > 0 &&
+                <>
+                    <Grid item xs={4}>
+                        <Typography variant="h6">{displayedItems[0]?.name}</Typography>
 
-                    <div className={styles.market__header__item}>
-                        <div className={styles.market__header__item__informations}>
-                            <img src={process.env.PUBLIC_URL + displayedItems[0]?.imgUrl} alt="" />
-                        </div>
+                       {/* Default item */}
+                       <Card  sx={{ display: 'flex', alignItems: "center" }}>
+                            <CardMedia
+                                component="img"
+                                sx={{ maxWidth: 60, flexShrink: 0 }}
+                                image={ process.env.PUBLIC_URL + displayedItems[0].imgUrl}
+                                alt=""
+                            />
+                            <CardContent>
+                                {possibleEffects.map(stat => {
+                                    // const key = equipmentStats.get(stat.effectId);
+                                    return <Statistic id={stat.effectId} 
+                                    // value={{ min: stat.diceNum, max: stat.diceSide }} 
+                                    possibleEffects={possibleEffects} key={stat.effectId} />
+                                })}
+                            </CardContent>
+                        </Card>
+                    </Grid>
 
-                        <div className={styles.market__header__item__effects}>
-                            {displayedItems[0] && displayedItems[0].possibleEffects.map(stat => {
-                                const key = equipmentStats.get(stat.effectId);
-                                return <Statistic id={stat.effectId} value={{ min: stat.diceNum, max: stat.diceSide }} key={key?.name} />
-                            })}
-                        </div>
-                    </div>
-                    <div className={styles.market__header__filter}>
-                        <h4 className={styles.market__header__filter__title}>Filter items effects</h4>
-                        <div className={styles.market__header__filter__add}>
-                            <input type="number" placeholder="min" className={styles.market__header__filter__add__mininput} ref={currentStatMinRef} />
-                            <select className={styles.market__header__filter__add__select} ref={currentStatIdRef}>
-                                {Array.from(equipmentStats.keys()).filter(statId => !equipmentStats.get(statId)?.negative && statId && equipmentStats.get(statId)?.name).map(statId => <option key={statId} value={statId}>{equipmentStats.get(statId)?.name}</option>)}
-                            </select>
-                            <button className={styles.market__header__filter__add__btn} onClick={handleAddCurrentStatClicked}>Add</button>
-                        </div>
-                        <div className={styles.market__header__filter__effects}>
-                            {statFilters.map(stat => <div key={stat.id} className={styles.market__header__filter__effects__effect}><Statistic id={stat.id} value={stat.min} key={stat.id} /><button className={styles.market__header__filter__effects__remove} onClick={() => removeStatFilter(stat)}>Remove</button></div>)}
-                        </div>
-                    </div>
-                </div>
+                    <Grid item xs={8}>
+                        {/* Filters */}
+                        <Box>
+                            <Typography variant="h6">Filter items effects</Typography>
+                            <Box component="form" sx={{ display: "flex", alignItems: "center", gap: (theme) => theme.spacing(2), marginBottom: (theme) => theme.spacing(1)}}>
+                                <TextField
+                                    id="statistic-minimum-value"
+                                    label="Minimum"
+                                    type="number"
+                                    value={minStatInputValue}
+                                    onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                                        setMinStatInputValue(event.target.value);
+                                    }}
+                                />
 
-                {/* Item list */}
-                <div className={styles.market__items}>
+                                <TextField
+                                    id="statistic-select"
+                                    label="Statistic"
+                                    select
+                                    sx={{ minWidth: 200 }}
+                                    value={statInputValue}
+                                    onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                                        setStatInputValue(event.target.value);
+                                    }} 
+                                >
+                                    {Array.from(equipmentStats.keys()).filter(statId => !equipmentStats.get(statId)?.negative && statId && equipmentStats.get(statId)?.name).map(statId => <MenuItem key={statId} value={statId}>{equipmentStats.get(statId)?.name}</MenuItem>)}
+                                </TextField>
+                                <Button onClick={handleAddCurrentStatClicked} variant="contained">Add</Button>
+                            </Box>
+                            <Stack spacing={1} direction="row" useFlexGap flexWrap="wrap">
+                                {statFilters.map(stat => <Chip key={stat.id} label={<Statistic id={stat.id} value={stat.min} key={stat.id} possibleEffects={possibleEffects} />} onDelete={() => removeStatFilter(stat)} />)}
+                            </Stack>
+                        </Box>
+                    </Grid>
+
+                    {/* Item list */}
                     {displayedItems.filter(
                         item => item.effects.filter(
                             effect => statFilters.filter(
@@ -88,39 +119,55 @@ function Market() {
                             ).length
                         ).length === statFilters.length
                     )
-                        .map(item => <div key={item.objectUID} className={styles.market__items__item}>
-                            <div className={styles.market__items__item__effects}>
-                                {item.effects.map(effect => <Statistic id={effect.actionId} value={effect.value} key={effect.actionId} />)}
-                            </div>
-                            <span className={styles.market__items__item__price}><NumberFormat value={item.prices[0]} /></span>
-                        </div>)}
-                </div>
+                        .map(item =>
+                            <Grid item xs={2} key={item.objectUID}>
+                                <Card>
+                                    <CardContent>
+                                        {item.effects.map(effect => <Statistic id={effect.actionId} value={effect.value} key={effect.actionId} possibleEffects={possibleEffects} />)}
+                                    </CardContent>
+                                    <CardActions>
+                                        <NumberFormat value={item.prices[0]} />
+                                    </CardActions>
+                                </Card>
+                            </Grid>
+                        )
+                    }
 
-                {/* {displayedItems && <div><pre>{JSON.stringify(displayedItems, null, 2) }</pre></div>} */}
-            </div>
-        }
-    </div>
+                    {/* {displayedItems && <div><pre>{JSON.stringify(displayedItems, null, 2) }</pre></div>} */}
+                </>
+            }
+        </Grid>
+    </Box>
 }
 
 export default Market;
 
 interface StatisticProps {
     id: number | string;
-    value: number | string | { min: number, max: number };
+    value?: number | string;
+    possibleEffects: {
+        effectId: number,
+        diceNum: number,
+        diceSide: number,
+    }[];
 }
 
 function Statistic(props: StatisticProps) {
+    const effect = props.possibleEffects.find((e) => e.effectId === props.id);
     const statistic = typeof props.id == "number" ? equipmentStats.get(props.id) : { name: props.id, negative: false, reverse: false };
 
-    return <div className={styles.statistic} data-statid={props.id} key={props.id}>
-        <img className={styles.statistic__image} src={process.env.PUBLIC_URL + statImage.get(statistic?.name)} alt="" />
-        {statistic?.reverse && <span className={styles.statistic__details__name}>{statistic?.name}</span>}
-        <div className={styles.statistic__details} data-negative={statistic?.negative}>
-            {typeof props.value == "object" ?
-                <span className={styles.statistic__details__value}>{`${props.value.min} ${props.value.max ? (' à ' + props.value.max) : ""}`}</span>
-                : <span className={styles.statistic__details__value}>{statistic?.negative ? -props.value : props.value}</span>
+    return <Box data-statid={props.id} key={props.id} sx={{display: "flex", alignItems: "center"}}>
+        <img src={process.env.PUBLIC_URL + statImage.get(statistic?.name)} alt="" />
+        <Box data-negative={statistic?.negative}>
+            {typeof props.value == "undefined" ?
+                <Typography component="span">{`${statistic?.reverse ? statistic?.name + " " : ""}${statistic?.negative ? "-" : ""}${effect?.diceNum} ${effect?.diceSide ? (' à ' + (statistic?.negative ? "-" : "") + effect?.diceSide) : ""}${!statistic?.reverse ? " " + statistic?.name + " " : ""}`}</Typography>
+                : <Typography component="span"
+                    sx={{
+                        fontWeight: !effect || effect?.diceSide && props.value >= effect?.diceSide ? 700 : 300,
+                        color: effect ? (effect.diceSide && props.value > effect?.diceSide ? "green" : "inherit") : "blue",
+                    }}
+                >{statistic?.reverse ? statistic?.name + " " : ""}{statistic?.negative ? -props.value : props.value}{!statistic?.reverse ? " " + statistic?.name + " " : ""}</Typography>
             }
-            {!statistic?.reverse && <span className={styles.statistic__details__name}>{statistic?.name}</span>}
-        </div>
-    </div>
+        </Box>
+    </Box>
 }
