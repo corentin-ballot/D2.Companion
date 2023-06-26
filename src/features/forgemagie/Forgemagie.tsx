@@ -106,7 +106,7 @@ function Statistic(props: StatisticProps) {
     const effect = props.possibleEffects.find((e) => e.effectId === props.id);
     const statistic = typeof props.id == "number" ? equipmentStats.get(props.id) : { name: props.id, negative: false, reverse: false };
 
-    return <Box data-statid={props.id} key={props.id} sx={{display: "flex", alignItems: "center"}}>
+    return <Box data-statid={props.id} key={props.id} sx={{ display: "flex", alignItems: "center" }}>
         {/* @ts-ignore */}
         <img src={process.env.PUBLIC_URL + statImage.get(statistic?.name)} alt="" />
         <Box data-negative={statistic?.negative}>
@@ -124,11 +124,9 @@ function Statistic(props: StatisticProps) {
 }
 
 function Progress(props: { min: number, max: number, low: number, high: number, optimum: number, value: number }) {
-    return <Box>
-        <Tooltip title={props.value} placement="right">
-            <meter min={props.min} max={props.max} low={props.low} high={props.high} optimum={props.optimum} value={props.value}></meter>
-        </Tooltip>
-    </Box>
+    return <Tooltip title={props.value} placement="right">
+        <meter min={props.min} max={props.max} low={props.low} high={props.high} optimum={props.optimum} value={props.value}></meter>
+    </Tooltip>
 }
 
 function HistoryItem(props: { effects: ObjectEffectInteger[], craftResult: number, magicPoolStatus: number }) {
