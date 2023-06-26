@@ -157,6 +157,7 @@ function Statistic(props: StatisticProps) {
     const statistic = typeof props.id == "number" ? equipmentStats.get(props.id) : { name: props.id, negative: false, reverse: false };
 
     return <Box data-statid={props.id} key={props.id} sx={{display: "flex", alignItems: "center"}}>
+        {/* @ts-ignore */}
         <img src={process.env.PUBLIC_URL + statImage.get(statistic?.name)} alt="" />
         <Box data-negative={statistic?.negative}>
             {typeof props.value == "undefined" ?
