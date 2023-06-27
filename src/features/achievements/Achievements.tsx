@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import styles from './Achievements.module.css';
+import { Box, Paper, FormControlLabel, Checkbox, Link, Grid, Typography, Avatar, Accordion, AccordionDetails, AccordionSummary, List, ListItem, ListItemIcon, ListItemText } from '@mui/material';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 import { useAppSelector } from '../../app/hooks';
 import {
@@ -65,17 +66,15 @@ function Achievements() {
     const [achievements, setAchievements] = useState<Achievement[]>([]);
     const [almanax, setAlmanax] = useState<Almanax[]>([]);
     const [filters, setFilters] = useState([
-        {id: "displayFinished", label: "Display finished", value: true},
-        {id: "displayMeta", label: "Display meta-achievements", value: true},
-        {id: "displayIntermediate", label: "Display intermediate score", value: true},
+        { id: "displayFinished", label: "Display finished", value: false },
+        { id: "displayMeta", label: "Display meta-achievements", value: false },
     ]);
 
     const finishedAchievements = useAppSelector(selectFinishedAchievements);
-    
+
     useEffect(() => {
         fetch(process.env.PUBLIC_URL + '/data/achievement-categories.json').then(res => res.json()).then(res => setAchievementCategories(res as AchievementCategorie[]));
         fetch(process.env.PUBLIC_URL + '/data/achievements.json').then(res => res.json()).then(res => setAchievements(res as Achievement[]));
-        fetch(process.env.PUBLIC_URL + '/data/almanax.json').then(res => res.json()).then(res => setAlmanax(res as Almanax[]));
     }, []);
 
     const isFinishedAchievement = (achievementId: number) => {
@@ -83,40 +82,66 @@ function Achievements() {
     }
 
     const shouldDisplayAchievement = (achievement: Achievement | undefined) => {
-        if(!achievement) return false;
+        if (!achievement) return false;
         return true &&
             (filters.find(filter => filter.id === "displayFinished")?.value || !isFinishedAchievement(achievement.id)) &&
-            (filters.find(filter => filter.id === "displayMeta")?.value || achievement.iconId !== 82) &&
-            (filters.find(filter => filter.id === "displayIntermediate")?.value || !achievement.name.fr.match(/Score\s([1]{0,1}[0-9]{0,2})\)$/))
+            (filters.find(filter => filter.id === "displayMeta")?.value || achievement.iconId !== 82)
     }
 
     const handleFilterChanged = (event: React.ChangeEvent<HTMLInputElement>) => {
         // @ts-ignore
-        setFilters(filters.map(filter => event.target.id === filter.id ? {...filter, value: event.target.checked} : filter));
+        setFilters(filters.map(filter => event.target.id === filter.id ? { ...filter, value: event.target.checked } : filter));
     }
-        
-    return <div className={styles.achievements}>
-        <div className={styles.achievements_filters}>
-            {filters.map(filter => <div key={filter.id}>
-                <input type="checkbox" id={filter.id} name={filter.id} checked={filter.value} onChange={handleFilterChanged} />
-                <label htmlFor={filter.id}>{filter.label}</label>
-            </div>)}
-        </div>
 
-        <ul className={styles.achievements__categories}>
-            {achievementCategories.filter(ac => ac.parentId !== 0).map(categorie => <li key={categorie.id} className={styles.achievements__categorie} data-total={categorie.achievementIds.filter(aid => shouldDisplayAchievement(achievements.find(a => a.id === aid))).length}>
-                <button data-open={false} onClick={(event: any) => event.target.dataset.open = !(event.target.dataset.open === "true")}>{categorie.name.fr} ({categorie.achievementIds.filter(aid => shouldDisplayAchievement(achievements.find(a => a.id === aid))).length})</button>
+    return <Box sx={{ flexGrow: 1 }}>
+        <Grid container spacing={2}>
+            <Grid item xs={12}>
+                <Paper sx={{ display: "flex", justifyContent: "space-between", padding: (theme) => theme.spacing(1) }}>
+                    {filters.map(filter => <Box key={filter.id}>
+                        <FormControlLabel label={filter.label} control={<Checkbox id={filter.id} name={filter.id} checked={filter.value} onChange={handleFilterChanged} />} />
+                    </Box>)}
+                </Paper>
+            </Grid>
 
-                <ul className={styles.achievements__categorie__achievements}>
-                    {achievements.filter(achievement => shouldDisplayAchievement(achievement) && categorie.achievementIds.includes(achievement.id)).map(achievement => {
-                        return <li key={achievement.id} id={`${achievement.id}`} className={styles.achievements__categorie__achievement} data-finished={finishedAchievements.includes(achievement.id)}>
-                            <img src={process.env.PUBLIC_URL + "/img/achievements/" + achievement.iconId + ".png"} alt="" />{achievement.name.fr}
-                        </li>
-                    })}
-                </ul>
-            </li>)}
-        </ul>
-    </div>
+
+            <Grid item xs={12}>
+                {achievementCategories.filter(ac => ac.parentId !== 0).map(categorie => {
+                    const categorieAchievements = categorie.achievementIds.filter(aid => shouldDisplayAchievement(achievements.find(a => a.id === aid)));
+                    const isHidden = categorieAchievements.length <= 0;
+
+                    return isHidden ? <></> : <Accordion key={categorie.id}>
+                        <AccordionSummary
+                            expandIcon={<ExpandMoreIcon />}
+                            aria-controls={"categorie-panel-" + categorie.id}
+                            id={"categorie-" + categorie.id}
+                        >
+                            <Typography>{categorie.name.fr} ({categorieAchievements.length})</Typography>
+                        </AccordionSummary>
+                        <AccordionDetails>
+                            <Typography>
+                                <List dense sx={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: (theme) => theme.spacing(2) }}>
+                                    {achievements.filter(achievement => categorieAchievements.includes(achievement.id)).map(achievement => (
+                                        <ListItem sx={{ overflow: "hidden", backgroundColor: "#3F3F3D", padding: (theme) => theme.spacing(1), borderRadius: (theme) => theme.spacing(1) }} key={achievement.id}>
+                                            <ListItemIcon>
+                                                <Avatar
+                                                    variant="rounded"
+                                                    sx={{ width: 64, height: 64, marginRight: (theme) => theme.spacing(1) }}
+                                                    src={process.env.PUBLIC_URL + "/img/achievements/" + achievement.iconId + ".png"}
+                                                />
+                                            </ListItemIcon>
+                                            <ListItemText
+                                                primary={<Typography  sx={{ color: "#A6A6A4", fontWeight: "bold"}}>{achievement.name.fr}</Typography>}
+                                            />
+                                        </ListItem>
+                                    ))}
+                                </List>
+                            </Typography>
+                        </AccordionDetails>
+                    </Accordion>
+                })}
+            </Grid>
+        </Grid>
+    </Box>
 }
 
 export default Achievements;
