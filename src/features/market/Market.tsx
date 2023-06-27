@@ -55,7 +55,7 @@ function Market() {
             {displayedItems && displayedItems.length > 0 &&
                 <>
                     <Grid item xs={4}>
-                        <Typography variant="h6">{displayedItems[0]?.name}</Typography>
+                        <Typography variant="h2">{displayedItems[0]?.name}</Typography>
 
                        {/* Default item */}
                        <Card  sx={{ display: 'flex', alignItems: "center" }}>
@@ -79,7 +79,7 @@ function Market() {
                     <Grid item xs={8}>
                         {/* Filters */}
                         <Box>
-                            <Typography variant="h6">Filter items effects</Typography>
+                            <Typography variant="h2">Filter items effects</Typography>
                             <Box component="form" sx={{ display: "flex", alignItems: "center", gap: (theme) => theme.spacing(2), marginBottom: (theme) => theme.spacing(1)}}>
                                 <TextField
                                     id="statistic-minimum-value"

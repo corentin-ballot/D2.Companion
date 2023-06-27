@@ -63,7 +63,7 @@ function Fight() {
                     <Grid item xs={12}>
                         <Paper sx={{ padding: (theme) => theme.spacing(2) }}>
                             <Grid container justifyContent="space-between" alignItems="center">
-                                <Typography variant="h6">Dommages dealed</Typography>
+                                <Typography variant="h2">Dommages dealed</Typography>
                                 {/* Dofensive */}
                                 <Link target="_blank" rel="noreferrer" href={`https://dofensive.com/fr/monster/${displayedFight.fighters.map(fighter => fighter.creatureGenericId).join(",")}`}>Voir les monstres sur Dofensive</Link>
                             </Grid>
@@ -103,7 +103,7 @@ function Fight() {
                     {fightersFilter.length > 0 && 
                     <Grid item xs={12} md={6}>
                         <Paper sx={{ padding: (theme) => theme.spacing(2) }}>
-                            <Typography variant="h6">Dommages dealed per round</Typography>
+                            <Typography variant="h2">Dommages dealed per round</Typography>
                             <DealedDommagesPerRound fight={displayedFight} fightersFilter={fightersFilter} />
                         </Paper>
                     </Grid>}
@@ -112,7 +112,7 @@ function Fight() {
                     {fightersFilter.length > 0 && 
                     <Grid item xs={12} md={6}>
                         <Paper sx={{ padding: (theme) => theme.spacing(2) }}>
-                            <Typography variant="h6">Dommages recieved per round</Typography>
+                            <Typography variant="h2">Dommages recieved per round</Typography>
                             <RecievedDommagesPerRound fight={displayedFight} fightersFilter={fightersFilter} />
                         </Paper>
                     </Grid>}
@@ -121,7 +121,7 @@ function Fight() {
                     {fightersFilter.length > 0 && 
                     <Grid item xs={12} md={6}>
                         <Paper sx={{ padding: (theme) => theme.spacing(2) }}>
-                            <Typography variant="h6">Type repartition dealed</Typography>
+                            <Typography variant="h2">Type repartition dealed</Typography>
                             <DealedTypeRepartition fight={displayedFight} fightersFilter={fightersFilter} />
                         </Paper>
                     </Grid>}
@@ -130,7 +130,7 @@ function Fight() {
                     {fightersFilter.length > 0 && 
                     <Grid item xs={12} md={6}>
                         <Paper sx={{ padding: (theme) => theme.spacing(2) }}>
-                            <Typography variant="h6">Type repartition recieves</Typography>
+                            <Typography variant="h2">Type repartition recieves</Typography>
                             <RecievedTypeRepartition fight={displayedFight} fightersFilter={fightersFilter} />
                         </Paper>
                     </Grid>}
@@ -138,7 +138,7 @@ function Fight() {
                     {/* Spells */}
                     <Grid item xs={12} md={6}>
                         <Paper sx={{ padding: (theme) => theme.spacing(2) }}>
-                            <Typography variant="h6">Spells</Typography>
+                            <Typography variant="h2">Spells</Typography>
                             <SpellsLog fight={displayedFight} fightersFilter={fightersFilter} />
                         </Paper>
                     </Grid>
@@ -149,7 +149,7 @@ function Fight() {
             {history && history.length > 0 &&
                 <Grid item xs={12}>
                     <Box>
-                        <Typography variant="h6">History</Typography>
+                        <Typography variant="h2">History</Typography>
                         {/* <div>
                         {currentFight.round > 0 && <button className={styles.fightsHisotry__item} onClick={() => setDisplayedFight(currentFight)}>Current fight</button>}
                         <button onClick={async () => {

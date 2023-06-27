@@ -54,7 +54,7 @@ function Forgemagie() {
                 {/* Items display */}
                 {item !== null && equipment &&
                     <>
-                        <Grid item xs={12}><Typography variant="h6">{equipment.name}</Typography></Grid>
+                        <Grid item xs={12}><Typography variant="h2">{equipment.name}</Typography></Grid>
                         <Grid item xs={4}>
 
                             <Card sx={{ display: 'flex', alignItems: "center" }}>

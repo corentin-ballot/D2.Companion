@@ -15,7 +15,7 @@ const EmptyState = (props: EmptyStateProps) => {
         padding: (theme) => theme.spacing(4),
         borderRadius: (theme) => theme.spacing(.5),
     }}>
-        <Typography variant="h6" align="center" sx={{color: theme.palette.primary.dark}}>{props.children}</Typography>
+        <Typography variant="subtitle1" align="center" sx={{color: theme.palette.primary.dark}}>{props.children}</Typography>
     </Box>
 )}
 

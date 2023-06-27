@@ -54,7 +54,7 @@ function Breeding() {
             <Grid item xs={12}>
                 <Paper sx={{ display: "flex", justifyContent: "space-between", padding: (theme) => theme.spacing(1) }}>
                     {NOTIFICATION_KEYS.map(notification => <Box key={notification.key}>
-                        <Typography variant="h6" onClick={() => handleOrderChanged(notification.key as Order)}>{notification.name}</Typography>
+                        <Typography variant="subtitle1" onClick={() => handleOrderChanged(notification.key as Order)}>{notification.name}</Typography>
                         <Box sx={{ display: "flex", marginRight: (theme) => theme.spacing(1) }}>
                             {/* @ts-ignore */}
                             <FormControlLabel label="Notification" control={<Checkbox id={notification.key + ".enable"} name={notification.key + ".enable"} checked={notifications[notification.key].enable} onChange={handleEnableChanged} />} />
@@ -69,7 +69,7 @@ function Breeding() {
             {displayedMounts && displayedMounts.length > 0 && displayedMounts.map(mount =>
                 <Grid item xs={2} key={mount.id}>
                     <Paper sx={{ padding: (theme) => theme.spacing(1) }}>
-                        <Typography variant="h6" noWrap sx={{ textAlign: "center" }}>{Mounts?.find(m => mount.model === m._id)?.name}</Typography>
+                        <Typography variant="subtitle1" noWrap sx={{ textAlign: "center" }}>{Mounts?.find(m => mount.model === m._id)?.name}</Typography>
 
                         <Box>
                             <Box sx={{ display: "flex" }}>

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
+import { Box, Paper, FormControlLabel, Checkbox, TextField, Grid, Typography, Button } from '@mui/material';
+
 import Notifications from '../../app/notifications';
-import styles from './Settings.module.css';
 
 function Settings() {
     const [nativeNotifications, setNativeNotifications] = useState(JSON.parse(localStorage.getItem("notifications.native") || "true"));
@@ -17,47 +18,40 @@ function Settings() {
         if (event.target.id === "notifications.houses.sellable") setHousesSellableNotifications(event.target.value);
         // if (event.target.id === "notifications.discord.username") setDiscordUsername(event.target.value);
     }
-    
-    
-    return <div className={styles.settings}>
-        <section>
-            <h3>Notifications</h3>
 
-            <section>
-                <h4>Browser notifications</h4>
-                <div className="input__container">
-                    <input type="checkbox" id="notifications.native" checked={nativeNotifications} onChange={handleInputChange} />
-                    <label htmlFor="notifications.native">Enable browser notifications</label>
-                </div>
 
-                <button onClick={() => new Notifications("Test").sendNative()}>Test</button>
-            </section>
-            
-            <section>
-                <h4>Discord notifications</h4>
-                <div className="input__container">
-                    <input type="checkbox" id="notifications.discord.enable" checked={discordNotifications} onChange={handleInputChange} />
-                    <label htmlFor="notifications.discord.enable">Enable discord notifications</label>
-                </div>    
-                
-                <div className="input__container">
-                    <input type="text" id="notifications.discord.webhook" onChange={handleInputChange} defaultValue={discordWebhook} placeholder=" " />
-                    <label htmlFor="notifications.discord.webhook">Discord webhook</label>
-                </div>
+    return <Box sx={{ flexGrow: 1 }}>
+        <Grid container spacing={2}>
+            <Grid item xs={12}>
+                <Typography variant="h1">Notifications</Typography>
 
-                <button onClick={() => new Notifications("Test").sendDiscord()}>Test</button>
-            </section>
-            
-            <section>
-                <h4>Houses notifications</h4>
-                <div className="input__container">
-                    <input type="checkbox" id="notifications.houses.sellable" checked={discordNotifications} onChange={handleInputChange} />
-                    <label htmlFor="notifications.houses.sellable">Enable abandonned house sellable notification</label>
-                </div>
-            </section>
-        </section>
-        
-    </div>
+                <Paper sx={{ padding: (theme) => theme.spacing(1) }}>
+                    <Typography variant="h2">Browser</Typography>
+
+                    <FormControlLabel control={<Checkbox id="notifications.native" checked={nativeNotifications} onChange={handleInputChange} />} label="Enable browser notifications" />
+
+                    <Button onClick={() => new Notifications("Test").sendNative()}>Test</Button>
+                </Paper>
+            </Grid>
+            <Grid item xs={12}>
+                <Paper sx={{ padding: (theme) => theme.spacing(1) }}>
+                    <Typography variant="h2">Discord</Typography>
+
+                    <FormControlLabel control={<Checkbox id="notifications.discord.enable" checked={discordNotifications} onChange={handleInputChange} />} label="Enable discord notifications" />
+
+                    <TextField id="notifications.discord.webhook" variant="outlined" defaultValue={discordWebhook} onChange={handleInputChange} label="Discord webhook" />
+                    <Button onClick={() => new Notifications("Test").sendNative()}>Test</Button>
+                </Paper>
+            </Grid>
+            <Grid item xs={12}>
+                <Paper sx={{ padding: (theme) => theme.spacing(1) }}>
+                    <Typography variant="h2">Houses</Typography>
+
+                    <FormControlLabel control={<Checkbox id="notifications.houses.sellable" checked={housesSellableNotifications} onChange={handleInputChange} />} label="Enable abandonned house sellable notification" />
+                </Paper>
+            </Grid>
+        </Grid>
+    </Box>
 }
 
 export default Settings;

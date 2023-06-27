@@ -5,16 +5,20 @@ import App from './App';
 import { store } from './app/store';
 import { Provider } from 'react-redux';
 import * as serviceWorker from './serviceWorker';
-import { CssBaseline } from '@mui/material';
+import { CssBaseline, ThemeProvider } from '@mui/material';
+import theme from './mui.theme';
+
 
 ReactDOM.render(
   <React.StrictMode>
+    <ThemeProvider theme={theme}>
       <CssBaseline />
       <Provider store={store}>
         <BrowserRouter basename={process.env.PUBLIC_URL}>
           <App />
         </BrowserRouter>
       </Provider>
+    </ThemeProvider>
   </React.StrictMode>,
   document.getElementById('root')
 );

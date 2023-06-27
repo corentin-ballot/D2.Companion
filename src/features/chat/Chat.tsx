@@ -89,7 +89,7 @@ function Chat() {
 
     return <Box sx={{ flexGrow: 1 }}>
         <Paper sx={{ padding: (theme) => theme.spacing(1), marginBottom: (theme) => theme.spacing(2) }}>
-            <Typography variant="h6" sx={{ marginBottom: (theme) => theme.spacing(1) }}>Notifications</Typography>
+            <Typography variant="h2" sx={{ marginBottom: (theme) => theme.spacing(1) }}>Notifications</Typography>
             <Box component="form" sx={{ display: "flex", alignItems: "center", gap: (theme) => theme.spacing(2), marginBottom: (theme) => theme.spacing(1) }}>
                 <TextField
                     id="scope-select"
@@ -155,7 +155,7 @@ function Chat() {
         </Paper>
 
         <Paper sx={{ padding: (theme) => theme.spacing(1), marginBottom: (theme) => theme.spacing(2) }}>
-            <Typography variant="h6" sx={{ marginBottom: (theme) => theme.spacing(1) }}>Redirection</Typography>
+            <Typography variant="h2" sx={{ marginBottom: (theme) => theme.spacing(1) }}>Redirection</Typography>
             <Box component="form" sx={{ display: "flex", alignItems: "center", gap: (theme) => theme.spacing(2), marginBottom: (theme) => theme.spacing(1) }}>
                 <TextField
                     id="channel-select"
