@@ -85,7 +85,7 @@ export const chatSlice = createSlice({
       while(chatMessage.content.includes("{chatmonster,")) {
         const match = chatMessage.content.match(/{chatmonster,([\d]+)}/);
         if (match && match[1]) {
-          const monster = data.monsters.find(e => e.id == match[1]);
+          const monster = data.monsters.find(e => e.id === match[1]);
           chatMessage.content = chatMessage.content.replace(/{chatmonster,([\d]+)}/, `[${typeof monster != "undefined" ? monster.name : ("chatmonster,"+match[1])}]`);
         }
       }
@@ -99,7 +99,7 @@ export const chatSlice = createSlice({
       while(chatMessage.content.includes("{chatachievement,")) {
         const match = chatMessage.content.match(/{chatachievement,([\d]+)}/);
         if (match && match[1]) {
-          const achievement = data.achievements.find(e => e.id == match[1]);
+          const achievement = data.achievements.find(e => e.id === match[1]);
           chatMessage.content = chatMessage.content.replace(/{chatachievement,([\d]+)}/, `[${typeof achievement != "undefined" ? achievement.name : ("chatachievement,"+match[1]) }]`);
         }
       }

@@ -64,7 +64,6 @@ export interface Almanax {
 function Achievements() {
     const [achievementCategories, setAchievementCategories] = useState<AchievementCategorie[]>([]);
     const [achievements, setAchievements] = useState<Achievement[]>([]);
-    const [almanax, setAlmanax] = useState<Almanax[]>([]);
     const [filters, setFilters] = useState([
         { id: "displayFinished", label: "Display finished", value: false },
         { id: "displayMeta", label: "Display meta-achievements", value: false },

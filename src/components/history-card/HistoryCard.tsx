@@ -5,7 +5,6 @@ import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
 import Badge from '@mui/material/Badge';
-import { Box } from '@material-ui/core';
 
 interface HistoryCardProps {
   imgSrc: string;
@@ -19,14 +18,14 @@ export default function HistoryCard(props: HistoryCardProps) {
   const formatedDateTime = new Intl.DateTimeFormat('fr-FR', { hour: '2-digit', minute: '2-digit' }).format(date);
 
   return (
-    <Card sx={{ display: 'flex', overflow: "hidden", height: "100%", width: "100%" }}>
+    <Card sx={{ display: 'flex', overflow: "hidden", height: "100%", width: "100%", cursor: "pointer" }}>
       <CardMedia
         component="img"
         sx={{ width: 80, flexShrink: 0 }}
         image={props.imgSrc}
         alt=""
       />
-      <Badge color="secondary" badgeContent={formatedDateTime} sx={{ transform: "none", borderRadius: theme.spacing(.5), overflow: "hidden", flexShrink: 1, flexGrow: 1 }}>
+      <Badge color="secondary" badgeContent={formatedDateTime} sx={{ overflow: "hidden", flexShrink: 1, ".MuiBadge-badge": { transform: "none", borderRadius: theme.spacing(.5) }}}>
         <CardContent sx={{ display: "flex", flexDirection: "column", justifyContent: "center", overflow: "hidden" }}>
           <Typography variant="subtitle1" noWrap>
             {props.figthers[0]}

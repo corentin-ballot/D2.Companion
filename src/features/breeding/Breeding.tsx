@@ -29,7 +29,7 @@ function Breeding() {
 
     useEffect(() => {
         setDisplayedMounts([...paddockedMounts].sort((a, b) => a[mountsOrder] - b[mountsOrder]));
-    }, [paddockedMounts]);
+    }, [paddockedMounts, mountsOrder]);
 
     const handleOrderChanged = (order: Order) => {
         localStorage.setItem("breeding.order", order);

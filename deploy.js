@@ -9,7 +9,7 @@ ghpages.publish(
         branch: 'deploy'
     },
     (err) => {
-        console.log(err);
-        console.log('Deploy Complete!');
+        if(err) console.log(err);
+        else console.log('Deploy Complete!');
     }
 )

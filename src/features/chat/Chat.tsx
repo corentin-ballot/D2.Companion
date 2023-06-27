@@ -18,8 +18,7 @@ interface DataObject {
     name: string;
 }
 
-const data = { monsters: [] as DataObject[], weapons: [] as DataObject[], equipments: [] as DataObject[], achievements: [] as DataObject[], others: [] as DataObject[] }
-const MAX_AUTO_COMPLETE_RESULT = 10;
+const data = { monsters: [] as DataObject[], items: [] as DataObject[], achievements: [] as DataObject[], others: [] as DataObject[] }
 
 function Chat() {
     const dispatch = useAppDispatch();
@@ -31,12 +30,11 @@ function Chat() {
 
     useEffect(() => {
         fetch(process.env.PUBLIC_URL + '/data/monsters.json').then(res => res.json()).then((res: { Id: number, Name: string }[]) => data.monsters = res.map(r => ({ id: r.Id, name: r.Name })));
-        fetch(process.env.PUBLIC_URL + '/data/weapons.json').then(res => res.json()).then((res: { _id: number, name: string }[]) => data.weapons = res.map(r => ({ id: r._id, name: r.name })));
-        fetch(process.env.PUBLIC_URL + '/data/equipments.json').then(res => res.json()).then((res: { _id: number, name: string }[]) => data.equipments = res.map(r => ({ id: r._id, name: r.name })));
+        fetch(process.env.PUBLIC_URL + '/data/items.json').then(res => res.json()).then((res: { _id: number, name: string }[]) => data.items = res.map(r => ({ id: r._id, name: r.name })));
         fetch(process.env.PUBLIC_URL + '/data/achievements.json').then(res => res.json()).then((res: { id: number, name: any }[]) => data.achievements = res.map(r => ({ id: r.id, name: r.name.fr })));
     }, []);
 
-    const scopes = ["monsters", "equipments", "weapons", "achievements", "others"] as const;
+    const scopes = ["monsters", "items", "achievements", "others"] as const;
     const [selectedScope, setSelectedScope] = useState(scopes[0] as typeof scopes[number]);
     const [autoCompleteResult, setAutoCompleteResult] = useState([] as any[]);
     const handleSelectChange = (event: React.ChangeEvent<HTMLInputElement>) => {

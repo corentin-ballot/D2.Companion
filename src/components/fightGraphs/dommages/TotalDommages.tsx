@@ -2,7 +2,6 @@ import React from 'react';
 import {
     BarChart,
     Bar,
-    LabelList,
     XAxis, 
     YAxis,
     ResponsiveContainer,
