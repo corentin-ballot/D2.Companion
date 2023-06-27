@@ -35,6 +35,7 @@ import Quests from './features/quests/Quests';
 import Settings from './features/settings/Settings';
 import Forgemagie from './features/forgemagie/Forgemagie';
 import Achievements from './features/achievements/Achievements';
+import GlobalStyles from '@mui/material/GlobalStyles';
 
 const routes = [
   {path: "/", icon: <HomeIcon />, element: <Home />, hidden: true},
@@ -56,6 +57,9 @@ function App() {
 
   return (
     <Box sx={{ display: 'flex' }}>
+      <GlobalStyles styles={{
+        body: { backgroundColor: "#f9f9fb" }
+      }} />
       <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
         <Toolbar>
           <Breadcrumbs sx={{color: "inherit"}} separator={<NavigateNextIcon fontSize="small" />}>
@@ -103,7 +107,7 @@ function App() {
         </Box>
       </Drawer>
 
-      <Box component="main" sx={{ flexGrow: 1, p: 3, backgroundColor: "#f9f9fb", overflow: "hidden" }}>
+      <Box component="main" sx={{ flexGrow: 1, p: 3, overflow: "hidden" }}>
         <Toolbar />
         <Routes>
           {routes.map(route => <Route path={route.path} element={route.element} key={route.path} />)}
