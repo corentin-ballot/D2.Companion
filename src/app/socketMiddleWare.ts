@@ -129,7 +129,7 @@ const socketMiddleWare: Middleware = (store) => {
             /* Houses */
             case "HousePropertiesMessage":
                 const d = data.content as HousePropertiesMessage;
-                if(!d.properties.hasOwner && !d.properties.isSaleLocked)
+                if(!d.properties.hasOwner && !d.properties.isSaleLocked && localStorage["notifications.houses.sellable"] === "true")
                     new Notifications("House on sale !").sendNative();
                 break;
             /* Forgemagie */
