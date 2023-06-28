@@ -73,7 +73,7 @@ function Fight() {
 
                     {/* Fighters display filter */}
                     <Grid item xs={12}>
-                        <Stack direction="row" justifyContent="center" spacing={4}>
+                        <Stack direction="row" justifyContent="center" spacing={4} flexWrap="wrap">
                             {displayedFight.turnList.map(fighterId => {
                                 const fighter = displayedFight.fighters.find(f => f.contextualId === fighterId);
                                 return (
