@@ -112,7 +112,7 @@ export const chatSlice = createSlice({
       // Chat notification
       const matches = state.notifications.reduce((p, c) => [...p, ...c.matches], [] as string[]);
 
-      if(matches.some(el => action.payload.content.toLocaleLowerCase().replace("%20", " ").includes(el))
+      if(matches.some(el => action.payload.content.toLocaleLowerCase().replace(/[_\W]+/g, "").includes(el.replace(/[_\W]+/g, "")))
           || action.payload.objects?.filter(object => matches.includes(object.objectGID.toString())).length
       ) {
         state.messages = [...state.messages, chatMessage]
