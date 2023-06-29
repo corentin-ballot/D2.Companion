@@ -10,6 +10,6 @@ ghpages.publish(
     },
     (err) => {
         if(err) console.log(err);
-        else console.log(`[${(new Date()).toISOString().slice(0, 19).replace("T", " ")}]`, 'Deploy Complete!');
+        else console.log(`[${(new Date()).toLocaleString()}]`, 'Deploy Complete!');
     }
 )
