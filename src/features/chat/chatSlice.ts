@@ -85,7 +85,8 @@ export const chatSlice = createSlice({
       while(chatMessage.content.includes("{chatmonster,")) {
         const match = chatMessage.content.match(/{chatmonster,([\d]+)}/);
         if (match && match[1]) {
-          const monster = data.monsters.find(e => e.id === match[1]);
+          // == instead of === beceause e.id is a number and match[1] a string
+          const monster = data.monsters.find(e => e.id == match[1]);
           chatMessage.content = chatMessage.content.replace(/{chatmonster,([\d]+)}/, `[${typeof monster != "undefined" ? monster.name : ("chatmonster,"+match[1])}]`);
         }
       }
@@ -99,14 +100,16 @@ export const chatSlice = createSlice({
       while(chatMessage.content.includes("{chatachievement,")) {
         const match = chatMessage.content.match(/{chatachievement,([\d]+)}/);
         if (match && match[1]) {
-          const achievement = data.achievements.find(e => e.id === match[1]);
+          // == instead of === beceause e.id is a number and match[1] a string
+          const achievement = data.achievements.find(e => e.id == match[1]);
           chatMessage.content = chatMessage.content.replace(/{chatachievement,([\d]+)}/, `[${typeof achievement != "undefined" ? achievement.name : ("chatachievement,"+match[1]) }]`);
         }
       }
 
       // Channel redirection
       if (state.redirections.map(r => r.channel).includes(chatMessage.channel)) {
-        const redirection = state.redirections.find(r => r.channel === chatMessage.channel);
+        // == instead of === beceause r.channel is a number and chatMessage.channel a string
+        const redirection = state.redirections.find(r => r.channel == chatMessage.channel);
         if (redirection) new Notifications(chatMessage.content, chatMessage.senderName, redirection.webhook, payload).sendDiscord();
       }
       // Chat notification
