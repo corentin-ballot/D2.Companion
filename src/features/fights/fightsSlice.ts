@@ -3,6 +3,7 @@ import { RootState } from '../../app/store';
 import { Fighter, GameFightEndMessage, GameFightJoinMessage, GameFightNewRoundMessage, GameFightSynchronizeMessage, GameFightTurnListMessage, GameActionFightMultipleSummonMessage, GameActionFightLifePointsLostMessage, GameActionFightSpellCastMessage } from '../../app/dofusInterfaces';
 import monsters from '../../data/monsters.json';
 import spells from '../../data/spells.json';
+import compagnons from '../../data/compagnons.json';
 
 export interface Dommage extends GameActionFightLifePointsLostMessage {
   round: number;
@@ -68,11 +69,9 @@ export const fightsSlice = createSlice({
         } if(f.masterId) {
           // Compagnons
           const master = action.payload.fighters.find(_f => _f.contextualId === f.masterId)?.name;
-          const compagnonType = f.entityModelId === 11 ? "Chevalier d'Astrub" 
-                                  : f.entityModelId === 6 ? "Masse" 
-                                    : "Compagnon ("+f.entityModelId+")"
-          const name = compagnonType + " de " + master;
-          return { ...f, name: name }
+          const compagnonType = compagnons.find(c => c.id === f.entityModelId);
+          const name = (compagnonType ? compagnonType.name : "Compagnon ("+f.entityModelId+")") + " de " + master;
+          return { ...f, name: name, img: compagnonType?.img }
         } else {
           // Players
           return { ...f }

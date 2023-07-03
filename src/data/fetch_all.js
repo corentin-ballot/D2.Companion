@@ -6,13 +6,15 @@ const fetchQuestsCategories = require("./fetch_quests");
 const fetchAlmanax = require("./fetch_almanax");
 const fetchItems = require("./fetch_items");
 const fetchMounts = require("./fetch_mounts_v2");
+const fetchCompagnons = require("./fetch_compagnons");
 
 // fetchMonsters();
 // fetchEquipments();
 // fetchClasses();
-fetchAchievmentCategories();
+// fetchAchievmentCategories();
 // fetchMounts();
 // fetchQuestsCategories();
 // fetchAlmanax();
 // fetchItems();
-//fetchMounts();
+// fetchMounts();
+fetchCompagnons();

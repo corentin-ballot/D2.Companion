@@ -92,7 +92,8 @@ function Fight() {
                                                 }
                                             }}
                                             onClick={(e) => setFightersFilter(fightersFilter.includes(fighterId) ? fightersFilter.filter(f => f !== fighterId) : [fighterId])}
-                                            src={process.env.PUBLIC_URL + (fighter?.masterId ? "/img/monsters/394" : fighter?.creatureGenericId ? `/img/monsters/${fighter?.creatureGenericId}` : `/img/classes/${fighter?.breed}-${fighter?.sex ? 'female' : 'male'}.png`)} />
+                                            data-img={process.env.PUBLIC_URL + (fighter?.masterId ? fighter?.img : fighter?.creatureGenericId ? `/img/monsters/${fighter?.creatureGenericId}` : `/img/classes/${fighter?.breed}-${fighter?.sex ? 'female' : 'male'}.png`)} 
+                                            src={process.env.PUBLIC_URL + (fighter?.masterId ? fighter?.img : fighter?.creatureGenericId ? `/img/monsters/${fighter?.creatureGenericId}` : `/img/classes/${fighter?.breed}-${fighter?.sex ? 'female' : 'male'}.png`)} />
                                     </Tooltip>
                                 )
                             })}

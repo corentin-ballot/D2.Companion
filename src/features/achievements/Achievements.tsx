@@ -104,7 +104,7 @@ function Achievements() {
 
 
             <Grid item xs={12}>
-                {achievementCategories.filter(ac => ac.parentId !== 0).map(categorie => {
+                {achievementCategories.filter(ac => ac.achievementIds.length >= 0).map(categorie => {
                     const categorieAchievements = categorie.achievementIds.filter(aid => shouldDisplayAchievement(achievements.find(a => a.id === aid)));
                     const isHidden = categorieAchievements.length <= 0;
 
