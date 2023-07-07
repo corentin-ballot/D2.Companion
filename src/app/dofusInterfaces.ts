@@ -111,6 +111,7 @@ export interface Fighter {
     ladderPosition?: number;
     hiddenInPrefight?: boolean;
     alignmentInfos?: AlignmentInfos;
+    img?: string;
 }
 
 export interface AlignmentInfos {
