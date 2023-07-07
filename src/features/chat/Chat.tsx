@@ -18,6 +18,8 @@ interface DataObject {
     name: string;
 }
 
+const MAX_AUTOCOMPLETE = 20;
+
 const data = { monsters: [] as DataObject[], items: [] as DataObject[], achievements: [] as DataObject[], others: [] as DataObject[] }
 
 function Chat() {
@@ -36,10 +38,11 @@ function Chat() {
 
     const scopes = ["monsters", "items", "achievements", "others"] as const;
     const [selectedScope, setSelectedScope] = useState(scopes[0] as typeof scopes[number]);
-    const [autoCompleteResult, setAutoCompleteResult] = useState([] as any[]);
+    const [autoCompleteOptions, setautoCompleteOptions] = useState([] as any[]);
+
     const handleSelectChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setSelectedScope(event.target.value as typeof scopes[number]);
-        setAutoCompleteResult(data[event.target.value as typeof scopes[number]]);
+        setautoCompleteOptions(data[event.target.value as typeof scopes[number]].filter((d,i) => i < MAX_AUTOCOMPLETE));
     }
 
     const handlerInputChange = (event: React.SyntheticEvent, value: { id: string, name: string }, reason: string) => {
@@ -48,6 +51,10 @@ function Chat() {
                 inputNotificationRef.current.setAttribute("data-id", value.id);
             };
         }
+    }
+
+    const handlerInputValueChange = (event: React.SyntheticEvent, value: string, reason: string) => {
+        setautoCompleteOptions(data[selectedScope].filter((d) => d.name && d.name.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().includes(value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase())).filter((d,i) => i < MAX_AUTOCOMPLETE));
     }
 
     const handleRemoveNotificationClicked = (notification: Notification) => {
@@ -103,10 +110,11 @@ function Chat() {
                 <Autocomplete
                     disablePortal
                     id="scope-autocomplete"
-                    options={autoCompleteResult}
+                    options={autoCompleteOptions}
                     getOptionLabel={(option) => option.name}
                     sx={{ minWidth: 200 }}
                     onChange={handlerInputChange}
+                    onInputChange={handlerInputValueChange}
                     renderInput={(params) => <TextField
                         {...params}
                         id="scope-value"
