@@ -6,6 +6,7 @@ import { useAppSelector } from '../../app/hooks';
 import {
     selectFinishedAchievements
 } from './achievementsSlice';
+import { url } from 'inspector';
 
 export interface Name {
     de: string;
@@ -124,7 +125,17 @@ function Achievements() {
                                             <ListItemIcon>
                                                 <Avatar
                                                     variant="rounded"
-                                                    sx={{ width: 64, height: 64, marginRight: (theme) => theme.spacing(1) }}
+                                                    sx={{ 
+                                                        width: 64, height: 64, marginRight: (theme) => theme.spacing(1), position: "relative",
+                                                        "::after": {
+                                                            content: '""',
+                                                            position: 'absolute',
+                                                            width: '100%',
+                                                            height: '100%',
+                                                            background: `center / contain no-repeat url("${process.env.PUBLIC_URL}/img/pictos/succes.png")`,
+                                                        }
+                                                    
+                                                    }}
                                                     src={process.env.PUBLIC_URL + "/img/achievements/" + achievement.iconId + ".png"}
                                                 />
                                             </ListItemIcon>
