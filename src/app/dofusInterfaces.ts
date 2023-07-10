@@ -1,14 +1,14 @@
 export interface GameActionFightSpellCastMessage {
     name: string;
-    actionId: number; 
-    sourceId: number; 
-    silentCast: boolean; 
-    verboseCast: boolean; 
-    targetId: number; 
-    destinationCellId: number; 
-    critical: number;  
-    spellId: number;  
-    spellLevel: number;  
+    actionId: number;
+    sourceId: number;
+    silentCast: boolean;
+    verboseCast: boolean;
+    targetId: number;
+    destinationCellId: number;
+    critical: number;
+    spellId: number;
+    spellLevel: number;
     portalsIds: number[];
 }
 
@@ -91,7 +91,7 @@ export interface FighterStats {
 
 export interface Fighter {
     contextualId: number;
-    creatureGenericId: number|undefined; // undefined for players
+    creatureGenericId: number | undefined; // undefined for players
     name: string; // GameContextActorPositionInformations for monsters, player name else
     stats: FighterStats;
     breed?: number;
@@ -175,11 +175,11 @@ export interface GameFightEndMessage {
     rewardRate: number;
 }
 
-export interface GameActionFightLifeAndShieldPointsLostMessage extends GameActionFightLifePointsLostMessage{
-    shieldLoss: 30 
+export interface GameActionFightLifeAndShieldPointsLostMessage extends GameActionFightLifePointsLostMessage {
+    shieldLoss: 30
 }
 
-export interface GameActionFightLifePointsLostMessage  {
+export interface GameActionFightLifePointsLostMessage {
     actionId: number;
     sourceId: number;
     targetId: number;
@@ -337,13 +337,13 @@ export interface UpdateMountCharacteristicsMessage {
     boostToUpdateList: BoostToUpdateList[];
 }
 
-export interface ExchangeMountsPaddockAddMessage{
+export interface ExchangeMountsPaddockAddMessage {
     __name: string;
     __protocol_id: number;
     mountDescription: MountsDescription[];
 }
 
-export interface ExchangeMountsPaddockRemoveMessage{
+export interface ExchangeMountsPaddockRemoveMessage {
     __name: string;
     __protocol_id: number;
     mountsId: number[];
@@ -471,4 +471,53 @@ export interface HousePropertiesMessage {
     houseId: number;
     doorsOnMap: number[];
     properties: Properties;
+}
+
+/**
+ * Character
+ */
+export interface CharacterSelectedSuccessMessage {
+    __name: string
+    __protocol_id: number
+    infos: Infos
+    isCollectingStats: boolean
+}
+
+export interface Infos {
+    __name: string
+    __protocol_id: number
+    id: number
+    name: string
+    level: number
+    entityLook: EntityLook
+    breed: number
+    sex: boolean
+}
+
+export interface EntityLook {
+    __name: string
+    __protocol_id: number
+    bonesId: number
+    skins: number[]
+    indexedColors: number[]
+    scales: number[]
+    subentities: Subentity[]
+}
+
+export interface Subentity {
+    __name: string
+    __protocol_id: number
+    bindingPointCategory: number
+    bindingPointIndex: number
+    subEntityLook: SubEntityLook
+}
+
+export interface SubEntityLook {
+    __name: string
+    __protocol_id: number
+    bonesId: number
+    skins: any[]
+    indexedColors: any[]
+    scales: any[]
+    subentities: any[]
 }

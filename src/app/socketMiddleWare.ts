@@ -4,13 +4,12 @@ import { endFight, fightDommageAction, fightSpellCastAction, fightSummonAction, 
 import { setItems } from '../features/market/marketSlice';
 import { processPaddockObjectAddMessage, processExchangeStartOkMountMessage, processUpdateMountCharacteristicsMessage, processExchangeMountsPaddockAddMessage, processExchangeMountsPaddockRemoveMessage } from '../features/breeding/breedingSlice';
 import { setConnected, setConnecting } from '../features/socket/socketSlice';
-import { ChatServerMessage, GameFightJoinMessage, GameFightTurnListMessage, GameFightSynchronizeMessage, GameFightNewRoundMessage, GameFightEndMessage, GameActionFightLifePointsLostMessage, GameActionFightMultipleSummonMessage, ExchangeTypesItemsExchangerDescriptionForUserMessage, GameActionFightSpellCastMessage, GameDataPaddockObjectAddMessage, ExchangeStartOkMountMessage, UpdateMountCharacteristicsMessage, ExchangeMountsPaddockAddMessage, ExchangeMountsPaddockRemoveMessage, QuestListMessage, ExchangeObjectAddedMessage, ExchangeCraftResultMagicWithObjectDescMessage, AchievementDetailedListMessage, HousePropertiesMessage } from './dofusInterfaces';
+import { ChatServerMessage, GameFightJoinMessage, GameFightTurnListMessage, GameFightSynchronizeMessage, GameFightNewRoundMessage, GameFightEndMessage, GameActionFightLifePointsLostMessage, GameActionFightMultipleSummonMessage, ExchangeTypesItemsExchangerDescriptionForUserMessage, GameActionFightSpellCastMessage, GameDataPaddockObjectAddMessage, ExchangeStartOkMountMessage, UpdateMountCharacteristicsMessage, ExchangeMountsPaddockAddMessage, ExchangeMountsPaddockRemoveMessage, QuestListMessage, ExchangeObjectAddedMessage, ExchangeCraftResultMagicWithObjectDescMessage, AchievementDetailedListMessage, HousePropertiesMessage, CharacterSelectedSuccessMessage } from './dofusInterfaces';
 
 import { io } from 'socket.io-client';
-import { processQuestListMessage } from '../features/quests/questsSlice';
 import { passRune, setItem } from '../features/forgemagie/forgemagieSlice';
-import { processAchievementDetailedListMessage } from '../features/achievements/achievementsSlice';
 import Notifications from './notifications';
+import { processCharacterSelectedSuccessMessage, processAchievementDetailedListMessage, processQuestListMessage } from '../features/character/characterSlice';
 
 const socketMiddleWare: Middleware = (store) => {
     console.log("socketMiddleware::connectingWebsocket");
@@ -268,8 +267,15 @@ const socketMiddleWare: Middleware = (store) => {
                 //     "magicPoolStatus": 2
                 //   }
             
+            
+            /* Achievments */
             case "AchievementDetailedListMessage":
                 store.dispatch(processAchievementDetailedListMessage(data.content as AchievementDetailedListMessage));
+                break;
+            
+            /* Character */
+            case "CharacterSelectedSuccessMessage":
+                store.dispatch(processCharacterSelectedSuccessMessage(data.content as CharacterSelectedSuccessMessage));
                 break;
             /* Default */
             default:

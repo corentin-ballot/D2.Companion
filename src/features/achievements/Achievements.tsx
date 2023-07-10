@@ -5,7 +5,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { useAppSelector } from '../../app/hooks';
 import {
     selectFinishedAchievements
-} from './achievementsSlice';
+} from '../character/characterSlice';
 import { url } from 'inspector';
 
 export interface Name {

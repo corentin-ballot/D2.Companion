@@ -4,10 +4,10 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 import { useAppSelector } from '../../app/hooks';
 import {
-    selectActiveQuestsIds,
-    selectFinishedQuestsIds,
-    selectReinitDoneQuestsIds
-} from './questsSlice';
+    selectActiveQuests,
+    selectFinishedQuests,
+    selectReinitDoneQuests
+} from '../character/characterSlice';
 
 export interface Name {
     de: string;
@@ -69,9 +69,9 @@ function Quests() {
         { id: "displayFinished", label: "Display finished", value: false }
     ]);
 
-    const activeQuestsIds = useAppSelector(selectActiveQuestsIds);
-    const finishedQuestsIds = useAppSelector(selectFinishedQuestsIds);
-    const reinitDoneQuestsIds = useAppSelector(selectReinitDoneQuestsIds);
+    const activeQuests = useAppSelector(selectActiveQuests);
+    const finishedQuests = useAppSelector(selectFinishedQuests);
+    const reinitDoneQuests = useAppSelector(selectReinitDoneQuests);
 
     useEffect(() => {
         fetch(process.env.PUBLIC_URL + '/data/quest-categories.json').then(res => res.json()).then(res => setQuestCategories(res as QuestCategorie[]));
@@ -80,7 +80,7 @@ function Quests() {
     }, []);
 
     const isFinishedQuest = (questId: number) => {
-        return finishedQuestsIds.includes(questId) || reinitDoneQuestsIds.includes(questId);
+        return finishedQuests.includes(questId) || reinitDoneQuests.includes(questId);
     }
 
     const shouldDisplayQuest = (questId: number) => {
@@ -120,7 +120,7 @@ function Quests() {
                             <Typography>
                                 <List dense sx={{ display: "grid", gridTemplateColumns: "repeat(6, 1fr)"}}>
                                     {quests.filter(quest => categorieQuests.includes(quest.id)).map(quest => {
-                                        const status = activeQuestsIds.includes(quest.id) ? "in-progress" : reinitDoneQuestsIds.includes(quest.id) ? "redoable" : finishedQuestsIds.includes(quest.id) ? "done" : "todo";
+                                        const status = activeQuests.includes(quest.id) ? "in-progress" : reinitDoneQuests.includes(quest.id) ? "redoable" : finishedQuests.includes(quest.id) ? "done" : "todo";
                                         const almanaxDate = categorie.id === 31 && quest.name.fr.startsWith("Offrande à ") ? almanax.find(a => quest.name.fr.includes(a.merydes))?.date : "";
 
                                         return <ListItem sx={{ overflow: "hidden"}}>

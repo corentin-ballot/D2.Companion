@@ -24,6 +24,8 @@ import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
 import InfoIcon from '@mui/icons-material/Info';
 import SettingsIcon from '@mui/icons-material/Settings';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
+import Avatar from '@mui/material/Avatar';
+import Tooltip from '@mui/material/Tooltip';
 
 import Home from './features/home/Home';
 import About from './features/about/About';
@@ -36,6 +38,9 @@ import Settings from './features/settings/Settings';
 import Forgemagie from './features/forgemagie/Forgemagie';
 import Achievements from './features/achievements/Achievements';
 import GlobalStyles from '@mui/material/GlobalStyles';
+
+import { useAppSelector } from './app/hooks';
+import { selectCharacter } from './features/character/characterSlice';
 
 const routes = [
   {path: "/", icon: <HomeIcon />, element: <Home />, hidden: true},
@@ -54,6 +59,7 @@ const drawerWidth = 240;
 
 function App() {
   const pathname = useLocation().pathname;
+  const character = useAppSelector(selectCharacter);
 
   return (
     <Box sx={{ display: 'flex' }}>
@@ -62,11 +68,21 @@ function App() {
       }} />
       <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
         <Toolbar>
-          <Breadcrumbs sx={{color: "inherit"}} separator={<NavigateNextIcon fontSize="small" />}>
+          <Breadcrumbs sx={{flexGrow: 1, color: "inherit"}} separator={<NavigateNextIcon fontSize="small" />}>
             <Typography component={Link} to="/" variant="h6" noWrap color="inherit"
               sx={{textDecoration: "none"}}>D2.Companion</Typography>
             {pathname !== "/" && <Typography color="inherit">{routes.find(route => route.path.startsWith(pathname))?.label}</Typography>}
-          </Breadcrumbs> 
+          </Breadcrumbs>
+
+          <Box sx={{ flexGrow: 0 }}>
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+              <Avatar alt={character.name} src={`${process.env.PUBLIC_URL}/img/classes/mini_${character.breed}_${character.sex ? '1' : '0'}.png`} />
+              <Box>
+                <Typography variant="subtitle1">{character.name}</Typography>
+                <Typography variant="body2">Niv. {character.level}</Typography>
+              </Box>
+            </Box>
+          </Box>
         </Toolbar>
       </AppBar>
       <Drawer

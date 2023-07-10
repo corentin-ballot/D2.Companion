@@ -5,9 +5,8 @@ import socketReducer from '../features/socket/socketSlice';
 import fightsReducer from '../features/fights/fightsSlice';
 import marketReducer from '../features/market/marketSlice';
 import breedingReducer from '../features/breeding/breedingSlice';
-import questsReducer from '../features/quests/questsSlice';
-import achievementsReducer from '../features/achievements/achievementsSlice';
 import forgemagieReducer from '../features/forgemagie/forgemagieSlice';
+import characterReducer from '../features/character/characterSlice';
 
 export const store = configureStore({
   reducer: {
@@ -16,9 +15,8 @@ export const store = configureStore({
     fights: fightsReducer,
     market: marketReducer,
     breeding: breedingReducer,
-    quests: questsReducer,
-    achievements: achievementsReducer,
     forgemagie: forgemagieReducer,
+    character: characterReducer,
   },
   middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(socketMiddleWare)
 });
