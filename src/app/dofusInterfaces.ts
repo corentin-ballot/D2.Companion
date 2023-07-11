@@ -241,36 +241,26 @@ export interface SpawnInformation {
 
 // BREEDING
 export interface Durability {
-    __name: string;
-    __protocol_id: number;
     durability: number;
     durabilityMax: number;
 }
 
 export interface PaddockItemDescription {
-    __name: string;
-    __protocol_id: number;
     cellId: number;
     objectGID: number;
     durability: Durability;
 }
 
 export interface GameDataPaddockObjectAddMessage {
-    __name: string;
-    __protocol_id: number;
     paddockItemDescription: PaddockItemDescription;
 }
 
 export interface EffectList {
-    __name: string;
-    __protocol_id: number;
     actionId: number;
     value: number;
 }
 
 export interface MountsDescription {
-    __name: string;
-    __protocol_id: number;
     sex: boolean;
     isRideable: boolean;
     isWild: boolean;
@@ -308,15 +298,11 @@ export interface MountsDescription {
 }
 
 export interface ExchangeStartOkMountMessage {
-    __name: string;
-    __protocol_id: number;
     stabledMountsDescription: MountsDescription[];
     paddockedMountsDescription: MountsDescription[];
 }
 
 export interface BoostToUpdateList {
-    __name: string;
-    __protocol_id: number;
     type: number;
     value: number;
 }
@@ -331,27 +317,19 @@ export enum BoostToUpdateType {
 }
 
 export interface UpdateMountCharacteristicsMessage {
-    __name: string;
-    __protocol_id: number;
     rideId: number;
     boostToUpdateList: BoostToUpdateList[];
 }
 
 export interface ExchangeMountsPaddockAddMessage {
-    __name: string;
-    __protocol_id: number;
     mountDescription: MountsDescription[];
 }
 
 export interface ExchangeMountsPaddockRemoveMessage {
-    __name: string;
-    __protocol_id: number;
     mountsId: number[];
 }
 
 export interface Objective {
-    __name: string;
-    __protocol_id: number;
     objectiveId: number;
     objectiveStatus: boolean;
     dialogParams: any[];
@@ -360,16 +338,12 @@ export interface Objective {
 }
 
 export interface ActiveQuest {
-    __name: string;
-    __protocol_id: number;
     questId: number;
     stepId: number;
     objectives: Objective[];
 }
 
 export interface QuestListMessage {
-    __name: string;
-    __protocol_id: number;
     finishedQuestsIds: number[];
     finishedQuestsCounts: number[];
     activeQuests: ActiveQuest[];
@@ -391,54 +365,40 @@ export interface ObjectInfo {
 }
 
 export interface ExchangeCraftResultMagicWithObjectDescMessage {
-    __name: string;
-    __protocol_id: number;
     craftResult: number;
     objectInfo: ObjectInfo;
     magicPoolStatus: number;
 }
 
 export interface FinishedObjective {
-    __name: string;
-    __protocol_id: number;
     id: number;
     maxValue: number;
 }
 
 export interface StartedObjective {
-    __name: string;
-    __protocol_id: number;
     id: number;
     maxValue: number;
     value: number;
 }
 
 export interface StartedAchievement {
-    __name: string;
-    __protocol_id: number;
     id: number;
     finishedObjective: FinishedObjective[];
     startedObjectives: StartedObjective[];
 }
 
 export interface FinishedObjective2 {
-    __name: string;
-    __protocol_id: number;
     id: number;
     maxValue: number;
 }
 
 export interface FinishedAchievement {
-    __name: string;
-    __protocol_id: number;
     id: number;
     finishedObjective: FinishedObjective2[];
     startedObjectives: any[];
 }
 
 export interface AchievementDetailedListMessage {
-    __name: string;
-    __protocol_id: number;
     startedAchievements: StartedAchievement[];
     finishedAchievements: FinishedAchievement[];
 }
@@ -446,15 +406,11 @@ export interface AchievementDetailedListMessage {
 // HOUSES
 
 export interface OwnerTag {
-    __name: string;
-    __protocol_id: number;
     nickname: string;
     tagNumber: string;
 }
 
 export interface Properties {
-    __name: string;
-    __protocol_id: number;
     secondHand: boolean;
     isLocked: boolean;
     hasOwner: boolean;
@@ -466,8 +422,6 @@ export interface Properties {
 }
 
 export interface HousePropertiesMessage {
-    __name: string;
-    __protocol_id: number;
     houseId: number;
     doorsOnMap: number[];
     properties: Properties;
@@ -477,15 +431,11 @@ export interface HousePropertiesMessage {
  * Character
  */
 export interface CharacterSelectedSuccessMessage {
-    __name: string
-    __protocol_id: number
     infos: Infos
     isCollectingStats: boolean
 }
 
 export interface Infos {
-    __name: string
-    __protocol_id: number
     id: number
     name: string
     level: number
@@ -495,8 +445,6 @@ export interface Infos {
 }
 
 export interface EntityLook {
-    __name: string
-    __protocol_id: number
     bonesId: number
     skins: number[]
     indexedColors: number[]
@@ -505,19 +453,38 @@ export interface EntityLook {
 }
 
 export interface Subentity {
-    __name: string
-    __protocol_id: number
     bindingPointCategory: number
     bindingPointIndex: number
     subEntityLook: SubEntityLook
 }
 
 export interface SubEntityLook {
-    __name: string
-    __protocol_id: number
     bonesId: number
     skins: any[]
     indexedColors: any[]
     scales: any[]
     subentities: any[]
 }
+
+export interface StorageInventoryContentMessage {
+    objects: Object[]
+    kamas: number
+  }
+  
+  export interface Object {
+    position: number
+    objectGID: number
+    effects: Effect[]
+    objectUID: number
+    quantity: number
+  }
+  
+  export interface Effect {
+    actionId: number
+    diceNum?: number
+    diceSide?: number
+    diceConst?: number
+    value: any
+    min?: number
+    max?: number
+  }

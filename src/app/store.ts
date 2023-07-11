@@ -7,6 +7,7 @@ import marketReducer from '../features/market/marketSlice';
 import breedingReducer from '../features/breeding/breedingSlice';
 import forgemagieReducer from '../features/forgemagie/forgemagieSlice';
 import characterReducer from '../features/character/characterSlice';
+import bankReducer from '../features/bank/bankSlice';
 
 export const store = configureStore({
   reducer: {
@@ -17,6 +18,7 @@ export const store = configureStore({
     breeding: breedingReducer,
     forgemagie: forgemagieReducer,
     character: characterReducer,
+    bank: bankReducer,
   },
   middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(socketMiddleWare)
 });

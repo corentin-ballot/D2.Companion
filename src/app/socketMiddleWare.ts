@@ -4,12 +4,13 @@ import { endFight, fightDommageAction, fightSpellCastAction, fightSummonAction, 
 import { setItems } from '../features/market/marketSlice';
 import { processPaddockObjectAddMessage, processExchangeStartOkMountMessage, processUpdateMountCharacteristicsMessage, processExchangeMountsPaddockAddMessage, processExchangeMountsPaddockRemoveMessage } from '../features/breeding/breedingSlice';
 import { setConnected, setConnecting } from '../features/socket/socketSlice';
-import { ChatServerMessage, GameFightJoinMessage, GameFightTurnListMessage, GameFightSynchronizeMessage, GameFightNewRoundMessage, GameFightEndMessage, GameActionFightLifePointsLostMessage, GameActionFightMultipleSummonMessage, ExchangeTypesItemsExchangerDescriptionForUserMessage, GameActionFightSpellCastMessage, GameDataPaddockObjectAddMessage, ExchangeStartOkMountMessage, UpdateMountCharacteristicsMessage, ExchangeMountsPaddockAddMessage, ExchangeMountsPaddockRemoveMessage, QuestListMessage, ExchangeObjectAddedMessage, ExchangeCraftResultMagicWithObjectDescMessage, AchievementDetailedListMessage, HousePropertiesMessage, CharacterSelectedSuccessMessage } from './dofusInterfaces';
+import { ChatServerMessage, GameFightJoinMessage, GameFightTurnListMessage, GameFightSynchronizeMessage, GameFightNewRoundMessage, GameFightEndMessage, GameActionFightLifePointsLostMessage, GameActionFightMultipleSummonMessage, ExchangeTypesItemsExchangerDescriptionForUserMessage, GameActionFightSpellCastMessage, GameDataPaddockObjectAddMessage, ExchangeStartOkMountMessage, UpdateMountCharacteristicsMessage, ExchangeMountsPaddockAddMessage, ExchangeMountsPaddockRemoveMessage, QuestListMessage, ExchangeObjectAddedMessage, ExchangeCraftResultMagicWithObjectDescMessage, AchievementDetailedListMessage, HousePropertiesMessage, CharacterSelectedSuccessMessage, StorageInventoryContentMessage } from './dofusInterfaces';
 
 import { io } from 'socket.io-client';
 import { passRune, setItem } from '../features/forgemagie/forgemagieSlice';
 import Notifications from './notifications';
 import { processCharacterSelectedSuccessMessage, processAchievementDetailedListMessage, processQuestListMessage } from '../features/character/characterSlice';
+import { processStorageInventoryContentMessage } from '../features/bank/bankSlice';
 
 const socketMiddleWare: Middleware = (store) => {
     console.log("socketMiddleware::connectingWebsocket");
@@ -277,6 +278,12 @@ const socketMiddleWare: Middleware = (store) => {
             case "CharacterSelectedSuccessMessage":
                 store.dispatch(processCharacterSelectedSuccessMessage(data.content as CharacterSelectedSuccessMessage));
                 break;
+
+            /* Bank */
+            case "StorageInventoryContentMessage":
+                store.dispatch(processStorageInventoryContentMessage(data.content as StorageInventoryContentMessage));
+                break;
+
             /* Default */
             default:
                 console.log(data.content.__name, data.content)
