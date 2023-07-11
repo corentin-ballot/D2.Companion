@@ -1,6 +1,10 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '../../app/store';
-import { AchievementDetailedListMessage, CharacterSelectedSuccessMessage, QuestListMessage } from '../../app/dofusInterfaces';
+import { 
+    AchievementDetailedListMessage, 
+    CharacterSelectedSuccessMessage, 
+    QuestListMessage 
+} from '../../app/dofusInterfaces';
 
 export interface characterState {
     id: number;
@@ -18,21 +22,41 @@ export interface characterState {
     };
 }
 
-const initialState: characterState = {
-    id: 28103409959, // Co-mmotion
-    name: "MissingNo.",
-    breed: 1,
-    level: 0,
-    sex: false,
-    achievements: { 
-        finished: [],
-    },
-    quests: {
-        finished: [],
-        active: [],
-        reinit: [],
-    },
-};
+const loadCharacter = () => {
+    const char = JSON.parse(localStorage.getItem(`character`) || "");
+
+    if(char) {
+        return {
+            ...char,
+            achievements: { 
+                finished: JSON.parse(localStorage.getItem(`achievements.${char.id}.finished`) || "[]"),
+            },
+            quests: {
+                finished: JSON.parse(localStorage.getItem(`quests.${char.id}.finished`) || "[]"),
+                active: JSON.parse(localStorage.getItem(`quests.${char.id}.active`) || "[]"),
+                reinit: JSON.parse(localStorage.getItem(`quests.${char.id}.reinit`) || "[]"),
+            },
+        }
+    }
+
+    return {
+        id: 0,
+        name: "MissingNo.",
+        breed: 1,
+        level: 0,
+        sex: false,
+        achievements: { 
+            finished: [],
+        },
+        quests: {
+            finished: [],
+            active: [],
+            reinit: [],
+        }
+    };
+}
+
+const initialState: characterState = loadCharacter();
 
 export const characterSlice = createSlice({
   name: 'character',
@@ -45,10 +69,21 @@ export const characterSlice = createSlice({
         state.level = action.payload.infos.level;
         state.sex = action.payload.infos.sex;
 
+        // Store current character
+        localStorage.setItem(`character`, JSON.stringify({
+            id: action.payload.infos.id,
+            name: action.payload.infos.name,
+            breed: action.payload.infos.breed,
+            level: action.payload.infos.level,
+            sex: action.payload.infos.sex,
+        }));
+
+        // Load current character achievements
         state.achievements = { 
             finished: JSON.parse(localStorage.getItem(`achievements.${action.payload.infos.id}.finished`) || "[]"),
         }
 
+        // Load current character quests
         state.quests = {
             finished: JSON.parse(localStorage.getItem(`quests.${action.payload.infos.id}.finished`) || "[]"),
             active: JSON.parse(localStorage.getItem(`quests.${action.payload.infos.id}.active`) || "[]"),
