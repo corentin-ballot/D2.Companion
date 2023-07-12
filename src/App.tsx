@@ -26,6 +26,7 @@ import InfoIcon from '@mui/icons-material/Info';
 import SettingsIcon from '@mui/icons-material/Settings';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
+import ReceiptIcon from '@mui/icons-material/Receipt';
 
 import Home from './features/home/Home';
 import About from './features/about/About';
@@ -38,6 +39,7 @@ import Settings from './features/settings/Settings';
 import Forgemagie from './features/forgemagie/Forgemagie';
 import Achievements from './features/achievements/Achievements';
 import Bank from './features/bank/Bank';
+import Sales from './features/sales/Sales';
 import GlobalStyles from '@mui/material/GlobalStyles';
 
 import { useAppSelector } from './app/hooks';
@@ -46,6 +48,7 @@ import { selectCharacter } from './features/character/characterSlice';
 const routes = [
   {path: "/", icon: <HomeIcon />, element: <Home />, hidden: true},
   {path: "/bank", icon: <AccountBalanceIcon />, element: <Bank />, label: "Bank"},
+  {path: "/sales", icon: <ReceiptIcon />, element: <Sales />, label: "Sales"},
   {path: "/fights", icon: <ShieldIcon />, element: <Fights />, label: "Fights"},
   {path: "/market", icon: <StoreIcon />, element: <Market />, label: "Market"},
   {path: "/forgemagie", icon: <HandymanIcon />, element: <Forgemagie />, label: "Forgemagie"},

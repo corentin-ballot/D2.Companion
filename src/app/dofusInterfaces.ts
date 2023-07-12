@@ -469,17 +469,18 @@ export interface SubEntityLook {
 export interface StorageInventoryContentMessage {
     objects: Object[]
     kamas: number
-  }
-  
-  export interface Object {
+}
+
+export interface Object {
     position: number
     objectGID: number
     effects: Effect[]
     objectUID: number
     quantity: number
-  }
-  
-  export interface Effect {
+}
+
+export interface Effect {
+    // Equipments
     actionId: number
     diceNum?: number
     diceSide?: number
@@ -487,4 +488,50 @@ export interface StorageInventoryContentMessage {
     value: any
     min?: number
     max?: number
+    // Mounts
+    sex?: boolean
+    isRideable?: boolean
+    isFeconded?: boolean
+    isFecondationReady?: boolean
+    id?: number
+    expirationDate?: number
+    model?: number
+    name?: string
+    owner?: string
+    level?: number
+    reproductionCount?: number
+    reproductionCountMax?: number
+    effects?: any[]
+    capacities?: number[]
+}
+
+export interface TextInformationMessage {
+    msgType: number
+    msgId: number
+    parameters: string[]
+}
+
+export interface ExchangeOfflineSoldItemsMessage {
+    bidHouseItems: BidHouseItem[]
+}
+
+export interface BidHouseItem {
+    objectGID: number
+    quantity: number
+    price: number
+    effects: Effects
+    date: number
+}
+
+export interface Effects {
+    effects: Effect[]
+}
+
+export interface ExchangeBidHouseUnsoldItemsMessage {
+    items: Item[]
+  }
+  
+  export interface Item {
+    objectGID: number
+    quantity: number
   }

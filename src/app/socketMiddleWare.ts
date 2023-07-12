@@ -4,13 +4,14 @@ import { endFight, fightDommageAction, fightSpellCastAction, fightSummonAction, 
 import { setItems } from '../features/market/marketSlice';
 import { processPaddockObjectAddMessage, processExchangeStartOkMountMessage, processUpdateMountCharacteristicsMessage, processExchangeMountsPaddockAddMessage, processExchangeMountsPaddockRemoveMessage } from '../features/breeding/breedingSlice';
 import { setConnected, setConnecting } from '../features/socket/socketSlice';
-import { ChatServerMessage, GameFightJoinMessage, GameFightTurnListMessage, GameFightSynchronizeMessage, GameFightNewRoundMessage, GameFightEndMessage, GameActionFightLifePointsLostMessage, GameActionFightMultipleSummonMessage, ExchangeTypesItemsExchangerDescriptionForUserMessage, GameActionFightSpellCastMessage, GameDataPaddockObjectAddMessage, ExchangeStartOkMountMessage, UpdateMountCharacteristicsMessage, ExchangeMountsPaddockAddMessage, ExchangeMountsPaddockRemoveMessage, QuestListMessage, ExchangeObjectAddedMessage, ExchangeCraftResultMagicWithObjectDescMessage, AchievementDetailedListMessage, HousePropertiesMessage, CharacterSelectedSuccessMessage, StorageInventoryContentMessage } from './dofusInterfaces';
+import { ChatServerMessage, GameFightJoinMessage, GameFightTurnListMessage, GameFightSynchronizeMessage, GameFightNewRoundMessage, GameFightEndMessage, GameActionFightLifePointsLostMessage, GameActionFightMultipleSummonMessage, ExchangeTypesItemsExchangerDescriptionForUserMessage, GameActionFightSpellCastMessage, GameDataPaddockObjectAddMessage, ExchangeStartOkMountMessage, UpdateMountCharacteristicsMessage, ExchangeMountsPaddockAddMessage, ExchangeMountsPaddockRemoveMessage, QuestListMessage, ExchangeObjectAddedMessage, ExchangeCraftResultMagicWithObjectDescMessage, AchievementDetailedListMessage, HousePropertiesMessage, CharacterSelectedSuccessMessage, StorageInventoryContentMessage, TextInformationMessage, ExchangeOfflineSoldItemsMessage, ExchangeBidHouseUnsoldItemsMessage } from './dofusInterfaces';
 
 import { io } from 'socket.io-client';
 import { passRune, setItem } from '../features/forgemagie/forgemagieSlice';
 import Notifications from './notifications';
 import { processCharacterSelectedSuccessMessage, processAchievementDetailedListMessage, processQuestListMessage } from '../features/character/characterSlice';
 import { processStorageInventoryContentMessage } from '../features/bank/bankSlice';
+import { processTextInformationMessage, processExchangeOfflineSoldItemsMessage, processExchangeBidHouseUnsoldItemsMessage } from '../features/sales/salesSlice';
 
 const socketMiddleWare: Middleware = (store) => {
     console.log("socketMiddleware::connectingWebsocket");
@@ -53,7 +54,7 @@ const socketMiddleWare: Middleware = (store) => {
             case "CurrentMapMessage":
             case "ListMapNpcsQuestStatusUpdateMessage":
             case "GuildMemberOnlineStatusMessage":
-                
+
                 //ignore
                 break;
             case "ChatServerMessage":
@@ -125,11 +126,11 @@ const socketMiddleWare: Middleware = (store) => {
             case "QuestListMessage":
                 store.dispatch(processQuestListMessage(data.content as QuestListMessage));
                 break;
-            
+
             /* Houses */
             case "HousePropertiesMessage":
                 const d = data.content as HousePropertiesMessage;
-                if(!d.properties.hasOwner && !d.properties.isSaleLocked && localStorage["notifications.houses.sellable"] === "true")
+                if (!d.properties.hasOwner && !d.properties.isSaleLocked && localStorage["notifications.houses.sellable"] === "true")
                     new Notifications("House on sale !").sendNative();
                 break;
             /* Forgemagie */
@@ -140,140 +141,140 @@ const socketMiddleWare: Middleware = (store) => {
             case "ExchangeObjectAddedMessage":
                 store.dispatch(setItem(data.content as ExchangeObjectAddedMessage));
                 break;
-                // Item FM
-                // {
-                //   "__name": "ExchangeObjectAddedMessage",
-                //   "__protocol_id": 8555,
-                //   "remote": false,
-                //   "object": {
-                //     "__name": "ObjectItem",
-                //     "__protocol_id": 4970,
-                //     "position": 63,
-                //     "objectGID": 7143,
-                //     "effects": [
-                //       {
-                //         "__name": "ObjectEffectInteger",
-                //         "__protocol_id": 5629,
-                //         "actionId": 125,
-                //         "value": 232
-                //       },
-                //       {
-                //         "__name": "ObjectEffectInteger",
-                //         "__protocol_id": 5629,
-                //         "actionId": 174,
-                //         "value": 41
-                //       },
-                //       {
-                //         "__name": "ObjectEffectInteger",
-                //         "__protocol_id": 5629,
-                //         "actionId": 119,
-                //         "value": 36
-                //       },
-                //       {
-                //         "__name": "ObjectEffectInteger",
-                //         "__protocol_id": 5629,
-                //         "actionId": 118,
-                //         "value": 35
-                //       },
-                //       {
-                //         "__name": "ObjectEffectInteger",
-                //         "__protocol_id": 5629,
-                //         "actionId": 225,
-                //         "value": 30
-                //       },
-                //       {
-                //         "__name": "ObjectEffectInteger",
-                //         "__protocol_id": 5629,
-                //         "actionId": 138,
-                //         "value": 16
-                //       },
-                //       {
-                //         "__name": "ObjectEffectInteger",
-                //         "__protocol_id": 5629,
-                //         "actionId": 112,
-                //         "value": 10
-                //       }
-                //     ],
-                //     "objectUID": 909212473,
-                //     "quantity": 1
-                //   }
-                // }
+            // Item FM
+            // {
+            //   "__name": "ExchangeObjectAddedMessage",
+            //   "__protocol_id": 8555,
+            //   "remote": false,
+            //   "object": {
+            //     "__name": "ObjectItem",
+            //     "__protocol_id": 4970,
+            //     "position": 63,
+            //     "objectGID": 7143,
+            //     "effects": [
+            //       {
+            //         "__name": "ObjectEffectInteger",
+            //         "__protocol_id": 5629,
+            //         "actionId": 125,
+            //         "value": 232
+            //       },
+            //       {
+            //         "__name": "ObjectEffectInteger",
+            //         "__protocol_id": 5629,
+            //         "actionId": 174,
+            //         "value": 41
+            //       },
+            //       {
+            //         "__name": "ObjectEffectInteger",
+            //         "__protocol_id": 5629,
+            //         "actionId": 119,
+            //         "value": 36
+            //       },
+            //       {
+            //         "__name": "ObjectEffectInteger",
+            //         "__protocol_id": 5629,
+            //         "actionId": 118,
+            //         "value": 35
+            //       },
+            //       {
+            //         "__name": "ObjectEffectInteger",
+            //         "__protocol_id": 5629,
+            //         "actionId": 225,
+            //         "value": 30
+            //       },
+            //       {
+            //         "__name": "ObjectEffectInteger",
+            //         "__protocol_id": 5629,
+            //         "actionId": 138,
+            //         "value": 16
+            //       },
+            //       {
+            //         "__name": "ObjectEffectInteger",
+            //         "__protocol_id": 5629,
+            //         "actionId": 112,
+            //         "value": 10
+            //       }
+            //     ],
+            //     "objectUID": 909212473,
+            //     "quantity": 1
+            //   }
+            // }
 
             case "ExchangeCraftResultMagicWithObjectDescMessage":
                 store.dispatch(passRune(data.content as ExchangeCraftResultMagicWithObjectDescMessage));
                 break;
-                // rune
-                // -34 vitalité, -3 initiative, -2 puissance, +reliquat
-                // craftResult: 1, magicPoolStatus: 2 // Echec + reliquat
-                // craftResult: 2, magicPoolStatus: 1 // Réussite
-                // craftResult: 2, magicPoolStatus: 2 // Réussite + reliquat
-                // craftResult: 2, magicPoolStatus: 3 // Réussite - reliquat
-                // craftResult: 1, magicPoolStatus: 3 // Echec - reliquat
+            // rune
+            // -34 vitalité, -3 initiative, -2 puissance, +reliquat
+            // craftResult: 1, magicPoolStatus: 2 // Echec + reliquat
+            // craftResult: 2, magicPoolStatus: 1 // Réussite
+            // craftResult: 2, magicPoolStatus: 2 // Réussite + reliquat
+            // craftResult: 2, magicPoolStatus: 3 // Réussite - reliquat
+            // craftResult: 1, magicPoolStatus: 3 // Echec - reliquat
 
-                // {
-                //     "__name": "ExchangeCraftResultMagicWithObjectDescMessage",
-                //     "__protocol_id": 8579,
-                //     "craftResult": 1,
-                //     "objectInfo": {
-                //       "__name": "ObjectItemNotInContainer",
-                //       "__protocol_id": 9381,
-                //       "objectGID": 7143,
-                //       "effects": [
-                //         {
-                //           "__name": "ObjectEffectInteger",
-                //           "__protocol_id": 5629,
-                //           "actionId": 125,
-                //           "value": 198
-                //         },
-                //         {
-                //           "__name": "ObjectEffectInteger",
-                //           "__protocol_id": 5629,
-                //           "actionId": 174,
-                //           "value": 38
-                //         },
-                //         {
-                //           "__name": "ObjectEffectInteger",
-                //           "__protocol_id": 5629,
-                //           "actionId": 119,
-                //           "value": 36
-                //         },
-                //         {
-                //           "__name": "ObjectEffectInteger",
-                //           "__protocol_id": 5629,
-                //           "actionId": 118,
-                //           "value": 35
-                //         },
-                //         {
-                //           "__name": "ObjectEffectInteger",
-                //           "__protocol_id": 5629,
-                //           "actionId": 225,
-                //           "value": 30
-                //         },
-                //         {
-                //           "__name": "ObjectEffectInteger",
-                //           "__protocol_id": 5629,
-                //           "actionId": 138,
-                //           "value": 14
-                //         },
-                //         {
-                //           "__name": "ObjectEffectInteger",
-                //           "__protocol_id": 5629,
-                //           "actionId": 112,
-                //           "value": 10
-                //         }
-                //       ],
-                //       "objectUID": 909212473,
-                //       "quantity": 1
-                //     },
-                //     "magicPoolStatus": 2
-                //   }
-            
-            
+            // {
+            //     "__name": "ExchangeCraftResultMagicWithObjectDescMessage",
+            //     "__protocol_id": 8579,
+            //     "craftResult": 1,
+            //     "objectInfo": {
+            //       "__name": "ObjectItemNotInContainer",
+            //       "__protocol_id": 9381,
+            //       "objectGID": 7143,
+            //       "effects": [
+            //         {
+            //           "__name": "ObjectEffectInteger",
+            //           "__protocol_id": 5629,
+            //           "actionId": 125,
+            //           "value": 198
+            //         },
+            //         {
+            //           "__name": "ObjectEffectInteger",
+            //           "__protocol_id": 5629,
+            //           "actionId": 174,
+            //           "value": 38
+            //         },
+            //         {
+            //           "__name": "ObjectEffectInteger",
+            //           "__protocol_id": 5629,
+            //           "actionId": 119,
+            //           "value": 36
+            //         },
+            //         {
+            //           "__name": "ObjectEffectInteger",
+            //           "__protocol_id": 5629,
+            //           "actionId": 118,
+            //           "value": 35
+            //         },
+            //         {
+            //           "__name": "ObjectEffectInteger",
+            //           "__protocol_id": 5629,
+            //           "actionId": 225,
+            //           "value": 30
+            //         },
+            //         {
+            //           "__name": "ObjectEffectInteger",
+            //           "__protocol_id": 5629,
+            //           "actionId": 138,
+            //           "value": 14
+            //         },
+            //         {
+            //           "__name": "ObjectEffectInteger",
+            //           "__protocol_id": 5629,
+            //           "actionId": 112,
+            //           "value": 10
+            //         }
+            //       ],
+            //       "objectUID": 909212473,
+            //       "quantity": 1
+            //     },
+            //     "magicPoolStatus": 2
+            //   }
+
+
             /* Achievments */
             case "AchievementDetailedListMessage":
                 store.dispatch(processAchievementDetailedListMessage(data.content as AchievementDetailedListMessage));
                 break;
-            
+
             /* Character */
             case "CharacterSelectedSuccessMessage":
                 store.dispatch(processCharacterSelectedSuccessMessage(data.content as CharacterSelectedSuccessMessage));
@@ -282,6 +283,18 @@ const socketMiddleWare: Middleware = (store) => {
             /* Bank */
             case "StorageInventoryContentMessage":
                 store.dispatch(processStorageInventoryContentMessage(data.content as StorageInventoryContentMessage));
+                break;
+
+            /* Sales */
+            case "TextInformationMessage":
+                console.log(data.content.__name, data.content)
+                store.dispatch(processTextInformationMessage(data.content as TextInformationMessage));
+                break;
+            case "ExchangeOfflineSoldItemsMessage":
+                store.dispatch(processExchangeOfflineSoldItemsMessage(data.content as ExchangeOfflineSoldItemsMessage));
+                break;
+            case "ExchangeBidHouseUnsoldItemsMessage":
+                store.dispatch(processExchangeBidHouseUnsoldItemsMessage(data.content as ExchangeBidHouseUnsoldItemsMessage));
                 break;
 
             /* Default */
