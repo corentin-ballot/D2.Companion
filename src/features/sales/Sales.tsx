@@ -7,6 +7,7 @@ import { useAppSelector } from '../../app/hooks';
 import {
     selectSalesHistory
 } from './salesSlice';
+import EmptyState from '../../components/empty-state/EmptyState';
 
 function Bank() {
     const salesHistory = useAppSelector(selectSalesHistory);
@@ -93,84 +94,95 @@ function Bank() {
                 </Paper>
             </Grid>
 
-            <Grid item xs={12}>
-                <TableContainer component={Paper}>
-                    <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
-                        <TableHead>
-                            <TableRow>
-                                <TableCell sx={{ width: "0px" }} />
-                                <TableCell>
-                                    <TableSortLabel
-                                        active={orderBy === "name"}
-                                        direction={orderBy === "name" ? order : 'asc'}
-                                        onClick={createSortHandler("name")}
-                                    >
-                                        Name
-                                    </TableSortLabel>
-                                </TableCell>
-                                <TableCell align="right">
+            {/* Not mount to display */}
+            {sales.length === 0 &&
+                <Grid item xs={12}>
+                    <EmptyState>
+                        No sales registered for now.
+                    </EmptyState>
+                </Grid>
+            }
 
-                                    <TableSortLabel
-                                        active={orderBy === "level"}
-                                        direction={orderBy === "level" ? order : 'asc'}
-                                        onClick={createSortHandler("level")}
-                                    >
-                                        Level
-                                    </TableSortLabel>
-                                </TableCell>
-                                <TableCell align="right">
-
-                                    <TableSortLabel
-                                        active={orderBy === "quantity"}
-                                        direction={orderBy === "quantity" ? order : 'asc'}
-                                        onClick={createSortHandler("quantity")}
-                                    >
-                                        Quantity
-                                    </TableSortLabel>
-                                </TableCell>
-                                <TableCell align="right">
-
-                                    <TableSortLabel
-                                        active={orderBy === "price"}
-                                        direction={orderBy === "price" ? order : 'asc'}
-                                        onClick={createSortHandler("price")}
-                                    >
-                                        Price
-                                    </TableSortLabel>
-                                </TableCell>
-                                <TableCell align="right">
-
-                                    <TableSortLabel
-                                        active={orderBy === "date"}
-                                        direction={orderBy === "date" ? order : 'asc'}
-                                        onClick={createSortHandler("date")}
-                                    >
-                                        Date
-                                    </TableSortLabel>
-                                </TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {[...sales].sort(sortingFunction).map((sale) => (
-                                <TableRow
-                                    key={sale.date}
-                                    data-id={sale.id}
-                                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                                >
+            {sales.length > 0 && 
+                <Grid item xs={12}>
+                    <TableContainer component={Paper}>
+                        <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell sx={{ width: "0px" }} />
                                     <TableCell>
-                                        <Avatar sx={{ width: 32, height: 32, margin: "auto" }} variant="square" src={`${process.env.PUBLIC_URL}/img/items/${sale.iconId}.png`} alt={sale.name} />
+                                        <TableSortLabel
+                                            active={orderBy === "name"}
+                                            direction={orderBy === "name" ? order : 'asc'}
+                                            onClick={createSortHandler("name")}
+                                        >
+                                            Name
+                                        </TableSortLabel>
                                     </TableCell>
-                                    <TableCell>{sale.name}</TableCell>
-                                    <TableCell align="right">{sale.level}</TableCell>
-                                    <TableCell align="right">{sale.quantity}</TableCell>
-                                    <TableCell align="right">{new Intl.NumberFormat().format(sale.price)}</TableCell>
-                                    <TableCell align="right">{new Date(sale.date).toLocaleString()}</TableCell>
+                                    <TableCell align="right">
+
+                                        <TableSortLabel
+                                            active={orderBy === "level"}
+                                            direction={orderBy === "level" ? order : 'asc'}
+                                            onClick={createSortHandler("level")}
+                                        >
+                                            Level
+                                        </TableSortLabel>
+                                    </TableCell>
+                                    <TableCell align="right">
+
+                                        <TableSortLabel
+                                            active={orderBy === "quantity"}
+                                            direction={orderBy === "quantity" ? order : 'asc'}
+                                            onClick={createSortHandler("quantity")}
+                                        >
+                                            Quantity
+                                        </TableSortLabel>
+                                    </TableCell>
+                                    <TableCell align="right">
+
+                                        <TableSortLabel
+                                            active={orderBy === "price"}
+                                            direction={orderBy === "price" ? order : 'asc'}
+                                            onClick={createSortHandler("price")}
+                                        >
+                                            Price
+                                        </TableSortLabel>
+                                    </TableCell>
+                                    <TableCell align="right">
+
+                                        <TableSortLabel
+                                            active={orderBy === "date"}
+                                            direction={orderBy === "date" ? order : 'asc'}
+                                            onClick={createSortHandler("date")}
+                                        >
+                                            Date
+                                        </TableSortLabel>
+                                    </TableCell>
                                 </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
-            </Grid>
+                            </TableHead>
+                            <TableBody>
+                                {[...sales].sort(sortingFunction).map((sale) => (
+                                    <TableRow
+                                        key={sale.date}
+                                        data-id={sale.id}
+                                        sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                    >
+                                        <TableCell>
+                                            <Avatar sx={{ width: 32, height: 32, margin: "auto" }} variant="square" src={`${process.env.PUBLIC_URL}/img/items/${sale.iconId}.png`} alt={sale.name} />
+                                        </TableCell>
+                                        <TableCell>{sale.name}</TableCell>
+                                        <TableCell align="right">{sale.level}</TableCell>
+                                        <TableCell align="right">{sale.quantity}</TableCell>
+                                        <TableCell align="right">{new Intl.NumberFormat().format(sale.price)}</TableCell>
+                                        <TableCell align="right">{new Date(sale.date).toLocaleString()}</TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                </Grid>
+            }
         </Grid>
     </Box>
 }
