@@ -38,7 +38,7 @@ export const salesSlice = createSlice({
     processExchangeOfflineSoldItemsMessage: (state, action: PayloadAction<ExchangeOfflineSoldItemsMessage>) => {
       state.history = [...action.payload.bidHouseItems.map((item) => ({
         id: item.objectGID,
-        date: item.date,
+        date: item.date * 1000,
         quantity: item.quantity,
         price: item.price,
       })), ...state.history];
