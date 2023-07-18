@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box } from '@mui/material';
+import { Backdrop, Box, CircularProgress } from '@mui/material';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
@@ -44,20 +44,22 @@ import GlobalStyles from '@mui/material/GlobalStyles';
 
 import { useAppSelector } from './app/hooks';
 import { selectCharacter } from './features/character/characterSlice';
+import { selectSocket } from './features/socket/socketSlice';
+import MobiledataOffIcon from '@mui/icons-material/MobiledataOff';
 
 const routes = [
-  {path: "/", icon: <HomeIcon />, element: <Home />, hidden: true},
-  {path: "/bank", icon: <AccountBalanceIcon />, element: <Bank />, label: "Bank"},
-  {path: "/sales", icon: <ReceiptIcon />, element: <Sales />, label: "Sales"},
-  {path: "/fights", icon: <ShieldIcon />, element: <Fights />, label: "Fights"},
-  {path: "/market", icon: <StoreIcon />, element: <Market />, label: "Market"},
-  {path: "/forgemagie", icon: <HandymanIcon />, element: <Forgemagie />, label: "Forgemagie"},
-  {path: "/chat", icon: <FeedbackIcon />, element: <Chat />, label: "Chat"},
-  {path: "/breeding", icon: <DiversityIcon />, element: <Breeding />, label: "Breeding"},
-  {path: "/quests", icon: <TaskIcon />, element: <Quests />, label: "Quests"},
-  {path: "/achievements", icon: <EmojiEventsIcon />, element: <Achievements />, label: "Achievements"},
-  {path: "/about", icon: <InfoIcon />, element: <About />, label: "About", submenu: true},
-  {path: "/settings", icon: <SettingsIcon />, element: <Settings />, label: "Settings", submenu: true},
+  { path: "/", icon: <HomeIcon />, element: <Home />, hidden: true },
+  { path: "/bank", icon: <AccountBalanceIcon />, element: <Bank />, label: "Bank" },
+  { path: "/sales", icon: <ReceiptIcon />, element: <Sales />, label: "Sales" },
+  { path: "/fights", icon: <ShieldIcon />, element: <Fights />, label: "Fights" },
+  { path: "/market", icon: <StoreIcon />, element: <Market />, label: "Market" },
+  { path: "/forgemagie", icon: <HandymanIcon />, element: <Forgemagie />, label: "Forgemagie" },
+  { path: "/chat", icon: <FeedbackIcon />, element: <Chat />, label: "Chat" },
+  { path: "/breeding", icon: <DiversityIcon />, element: <Breeding />, label: "Breeding" },
+  { path: "/quests", icon: <TaskIcon />, element: <Quests />, label: "Quests" },
+  { path: "/achievements", icon: <EmojiEventsIcon />, element: <Achievements />, label: "Achievements" },
+  { path: "/about", icon: <InfoIcon />, element: <About />, label: "About", submenu: true },
+  { path: "/settings", icon: <SettingsIcon />, element: <Settings />, label: "Settings", submenu: true },
 ];
 
 const drawerWidth = 240;
@@ -65,6 +67,7 @@ const drawerWidth = 240;
 function App() {
   const pathname = useLocation().pathname;
   const character = useAppSelector(selectCharacter);
+  const socket = useAppSelector(selectSocket);
 
   return (
     <Box sx={{ display: 'flex' }}>
@@ -73,9 +76,9 @@ function App() {
       }} />
       <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
         <Toolbar>
-          <Breadcrumbs sx={{flexGrow: 1, color: "inherit"}} separator={<NavigateNextIcon fontSize="small" />}>
+          <Breadcrumbs sx={{ flexGrow: 1, color: "inherit" }} separator={<NavigateNextIcon fontSize="small" />}>
             <Typography component={Link} to="/" variant="h6" noWrap color="inherit"
-              sx={{textDecoration: "none"}}>D2.Companion</Typography>
+              sx={{ textDecoration: "none" }}>D2.Companion</Typography>
             {pathname !== "/" && <Typography color="inherit">{routes.find(route => route.path.startsWith(pathname))?.label}</Typography>}
           </Breadcrumbs>
 
@@ -134,6 +137,14 @@ function App() {
           {routes.map(route => <Route path={route.path} element={route.element} key={route.path} />)}
         </Routes>
       </Box>
+
+      <Backdrop
+        sx={{ flexDirection: "column", gap: 2, color: '#fff', zIndex: (theme: any) => theme.zIndex.drawer + 1 }}
+        open={!socket.connected}
+      >
+          <MobiledataOffIcon color="inherit" />
+          <Typography>Waiting for websocket to connect</Typography>
+      </Backdrop>
     </Box>
   );
 }
