@@ -287,7 +287,6 @@ const socketMiddleWare: Middleware = (store) => {
 
             /* Sales */
             case "TextInformationMessage":
-                console.log(data.content.__name, data.content)
                 store.dispatch(processTextInformationMessage(data.content as TextInformationMessage));
                 break;
             case "ExchangeOfflineSoldItemsMessage":
@@ -299,7 +298,7 @@ const socketMiddleWare: Middleware = (store) => {
 
             /* Default */
             default:
-                console.log(data.content.__name, data.content)
+                //console.log(data.content.__name, data.content)
                 break;
         }
     });
