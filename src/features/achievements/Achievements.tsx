@@ -6,7 +6,6 @@ import { useAppSelector } from '../../app/hooks';
 import {
     selectFinishedAchievements
 } from '../character/characterSlice';
-import { url } from 'inspector';
 
 export interface Name {
     de: string;
@@ -21,6 +20,8 @@ export interface Name {
 }
 
 export interface AchievementCategorie {
+    subAchievements?: AchievementCategorie[];
+    subAchievementIds?: number[];
     parentId: number;
     _id: string;
     achievementIds: number[];
@@ -64,6 +65,7 @@ export interface Almanax {
 
 function Achievements() {
     const [achievementCategories, setAchievementCategories] = useState<AchievementCategorie[]>([]);
+    const [acids, setAcids] = useState<AchievementCategorie[]>([]);
     const [achievements, setAchievements] = useState<Achievement[]>([]);
     const [filters, setFilters] = useState([
         { id: "displayFinished", label: "Display finished", value: false },
@@ -71,6 +73,24 @@ function Achievements() {
     ]);
 
     const finishedAchievements = useAppSelector(selectFinishedAchievements);
+
+    useEffect(() => {
+        setAcids(achievementCategories.reduce((a, b) => {
+            const parent = a.find(ac => ac.id === b.parentId) || achievementCategories.find(ac => ac.id === b.parentId);
+            const obj = typeof parent === "undefined" ? {...b, subAchievements: [], subAchievementIds: []} : {
+                ...parent,
+                // @ts-ignore
+                subAchievements: [...parent.subAchievements, b].sort((a,b) => a.order - b.order),
+                // @ts-ignore
+                subAchievementIds: [...parent.subAchievementIds, ...b.achievementIds],
+            };
+            
+            return [
+                ...a.filter(ac => ac.id !== obj.id),
+                obj
+            ]
+        }, [] as AchievementCategorie[]).sort((a,b) => a.order - b.order));
+    }, [achievementCategories])
 
     useEffect(() => {
         fetch(process.env.PUBLIC_URL + '/data/achievement-categories.json').then(res => res.json()).then(res => setAchievementCategories(res as AchievementCategorie[]));
@@ -105,9 +125,10 @@ function Achievements() {
 
 
             <Grid item xs={12}>
-                {achievementCategories.filter(ac => ac.achievementIds.length >= 0).map(categorie => {
+                {acids.map((categorie: AchievementCategorie) => {
                     const categorieAchievements = categorie.achievementIds.filter(aid => shouldDisplayAchievement(achievements.find(a => a.id === aid)));
-                    const isHidden = categorieAchievements.length <= 0;
+                    const categorieSubAchievements = categorie.subAchievementIds?.filter(aid => shouldDisplayAchievement(achievements.find(a => a.id === aid)));
+                    const isHidden = categorieAchievements.length + (categorieSubAchievements ? categorieSubAchievements.length : 0) <= 0;
 
                     return isHidden ? <></> : <Accordion key={categorie.id}>
                         <AccordionSummary
@@ -115,37 +136,70 @@ function Achievements() {
                             aria-controls={"categorie-panel-" + categorie.id}
                             id={"categorie-" + categorie.id}
                         >
-                            <Typography>{categorie.name.fr} ({categorieAchievements.length})</Typography>
+                            <Typography>{categorie.name.fr} ({categorieAchievements.length + (categorieSubAchievements ? categorieSubAchievements.length : 0)})</Typography>
                         </AccordionSummary>
                         <AccordionDetails>
-                            <Typography>
-                                <List dense sx={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: (theme) => theme.spacing(2) }}>
-                                    {achievements.filter(achievement => categorieAchievements.includes(achievement.id)).map(achievement => (
-                                        <ListItem sx={{ overflow: "hidden", backgroundColor: "#3F3F3D", padding: (theme) => theme.spacing(1), borderRadius: (theme) => theme.spacing(1) }} key={achievement.id}>
-                                            <ListItemIcon>
-                                                <Avatar
-                                                    variant="rounded"
-                                                    sx={{ 
-                                                        width: 64, height: 64, marginRight: (theme) => theme.spacing(1), position: "relative",
-                                                        "::after": {
-                                                            content: '""',
-                                                            position: 'absolute',
-                                                            width: '100%',
-                                                            height: '100%',
-                                                            background: `center / contain no-repeat url("${process.env.PUBLIC_URL}/img/pictos/succes.png")`,
-                                                        }
-                                                    
-                                                    }}
-                                                    src={process.env.PUBLIC_URL + "/img/achievements/" + achievement.iconId + ".png"}
-                                                />
-                                            </ListItemIcon>
-                                            <ListItemText
-                                                primary={<Typography  sx={{ color: "#A6A6A4", fontWeight: "bold"}}>{achievement.name.fr}</Typography>}
+                            <List dense sx={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: (theme) => theme.spacing(2) }}>
+                                {achievements.filter(achievement => categorieAchievements.includes(achievement.id)).map(achievement => (
+                                    <ListItem sx={{ overflow: "hidden", backgroundColor: "#3F3F3D", padding: (theme) => theme.spacing(1), borderRadius: (theme) => theme.spacing(1) }} key={achievement.id}>
+                                        <ListItemIcon>
+                                            <Avatar
+                                                variant="rounded"
+                                                sx={{
+                                                    width: 64, height: 64, marginRight: (theme) => theme.spacing(1), position: "relative",
+                                                    "::after": {
+                                                        content: '""',
+                                                        position: 'absolute',
+                                                        width: '100%',
+                                                        height: '100%',
+                                                        background: `center / contain no-repeat url("${process.env.PUBLIC_URL}/img/pictos/succes.png")`,
+                                                    }
+
+                                                }}
+                                                src={process.env.PUBLIC_URL + "/img/achievements/" + achievement.iconId + ".png"}
                                             />
-                                        </ListItem>
-                                    ))}
-                                </List>
-                            </Typography>
+                                        </ListItemIcon>
+                                        <ListItemText
+                                            primary={<Typography sx={{ color: "#A6A6A4", fontWeight: "bold" }}>{achievement.name.fr}</Typography>}
+                                        />
+                                    </ListItem>
+                                ))}
+                            </List>
+
+                            {categorie.subAchievements?.map(subcat => {
+                                const subcatAchievements = subcat.achievementIds.filter(aid => shouldDisplayAchievement(achievements.find(a => a.id === aid)));
+                                const isSubcatHidden = subcatAchievements.length <= 0;
+
+                                return !isSubcatHidden && <Box>
+                                    <Typography variant="body2">{subcat.name.fr}</Typography>
+                                    <List dense sx={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: (theme) => theme.spacing(2) }}>
+                                        {achievements.filter(achievement => subcatAchievements.includes(achievement.id)).map(achievement => (
+                                            <ListItem sx={{ overflow: "hidden", backgroundColor: "#3F3F3D", padding: (theme) => theme.spacing(1), borderRadius: (theme) => theme.spacing(1) }} key={achievement.id}>
+                                                <ListItemIcon>
+                                                    <Avatar
+                                                        variant="rounded"
+                                                        sx={{
+                                                            width: 64, height: 64, marginRight: (theme) => theme.spacing(1), position: "relative",
+                                                            "::after": {
+                                                                content: '""',
+                                                                position: 'absolute',
+                                                                width: '100%',
+                                                                height: '100%',
+                                                                background: `center / contain no-repeat url("${process.env.PUBLIC_URL}/img/pictos/succes.png")`,
+                                                            }
+
+                                                        }}
+                                                        src={process.env.PUBLIC_URL + "/img/achievements/" + achievement.iconId + ".png"}
+                                                    />
+                                                </ListItemIcon>
+                                                <ListItemText
+                                                    primary={<Typography sx={{ color: "#A6A6A4", fontWeight: "bold" }}>{achievement.name.fr}</Typography>}
+                                                />
+                                            </ListItem>
+                                        ))}
+                                    </List>
+                                </Box>
+                            })}
                         </AccordionDetails>
                     </Accordion>
                 })}
