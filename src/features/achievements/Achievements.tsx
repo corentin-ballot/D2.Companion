@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Paper, FormControlLabel, Checkbox, Grid, Typography, Avatar, Accordion, AccordionDetails, AccordionSummary, List, ListItem, ListItemIcon, ListItemText } from '@mui/material';
+import { Box, Paper, FormControlLabel, Checkbox, Grid, Typography, Avatar, Accordion, AccordionDetails, AccordionSummary, List, ListItem, ListItemIcon, ListItemText, Button } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+// @ts-ignore
+import { exportCsv } from "json2csv-export";
 
 import { useAppSelector } from '../../app/hooks';
 import {
+    selectCharacter,
     selectFinishedAchievements
 } from '../character/characterSlice';
 
@@ -52,6 +55,7 @@ export interface Achievement {
     followable: boolean;
     createdAt: Date;
     updatedAt: Date;
+    order: number;
     __v: number;
 }
 
@@ -72,24 +76,26 @@ function Achievements() {
         { id: "displayMeta", label: "Display meta-achievements", value: false },
     ]);
 
+    const character = useAppSelector(selectCharacter);
+
     const finishedAchievements = useAppSelector(selectFinishedAchievements);
 
     useEffect(() => {
         setAcids(achievementCategories.reduce((a, b) => {
             const parent = a.find(ac => ac.id === b.parentId) || achievementCategories.find(ac => ac.id === b.parentId);
-            const obj = typeof parent === "undefined" ? {...b, subAchievements: [], subAchievementIds: []} : {
+            const obj = typeof parent === "undefined" ? { ...b, subAchievements: [], subAchievementIds: [] } : {
                 ...parent,
                 // @ts-ignore
-                subAchievements: [...parent.subAchievements, b].sort((a,b) => a.order - b.order),
+                subAchievements: [...parent.subAchievements, b].sort((a, b) => a.order - b.order),
                 // @ts-ignore
                 subAchievementIds: [...parent.subAchievementIds, ...b.achievementIds],
             };
-            
+
             return [
                 ...a.filter(ac => ac.id !== obj.id),
                 obj
             ]
-        }, [] as AchievementCategorie[]).sort((a,b) => a.order - b.order));
+        }, [] as AchievementCategorie[]).sort((a, b) => a.order - b.order));
     }, [achievementCategories])
 
     useEffect(() => {
@@ -111,6 +117,25 @@ function Achievements() {
     const handleFilterChanged = (event: React.ChangeEvent<HTMLInputElement>) => {
         // @ts-ignore
         setFilters(filters.map(filter => event.target.id === filter.id ? { ...filter, value: event.target.checked } : filter));
+    }
+
+    const exportSheet = (categorie: AchievementCategorie) => {
+        exportCsv({
+            header: {
+                name: "Succès",
+                state: character.name,
+            },
+            data: [...categorie.achievementIds, ...(categorie.subAchievementIds || [])].map(aid => {
+                const achievement = achievements.find(a => a.id === aid);
+                const achievementCategorie = achievementCategories.find(ac => ac.id === achievement?.categoryId);
+                return {
+                    name: achievement?.name.fr,
+                    state: character.achievements.finished.includes(aid) ? 1 : 0,
+                    order: !achievement || !achievementCategorie ? 0 : achievementCategorie?.order * 1e3 + achievement?.order,
+                }
+            }).sort((a,b) => a.order - b.order),
+            filename: "D2Companion - Achievements",
+        });
     }
 
     return <Box sx={{ flexGrow: 1 }}>
@@ -136,7 +161,10 @@ function Achievements() {
                             aria-controls={"categorie-panel-" + categorie.id}
                             id={"categorie-" + categorie.id}
                         >
-                            <Typography>{categorie.name.fr} ({categorieAchievements.length + (categorieSubAchievements ? categorieSubAchievements.length : 0)})</Typography>
+                            <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%" }}>
+                                <Typography>{categorie.name.fr} ({categorieAchievements.length + (categorieSubAchievements ? categorieSubAchievements.length : 0)})</Typography>
+                                <Button onClick={(e) => {e.stopPropagation(); exportSheet(categorie)}}>Export</Button>
+                            </Box>
                         </AccordionSummary>
                         <AccordionDetails>
                             <List dense sx={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: (theme) => theme.spacing(2) }}>
