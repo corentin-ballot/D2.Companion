@@ -133,7 +133,7 @@ function Achievements() {
                     state: character.achievements.finished.includes(aid) ? 1 : 0,
                     order: !achievement || !achievementCategorie ? 0 : achievementCategorie?.order * 1e3 + achievement?.order,
                 }
-            }).sort((a,b) => a.order - b.order),
+            }).sort((a, b) => a.order - b.order),
             filename: "D2Companion - Achievements",
         });
     }
@@ -163,11 +163,11 @@ function Achievements() {
                         >
                             <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%" }}>
                                 <Typography>{categorie.name.fr} ({categorieAchievements.length + (categorieSubAchievements ? categorieSubAchievements.length : 0)})</Typography>
-                                <Button onClick={(e) => {e.stopPropagation(); exportSheet(categorie)}}>Export</Button>
+                                <Button onClick={(e) => { e.stopPropagation(); exportSheet(categorie) }}>Export</Button>
                             </Box>
                         </AccordionSummary>
                         <AccordionDetails>
-                            <List dense sx={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: (theme) => theme.spacing(2) }}>
+                            {categorieAchievements.length > 0 && <List dense sx={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: (theme) => theme.spacing(2) }}>
                                 {achievements.filter(achievement => categorieAchievements.includes(achievement.id)).map(achievement => (
                                     <ListItem sx={{ overflow: "hidden", backgroundColor: "#3F3F3D", padding: (theme) => theme.spacing(1), borderRadius: (theme) => theme.spacing(1) }} key={achievement.id}>
                                         <ListItemIcon>
@@ -192,7 +192,7 @@ function Achievements() {
                                         />
                                     </ListItem>
                                 ))}
-                            </List>
+                            </List>}
 
                             {categorie.subAchievements?.map(subcat => {
                                 const subcatAchievements = subcat.achievementIds.filter(aid => shouldDisplayAchievement(achievements.find(a => a.id === aid)));
