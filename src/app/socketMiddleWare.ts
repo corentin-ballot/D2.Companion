@@ -296,6 +296,9 @@ const socketMiddleWare: Middleware = (store) => {
                 store.dispatch(processExchangeBidHouseUnsoldItemsMessage(data.content as ExchangeBidHouseUnsoldItemsMessage));
                 break;
 
+            case "ObjectAveragePricesMessage":
+                console.log("ObjectAveragePricesMessage", data.content)
+
             /* Default */
             default:
                 //console.log(data.content.__name, data.content)
