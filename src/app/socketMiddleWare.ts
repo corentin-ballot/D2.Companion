@@ -297,7 +297,8 @@ const socketMiddleWare: Middleware = (store) => {
                 break;
 
             case "ObjectAveragePricesMessage":
-                console.log("ObjectAveragePricesMessage", data.content)
+                console.log("ObjectAveragePricesMessage", data.content);
+                break;
 
             /* Default */
             default:
