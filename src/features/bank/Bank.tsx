@@ -14,19 +14,25 @@ function Bank() {
 
     const [bankItems, setBankItems] = useState<any[]>([]);
     const [items, setItems] = useState<any[]>([]);
+    const [monsters, setMonsters] = useState<any[]>([]);
 
     useEffect(() => {
         fetch(process.env.PUBLIC_URL + '/data/items.json').then(res => res.json()).then(res => setItems(res));
+        fetch(process.env.PUBLIC_URL + '/data/monsters.json').then(res => res.json()).then(res => setMonsters(res));
     }, []);
 
     useEffect(() => {
         setBankItems(bank.objects.map(object => {
             const item = items.find(i => i._id === object.objectGID);
+            const name = 
+                object.objectGID === 10418 ? `Archi-monstre : ${monsters.find(m => m.Id === object.effects[0]?.diceConst)?.Name}` 
+                : object.objectGID === 7010 ? `Âme : ${monsters.find(m => m.Id === object.effects[0]?.diceConst)?.Name}` 
+                : item?.name;
             return {
                 id: object.objectGID,
                 uid: object.objectUID,
                 iconId: item?.iconId,
-                name: item?.name,
+                name: name,
                 level: item?.level,
                 quantity: object.quantity,
             }
