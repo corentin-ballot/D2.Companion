@@ -50,6 +50,7 @@ export interface Rune {
     effects: Effect[];
     possibleEffects: PossibleEffect[];
     img: string;
+    density?: number;
 }
 
 interface Item extends ObjectInfo {
@@ -76,8 +77,11 @@ export const forgemagieSlice = createSlice({
                 // take back item
                 state.item = { ...state.item, ...action.payload.object };
             } else if(runeIds.includes(action.payload.object.objectGID)) {
+                const rune = runesForgemagie.find(r => r._id === action.payload.object.objectGID) as Rune;
+                const statDensity = typeof rune !== "undefined" ? (equipmentStats.get(rune?.possibleEffects[0].effectId)?.density || 0) : 0;
+                const density = typeof rune !== "undefined" ? (statDensity * rune?.possibleEffects[0].diceNum) : 0;
                 // add rune
-                state.lastRune = runesForgemagie.find(r => r._id === action.payload.object.objectGID);
+                state.lastRune = {...rune, density: density};
             } else {
                 // new item
                 state.item = { ...action.payload.object, history: [], magicPool: 0 };
@@ -85,20 +89,31 @@ export const forgemagieSlice = createSlice({
         },
         passRune: (state, action: PayloadAction<ExchangeCraftResultMagicWithObjectDescMessage>) => {
             if (state.item) {
-                const result = action.payload.objectInfo.effects.map(effect => {
-                    const eff = state.item?.effects.find(e => e.actionId === effect.actionId);
-                    return { ...effect, value: effect.value - (eff ? eff.value : 0) };
+                const effectIds = Array.from(new Set([...action.payload.objectInfo.effects.map(effect => effect.actionId), ...state.item?.effects.map(effect => effect.actionId)]));
+
+                const result = effectIds.map(effectId => {
+                    const effectFrom = state.item?.effects.find(e => e.actionId === effectId);
+                    const effectTo = action.payload.objectInfo.effects.find(e => e.actionId === effectId);
+                    if(typeof effectFrom === "undefined" && typeof effectTo === "undefined") console.error("Unknow effectId", effectId);
+                    const effect = {...effectFrom, ...effectTo} as {effect: number, actionId: number};
+                    
+                    return { ...effect, value: (effectTo ? effectTo.value : 0) - (effectFrom ? effectFrom.value : 0) };
                 }).filter(effect => effect.value !== 0);
                 
                 if(action.payload.magicPoolStatus === 2 || action.payload.magicPoolStatus === 3) { 
                     if(action.payload.craftResult === 1 && state.lastRune) {
                         const density = equipmentStats.get(state.lastRune.possibleEffects[0].effectId)?.density;
-                        if(density) state.item.magicPool -= density * state.lastRune.possibleEffects[0].diceNum;
+                        if(density) {
+                            state.item.magicPool -= state.lastRune.density || 0;
+                        }
                     }
-                    state.item.magicPool += -1 * result.reduce((prev, curr) => {
-                        const stat = equipmentStats.get(curr.actionId);
-                        return prev + curr.value * (stat ? stat.density : 0);
+
+                    const resultDensity = result.reduce((prev, curr) => {
+                        const density = equipmentStats.get(curr.actionId)?.density;
+                        return prev + curr.value * (typeof density !== "undefined" ? density : 0);
                     }, 0);
+
+                    state.item.magicPool += -1 * resultDensity;
                 }
 
                 // Floor 2 decimals
