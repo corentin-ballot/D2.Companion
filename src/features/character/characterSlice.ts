@@ -23,7 +23,7 @@ export interface characterState {
 }
 
 const loadCharacter = () => {
-    const char = JSON.parse(localStorage.getItem(`character`) || "");
+    const char = JSON.parse(localStorage.getItem(`character`) || "null");
 
     if(char) {
         return {

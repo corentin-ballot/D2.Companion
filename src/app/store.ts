@@ -9,6 +9,8 @@ import forgemagieReducer from '../features/forgemagie/forgemagieSlice';
 import characterReducer from '../features/character/characterSlice';
 import bankReducer from '../features/bank/bankSlice';
 import salesReducer from '../features/sales/salesSlice';
+import authenticationReducer from '../features/authentication/authenticationSlice';
+import authenticationMiddleWare from './authenticationMiddleWare';
 
 export const store = configureStore({
   reducer: {
@@ -21,8 +23,9 @@ export const store = configureStore({
     character: characterReducer,
     bank: bankReducer,
     sales: salesReducer,
+    authentication: authenticationReducer,
   },
-  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(socketMiddleWare)
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(authenticationMiddleWare, socketMiddleWare)
 });
 
 export type AppDispatch = typeof store.dispatch;
