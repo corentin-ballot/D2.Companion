@@ -8,6 +8,7 @@ import theme from './mui.theme';
 import { AuthProvider } from 'react-oidc-context';
 import { BrowserRouter } from 'react-router-dom';
 import authConfig from './auth.config';
+import { SocketProvider } from './providers/sockets';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -17,9 +18,11 @@ root.render(
   <React.StrictMode>
     <AuthProvider {...authConfig}>
       <ThemeProvider theme={theme}>
-        <BrowserRouter basename={process.env.PUBLIC_URL}>
-          <App />
-        </BrowserRouter>
+        <SocketProvider>
+          <BrowserRouter basename={process.env.PUBLIC_URL}>
+            <App />
+          </BrowserRouter>
+        </SocketProvider>
       </ThemeProvider>
     </AuthProvider>
   </React.StrictMode>
