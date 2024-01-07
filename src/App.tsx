@@ -1,5 +1,5 @@
 import React from 'react';
-import { Backdrop, Box, CircularProgress } from '@mui/material';
+import { Box } from '@mui/material';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
@@ -13,67 +13,23 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import Breadcrumbs from '@mui/material/Breadcrumbs';
 import Avatar from '@mui/material/Avatar';
-
-import HomeIcon from '@mui/icons-material/Home';
-import ShieldIcon from '@mui/icons-material/Shield';
-import StoreIcon from '@mui/icons-material/Store';
-import HandymanIcon from '@mui/icons-material/Handyman';
-import FeedbackIcon from '@mui/icons-material/Feedback';
-import DiversityIcon from '@mui/icons-material/Diversity1';
-import TaskIcon from '@mui/icons-material/Task';
-import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
-import InfoIcon from '@mui/icons-material/Info';
-import SettingsIcon from '@mui/icons-material/Settings';
+import routes from './routes';
+import { useAuth } from 'react-oidc-context';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
-import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
-import ReceiptIcon from '@mui/icons-material/Receipt';
-
-import Home from './features/home/Home';
-import About from './features/about/About';
-import Chat from './features/chat/Chat';
-import Fights from './features/fights/Fights';
-import Market from './features/market/Market';
-import Breeding from './features/breeding/Breeding';
-import Quests from './features/quests/Quests';
-import Settings from './features/settings/Settings';
-import Forgemagie from './features/forgemagie/Forgemagie';
-import Achievements from './features/achievements/Achievements';
-import Bank from './features/bank/Bank';
-import Sales from './features/sales/Sales';
-import GlobalStyles from '@mui/material/GlobalStyles';
-
-import { useAppSelector } from './app/hooks';
-import { selectCharacter } from './features/character/characterSlice';
-import { selectSocket } from './features/socket/socketSlice';
-import MobiledataOffIcon from '@mui/icons-material/MobiledataOff';
-
-const routes = [
-  { path: "/", icon: <HomeIcon />, element: <Home />, hidden: true },
-  { path: "/bank", icon: <AccountBalanceIcon />, element: <Bank />, label: "Bank" },
-  { path: "/sales", icon: <ReceiptIcon />, element: <Sales />, label: "Sales" },
-  { path: "/fights", icon: <ShieldIcon />, element: <Fights />, label: "Fights" },
-  { path: "/market", icon: <StoreIcon />, element: <Market />, label: "Market" },
-  { path: "/forgemagie", icon: <HandymanIcon />, element: <Forgemagie />, label: "Forgemagie" },
-  { path: "/chat", icon: <FeedbackIcon />, element: <Chat />, label: "Chat" },
-  { path: "/breeding", icon: <DiversityIcon />, element: <Breeding />, label: "Breeding" },
-  { path: "/quests", icon: <TaskIcon />, element: <Quests />, label: "Quests" },
-  { path: "/achievements", icon: <EmojiEventsIcon />, element: <Achievements />, label: "Achievements" },
-  { path: "/about", icon: <InfoIcon />, element: <About />, label: "About", submenu: true },
-  { path: "/settings", icon: <SettingsIcon />, element: <Settings />, label: "Settings", submenu: true },
-];
 
 const drawerWidth = 240;
 
 function App() {
+  const auth = useAuth();
   const pathname = useLocation().pathname;
-  const character = useAppSelector(selectCharacter);
-  const socket = useAppSelector(selectSocket);
+  const character = { name: "null", level: 0, sex: false, breed: 1 };
+
+  if (!auth.isLoading && !auth.isAuthenticated) {
+    auth.signinRedirect();
+  }
 
   return (
     <Box sx={{ display: 'flex' }}>
-      <GlobalStyles styles={{
-        body: { backgroundColor: "#f9f9fb" }
-      }} />
       <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
         <Toolbar>
           <Breadcrumbs sx={{ flexGrow: 1, color: "inherit" }} separator={<NavigateNextIcon fontSize="small" />}>
@@ -137,14 +93,6 @@ function App() {
           {routes.map(route => <Route path={route.path} element={route.element} key={route.path} />)}
         </Routes>
       </Box>
-
-      <Backdrop
-        sx={{ flexDirection: "column", gap: 2, color: '#fff', zIndex: (theme: any) => theme.zIndex.drawer + 1 }}
-        open={!socket.connected}
-      >
-          <MobiledataOffIcon color="inherit" />
-          <Typography>Waiting for websocket to connect</Typography>
-      </Backdrop>
     </Box>
   );
 }
