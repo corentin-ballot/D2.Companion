@@ -50,18 +50,11 @@ function Bank() {
     }
 
     type Order = 'asc' | 'desc';
-    const [order, setOrder] = React.useState<Order>('asc');
+    const [order, setOrder] = React.useState<Order>('desc');
     type Column = 'name' | 'quantity' | 'level' | 'price' | 'date';
     const [orderBy, setOrderBy] = React.useState<Column>('date');
 
     const createSortHandler = (property: Column) => (event: React.MouseEvent<unknown>) => {
-        onRequestSort(event, property);
-    };
-
-    const onRequestSort = (
-        event: React.MouseEvent<unknown>,
-        property: Column,
-    ) => {
         const isAsc = orderBy === property && order === 'asc';
         setOrder(isAsc ? 'desc' : 'asc');
         setOrderBy(property);
@@ -113,7 +106,7 @@ function Bank() {
                                     <TableCell>
                                         <TableSortLabel
                                             active={orderBy === "name"}
-                                            direction={orderBy === "name" ? order : 'asc'}
+                                            direction={orderBy === "name" ? order : 'desc'}
                                             onClick={createSortHandler("name")}
                                         >
                                             Name
@@ -123,7 +116,7 @@ function Bank() {
 
                                         <TableSortLabel
                                             active={orderBy === "level"}
-                                            direction={orderBy === "level" ? order : 'asc'}
+                                            direction={orderBy === "level" ? order : 'desc'}
                                             onClick={createSortHandler("level")}
                                         >
                                             Level
@@ -133,7 +126,7 @@ function Bank() {
 
                                         <TableSortLabel
                                             active={orderBy === "quantity"}
-                                            direction={orderBy === "quantity" ? order : 'asc'}
+                                            direction={orderBy === "quantity" ? order : 'desc'}
                                             onClick={createSortHandler("quantity")}
                                         >
                                             Quantity
@@ -143,7 +136,7 @@ function Bank() {
 
                                         <TableSortLabel
                                             active={orderBy === "price"}
-                                            direction={orderBy === "price" ? order : 'asc'}
+                                            direction={orderBy === "price" ? order : 'desc'}
                                             onClick={createSortHandler("price")}
                                         >
                                             Price
@@ -153,7 +146,7 @@ function Bank() {
 
                                         <TableSortLabel
                                             active={orderBy === "date"}
-                                            direction={orderBy === "date" ? order : 'asc'}
+                                            direction={orderBy === "date" ? order : 'desc'}
                                             onClick={createSortHandler("date")}
                                         >
                                             Date
