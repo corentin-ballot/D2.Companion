@@ -2,28 +2,7 @@ import { createTheme } from '@mui/material/styles'
 
 const theme = createTheme({
   components: {
-    MuiTypography: {
-      styleOverrides: {
-        h1: {
-          marginBottom: 24
-        },
-        h2: {
-          marginBottom: 20
-        },
-        h3: {
-          marginBottom: 16
-        },
-        h4: {
-          marginBottom: 14
-        },
-        h5: {
-          marginBottom: 12
-        },
-        h6: {
-          marginBottom: 10
-        }
-      }
-    }
+    
   },
   breakpoints: {
     keys: [
@@ -174,28 +153,32 @@ const theme = createTheme({
       fontSize: '2.5rem',
       fontWeight: 900,
       lineHeight: 1.1142857142857143,
-      color: '#0A1929'
+      color: '#0A1929',
+      marginBottom: 12
     },
     h2: {
       fontFamily: 'Montserrat,Arial,Verdana,Lucida Grande,sans-serif',
       fontSize: '2rem',
       fontWeight: 700,
       lineHeight: 1.2222222222222223,
-      color: '#132F4C'
+      color: '#132F4C',
+      marginBottom: 12
     },
     h3: {
       fontFamily: 'Montserrat,Arial,Verdana,Lucida Grande,sans-serif',
       fontSize: '1.75rem',
       lineHeight: 1.2222222222222223,
       letterSpacing: 0.2,
-      fontWeight: 400
+      fontWeight: 400,
+      marginBottom: 12
     },
     h4: {
       fontFamily: 'Montserrat,Arial,Verdana,Lucida Grande,sans-serif',
       fontSize: '1.5rem',
       lineHeight: 1.5,
       letterSpacing: 0.2,
-      fontWeight: 400
+      fontWeight: 400,
+      marginBottom: 12
     },
     h5: {
       fontFamily: 'Montserrat,Arial,Verdana,Lucida Grande,sans-serif',
@@ -203,13 +186,15 @@ const theme = createTheme({
       lineHeight: 1.5,
       letterSpacing: 0.1,
       color: '#007FFF',
-      fontWeight: 400
+      fontWeight: 400,
+      marginBottom: 12
     },
     h6: {
       fontSize: '1.1rem',
       lineHeight: 1.5,
       fontFamily: 'Montserrat,Arial,Verdana,Lucida Grande,sans-serif',
-      fontWeight: 500
+      fontWeight: 500,
+      marginBottom: 12
     },
     button: {
       textTransform: 'initial',
