@@ -7,6 +7,7 @@ import { ForgemagieProvider } from './ForgemagieContext'
 import { MarketProvider } from './MarketContext'
 import { StorageProvider } from './StorageContext'
 import { SalesProvider } from './SalesContext'
+import { FightProvider } from './FightContext'
 
 interface PrividerProps {
   children: React.ReactElement
@@ -19,16 +20,18 @@ const Provider = ({ children }: PrividerProps): React.ReactElement =>
         <ForgemagieProvider>
           <PaddockProvider>
             <CharacterProvider>
-              <ChatServerProvider>
-                <SocketProvider>
-                  {children}
-                </SocketProvider>
-              </ChatServerProvider>
+              <FightProvider>
+                <ChatServerProvider>
+                  <SocketProvider>
+                    {children}
+                  </SocketProvider>
+                </ChatServerProvider>
+              </FightProvider>
             </CharacterProvider>
           </PaddockProvider>
         </ForgemagieProvider>
       </MarketProvider>
     </StorageProvider>
   </SalesProvider>
-  
+
 export default Provider;
