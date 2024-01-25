@@ -14,6 +14,7 @@ import {
   Receipt
 } from '@mui/icons-material'
 
+import HomeView from './views/Home'
 import ChatMessagesView from './views/ChatMessages'
 import SettingsView from './views/Settings'
 import AboutView from './views/About'
@@ -24,7 +25,7 @@ import ForgemagieView from './views/Forgemagie'
 import MarketView from './views/Market'
 
 const routes = [
-  { path: '/', icon: <Home />, element: <div>HOME</div >, hidden: true, role: 'default-roles-d2.companion' },
+  { path: '/', icon: <Home />, element: <HomeView />, hidden: true, role: 'default-roles-d2.companion' },
   { path: '/bank', icon: <AccountBalance />, element: <div>BANK</div >, label: 'Bank' },
   { path: '/sales', icon: <Receipt />, element: <div>SALES</div >, label: 'Sales' },
   { path: '/fights', icon: <Shield />, element: <div>FIGHTS</div >, label: 'Fights' },
