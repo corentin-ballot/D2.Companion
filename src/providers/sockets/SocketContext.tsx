@@ -156,33 +156,33 @@ export const SocketProvider = ({ children }: SocketPrividerProps): React.ReactEl
 
         /* Fights */
         case "GameFightJoinMessage":
-          dispatchFight({ action: "fight_start", payload: data.content });
+          dispatchFight({ type: "fight_start", payload: data.content });
           break;
         case "GameFightTurnListMessage":
-          dispatchFight({ action: "fight_turn_list", payload: data.content });
+          dispatchFight({ type: "fight_turn_list", payload: data.content });
           break;
         case "GameFightSynchronizeMessage":
-          dispatchFight({ action: "fight_fighters", payload: data.content });
+          dispatchFight({ type: "fight_fighters", payload: data.content });
           break;
         case "RefreshCharacterStatsMessage":
           break;
         case "GameFightNewRoundMessage":
-          dispatchFight({ action: "fight_round", payload: data.content });
+          dispatchFight({ type: "fight_round", payload: data.content });
           break;
         case "GameFightEndMessage":
-          dispatchFight({ action: "fight_end", payload: data.content });
+          dispatchFight({ type: "fight_end", payload: data.content });
           break;
         case "GameActionFightLifePointsLostMessage":
-          dispatchFight({ action: "fight_dommage", payload: data.content });
+          dispatchFight({ type: "fight_dommage", payload: data.content });
           break;
         case "GameActionFightLifeAndShieldPointsLostMessage":
-          dispatchFight({ action: "fight_dommage", payload: data.content });
+          dispatchFight({ type: "fight_dommage", payload: data.content });
           break;
         case "GameActionFightSpellCastMessage":
-          dispatchFight({ action: "fight_spell", payload: data.content });
+          dispatchFight({ type: "fight_spell", payload: data.content });
           break;
         case "GameActionFightMultipleSummonMessage":
-          dispatchFight({ action: "fight_summon", payload: data.content });
+          dispatchFight({ type: "fight_summon", payload: data.content });
           break;
       }
     })
