@@ -8,6 +8,7 @@ import { usePaddockDispatch } from './PaddockContext'
 import { useForgemagieDispatch } from './ForgemagieContext'
 import { useMarketDispatch } from './MarketContext'
 import { useStorageDispatch } from './StorageContext'
+import { useSalesDispatch } from './SalesContext'
 
 export const SocketContext = createContext({
   connecting: true,
@@ -29,6 +30,7 @@ export const SocketProvider = ({ children }: SocketPrividerProps): React.ReactEl
   const dispatchForgemagie = useForgemagieDispatch()
   const dispatchMarket = useMarketDispatch()
   const dispatchStorage = useStorageDispatch()
+  const dispatchSales = useSalesDispatch()
 
   const isInit = React.useRef(false)
 
@@ -136,6 +138,18 @@ export const SocketProvider = ({ children }: SocketPrividerProps): React.ReactEl
         // Storage
         case "StorageInventoryContentMessage":
           dispatchStorage({ type: 'storage_updated', payload: data.content });
+          break;
+
+        // Sales
+        case "TextInformationMessage":
+          if (data.content.msgId === 65) // 65 = sale information message
+            dispatchSales({ type: 'item_sold', payload: data.content });
+          break;
+        case "ExchangeOfflineSoldItemsMessage":
+          dispatchSales({ type: 'items_offline_sold', payload: data.content });
+          break;
+        case "ExchangeBidHouseUnsoldItemsMessage":
+          dispatchSales({ type: 'items_not_sold', payload: data.content });
           break;
       }
     })

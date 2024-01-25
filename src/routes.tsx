@@ -24,11 +24,12 @@ import QuestsView from './views/Quests'
 import BreedingView from './views/Breeding'
 import ForgemagieView from './views/Forgemagie'
 import MarketView from './views/Market'
+import SalesView from './views/Sales'
 
 const routes = [
   { path: '/', icon: <Home />, element: <HomeView />, hidden: true, role: 'default-roles-d2.companion' },
   { path: '/storage', icon: <AccountBalance />, element: <StorageView />, label: 'Storage', role: 'default-roles-d2.companion' },
-  { path: '/sales', icon: <Receipt />, element: <div>SALES</div >, label: 'Sales' },
+  { path: '/sales', icon: <Receipt />, element: <SalesView />, label: 'Sales', role: 'default-roles-d2.companion' },
   { path: '/fights', icon: <Shield />, element: <div>FIGHTS</div >, label: 'Fights' },
   { path: '/market', icon: <Store />, element: <MarketView />, label: 'Market', role: 'default-roles-d2.companion' },
   { path: '/forgemagie', icon: <Handyman />, element: <ForgemagieView />, label: 'Forgemagie', role: 'default-roles-d2.companion' },
