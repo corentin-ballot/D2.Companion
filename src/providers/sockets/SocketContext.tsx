@@ -6,6 +6,7 @@ import { useChatServerDispatch } from './ChatServerContext'
 import { useCharacterDispatch } from './CharacterContext'
 import { usePaddockDispatch } from './PaddockContext'
 import { useForgemagieDispatch } from './ForgemagieContext'
+import { useMarketDispatch } from './MarketContext'
 
 export const SocketContext = createContext({
   connecting: true,
@@ -24,7 +25,8 @@ export const SocketProvider = ({ children }: SocketPrividerProps): React.ReactEl
   const dispatchChatServer = useChatServerDispatch()
   const dispatchCharacter = useCharacterDispatch()
   const dispatchPaddock = usePaddockDispatch()
-  const dispatchForgemargie = useForgemagieDispatch()
+  const dispatchForgemagie = useForgemagieDispatch()
+  const dispatchMarket = useMarketDispatch()
 
   const isInit = React.useRef(false)
 
@@ -116,11 +118,17 @@ export const SocketProvider = ({ children }: SocketPrividerProps): React.ReactEl
         // Forgemagie
         case "ExchangeStartOkCraftWithInformationMessage": break; // open craft bench
         case "ExchangeObjectAddedMessage":
-          console.log("socket-ExchangeObjectAddedMessage", data.content)
-          dispatchForgemargie({ type: 'item_changed', payload: data.content })
+          dispatchForgemagie({ type: 'item_changed', payload: data.content })
           break;
         case "ExchangeCraftResultMagicWithObjectDescMessage":
-          dispatchForgemargie({ type: 'rune_passed', payload: data.content })
+          dispatchForgemagie({ type: 'rune_passed', payload: data.content })
+          break;
+
+        // Market
+        case "ExchangeStartedBidBuyerMessage": break; // Open HDV 
+        case "ExchangeTypesExchangerDescriptionForUserMessage": break; // Filter HDV  
+        case "ExchangeTypesItemsExchangerDescriptionForUserMessage":
+          dispatchMarket({ type: 'item_viewed', payload: data.content })
           break;
       }
     })
