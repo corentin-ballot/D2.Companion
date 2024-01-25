@@ -7,6 +7,7 @@ import { useCharacterDispatch } from './CharacterContext'
 import { usePaddockDispatch } from './PaddockContext'
 import { useForgemagieDispatch } from './ForgemagieContext'
 import { useMarketDispatch } from './MarketContext'
+import { useStorageDispatch } from './StorageContext'
 
 export const SocketContext = createContext({
   connecting: true,
@@ -27,6 +28,7 @@ export const SocketProvider = ({ children }: SocketPrividerProps): React.ReactEl
   const dispatchPaddock = usePaddockDispatch()
   const dispatchForgemagie = useForgemagieDispatch()
   const dispatchMarket = useMarketDispatch()
+  const dispatchStorage = useStorageDispatch()
 
   const isInit = React.useRef(false)
 
@@ -129,6 +131,11 @@ export const SocketProvider = ({ children }: SocketPrividerProps): React.ReactEl
         case "ExchangeTypesExchangerDescriptionForUserMessage": break; // Filter HDV  
         case "ExchangeTypesItemsExchangerDescriptionForUserMessage":
           dispatchMarket({ type: 'item_viewed', payload: data.content })
+          break;
+
+        // Storage
+        case "StorageInventoryContentMessage":
+          dispatchStorage({ type: 'storage_updated', payload: data.content });
           break;
       }
     })

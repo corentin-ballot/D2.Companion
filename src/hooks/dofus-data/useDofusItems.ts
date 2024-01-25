@@ -18,6 +18,7 @@ export interface PossibleEffect {
   effectId: number
   delay: number
   diceSide: number
+  diceConst?: number
   visibleOnTerrain: boolean
   visibleInTooltip: boolean
   rawZone: string
