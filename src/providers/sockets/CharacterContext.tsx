@@ -73,13 +73,19 @@ const reducer = (state: CharacterState, action: { type: string, payload: any }):
         case 'achievements_changed': {
             return {
                 ...state,
-                achievements: action.payload
+                achievements: {
+                    finished: Array.from(new Set([...state.achievements.finished, ...action.payload.finishedAchievements.map((a: any) => a.id)]))
+                }
             }
         }
         case 'quests_changed': {
             return {
                 ...state,
-                quests: action.payload
+                quests: {
+                    finished: action.payload.finishedQuestsIds,
+                    active: action.payload.activeQuests.map((q: any) => q.questId),
+                    reinit: action.payload.reinitDoneQuestsIds,
+                }
             }
         }
         default: {
@@ -100,8 +106,8 @@ export const CharacterProvider = ({ children }: CharacterProviderProps): React.R
         localStorage.setItem(`Character.infos`, JSON.stringify(state.infos));
 
         // Load character quests & achievements
-        dispatch({type: "achievements_changed", payload: JSON.parse(localStorage.getItem(`Character.achievements.${state.infos.id}`) ?? '{"finished":[]}')})
-        dispatch({type: "quests_changed", payload: JSON.parse(localStorage.getItem(`Character.quests.${state.infos.id}`) ?? '{"finished":[],"active":[],"reinit":[]}')})
+        dispatch({ type: "achievements_changed", payload: JSON.parse(localStorage.getItem(`Character.achievements.${state.infos.id}`) ?? '{"finished":[]}') })
+        dispatch({ type: "quests_changed", payload: JSON.parse(localStorage.getItem(`Character.quests.${state.infos.id}`) ?? '{"finished":[],"active":[],"reinit":[]}') })
     }, [state.infos.id])
 
     React.useEffect(() => {
