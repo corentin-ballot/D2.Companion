@@ -37,7 +37,7 @@ root.render(
     <AuthProvider
       authority='https://home.cballot.fr/auth/realms/D2.Companion'
       client_id='corentin-ballot.github.io'
-      redirect_uri={window.location.origin}
+      redirect_uri={!process.env.NODE_ENV || process.env.NODE_ENV === 'development' ? window.location.origin : "https://corentin-ballot.github.io/D2.Companion"}
       onSigninCallback={(user) => {
         window.history.replaceState({}, document.title, window.location.pathname)
         // @ts-ignore
