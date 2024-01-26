@@ -67,7 +67,9 @@ const reducer = (state: CharacterState, action: { type: string, payload: any }):
                     breed: action.payload.infos.breed,
                     level: action.payload.infos.level,
                     sex: action.payload.infos.sex,
-                }
+                },
+                achievements: JSON.parse(localStorage.getItem(`Character.achievements.${state.infos.id}`) ?? '{"finished":[]}'),
+                quests: JSON.parse(localStorage.getItem(`Character.quests.${state.infos.id}`) ?? '{"finished":[],"active":[],"reinit":[]}'),
             }
         }
         case 'achievements_changed': {
@@ -104,10 +106,6 @@ export const CharacterProvider = ({ children }: CharacterProviderProps): React.R
     React.useEffect(() => {
         // Store character infosrmations
         localStorage.setItem(`Character.infos`, JSON.stringify(state.infos));
-
-        // Load character quests & achievements
-        dispatch({ type: "achievements_changed", payload: JSON.parse(localStorage.getItem(`Character.achievements.${state.infos.id}`) ?? '{"finished":[]}') })
-        dispatch({ type: "quests_changed", payload: JSON.parse(localStorage.getItem(`Character.quests.${state.infos.id}`) ?? '{"finished":[],"active":[],"reinit":[]}') })
     }, [state.infos.id])
 
     React.useEffect(() => {
