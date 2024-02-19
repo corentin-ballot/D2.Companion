@@ -2,7 +2,6 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { ThemeProvider } from '@mui/material'
 import { BrowserRouter } from 'react-router-dom'
-import { AuthProvider } from 'react-oidc-context'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { persistQueryClient } from '@tanstack/react-query-persist-client'
 import { createSyncStoragePersister } from '@tanstack/query-sync-storage-persister'
@@ -11,6 +10,7 @@ import App from './App'
 // import reportWebVitals from './reportWebVitals'
 import theme from './mui.theme'
 import SocketProvider from './providers/sockets'
+import { AuthenticationProvider } from './providers/authentication'
 import { AuthorizationProvider } from './providers/authorization'
 
 const root = ReactDOM.createRoot(
@@ -34,16 +34,7 @@ persistQueryClient({
 
 root.render(
   // <React.StrictMode> // removed to avoid reducers called twice in dev mode
-    <AuthProvider
-      authority='https://home.cballot.fr/auth/realms/D2.Companion'
-      client_id='corentin-ballot.github.io'
-      redirect_uri={!process.env.NODE_ENV || process.env.NODE_ENV === 'development' ? window.location.origin : "https://corentin-ballot.github.io/D2.Companion"}
-      onSigninCallback={(user) => {
-        window.history.replaceState({}, document.title, window.location.pathname)
-        // @ts-ignore
-        // eslint-disable-next-line no-param-reassign
-        user.decoded_token = JSON.parse(atob((user?.access_token ?? "").split('.')[1])).realm_access.roles
-      }}>
+    <AuthenticationProvider>
       <AuthorizationProvider>
         <ThemeProvider theme={theme}>
           <QueryClientProvider client={queryClient}>
@@ -55,7 +46,7 @@ root.render(
           </QueryClientProvider>
         </ThemeProvider>
       </AuthorizationProvider>
-    </AuthProvider>
+    </AuthenticationProvider>
   // </React.StrictMode>
 )
 
