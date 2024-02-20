@@ -117,7 +117,7 @@ const Achievements = () => {
                                                     }
 
                                                 }}
-                                                src={`${process.env.PUBLIC_URL  }/img/achievements/${  achievement.iconId  }.png`}
+                                                src={`http://localhost:3980/img/achievements/${achievement.iconId}`}
                                             />
                                         </ListItemIcon>
                                         <ListItemText
@@ -151,7 +151,7 @@ const Achievements = () => {
                                                             }
 
                                                         }}
-                                                        src={`${process.env.PUBLIC_URL  }/img/achievements/${  achievement.iconId  }.png`}
+                                                        src={`http://localhost:3980/img/achievements/${achievement.iconId}`}
                                                     />
                                                 </ListItemIcon>
                                                 <ListItemText

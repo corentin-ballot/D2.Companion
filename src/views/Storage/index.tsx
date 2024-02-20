@@ -149,7 +149,7 @@ const Storage = () => {
                                         sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                                     >
                                         <TableCell>
-                                            <Avatar sx={{ width: 32, height: 32, margin: "auto" }} variant="square" src={`${process.env.PUBLIC_URL}/img/items/${storageItem.iconId}.png`} alt={storageItem.name} />
+                                            <Avatar sx={{ width: 32, height: 32, margin: "auto" }} variant="square" src={`http://localhost:3980/img/items/${storageItem.iconId}`} alt={storageItem.name} />
                                         </TableCell>
                                         <TableCell>{storageItem.name}</TableCell>
                                         <TableCell align="right">{storageItem.level}</TableCell>

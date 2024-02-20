@@ -126,7 +126,7 @@ const Sales = () => {
                                             sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                                         >
                                             <TableCell>
-                                                <Avatar sx={{ width: 32, height: 32, margin: "auto" }} variant="square" src={`${process.env.PUBLIC_URL}/img/items/${sale.iconId}.png`} alt={sale.name} />
+                                                <Avatar sx={{ width: 32, height: 32, margin: "auto" }} variant="square" src={`http://localhost:3980/img/items/${sale.iconId}`} alt={sale.name} />
                                             </TableCell>
                                             <TableCell>{sale.name}</TableCell>
                                             <TableCell align="right">{sale.level}</TableCell>
@@ -196,7 +196,7 @@ const Sales = () => {
                                             sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                                         >
                                             <TableCell>
-                                                <Avatar sx={{ width: 32, height: 32, margin: "auto" }} variant="square" src={`${process.env.PUBLIC_URL}/img/items/${sale.iconId}.png`} alt={sale.name} />
+                                                <Avatar sx={{ width: 32, height: 32, margin: "auto" }} variant="square" src={`http://localhost:3980/img/items/${sale.iconId}`} alt={sale.name} />
                                             </TableCell>
                                             <TableCell>{sale.name}</TableCell>
                                             <TableCell align="right">{sale.level}</TableCell>

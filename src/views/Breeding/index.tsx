@@ -75,7 +75,7 @@ const Breeding = () => {
 
                         <Box>
                             <Box sx={{ display: "flex" }}>
-                                <Avatar sx={{ margin: "auto", width: 100, height: 100 }} src={`${process.env.PUBLIC_URL  }/img/mounts/${  mount.model  }.png`} alt="" />
+                                <Avatar sx={{ margin: "auto", width: 100, height: 100 }} src={`http://localhost:3980/img/mounts/${mount.model}`} alt="" />
 
                                 <Box sx={{ display: "flex", flexDirection: "column" }}>
                                     <Box><Badge badgeContent={mount.level}><Avatar sx={{ width: 24, height: 24 }} alt="" src={`${process.env.PUBLIC_URL  }/img/pictos/lvl.png`} /></Badge></Box>

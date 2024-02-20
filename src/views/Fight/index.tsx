@@ -84,8 +84,8 @@ const Fight = () => {
                                                 }
                                             }}
                                             onClick={() => setFightersFilter(fightersFilter.includes(fighterId) ? fightersFilter.filter(f => f !== fighterId) : [fighterId])}
-                                            data-img={process.env.PUBLIC_URL + (fighter?.masterId ? fighter?.img : fighter?.creatureGenericId ? `/img/monsters/${fighter?.creatureGenericId}` : `/img/classes/${fighter?.breed}-${fighter?.sex ? 'female' : 'male'}.png`)} 
-                                            src={process.env.PUBLIC_URL + (fighter?.masterId ? fighter?.img : fighter?.creatureGenericId ? `/img/monsters/${fighter?.creatureGenericId}` : `/img/classes/${fighter?.breed}-${fighter?.sex ? 'female' : 'male'}.png`)} />
+                                            data-img={(fighter?.masterId ? fighter?.img : fighter?.creatureGenericId ? `http://localhost:3980/img/monsters/${fighter?.creatureGenericId}` : `${process.env.PUBLIC_URL}/img/classes/${fighter?.breed}-${fighter?.sex ? 'female' : 'male'}.png`)} 
+                                            src={(fighter?.masterId ? fighter?.img : fighter?.creatureGenericId ? `http://localhost:3980/img/monsters/${fighter?.creatureGenericId}` : `${process.env.PUBLIC_URL}/img/classes/${fighter?.breed}-${fighter?.sex ? 'female' : 'male'}.png`)} />
                                     </Tooltip>
                                 )
                             })}
@@ -167,7 +167,7 @@ const Fight = () => {
                                         key={fight.startTime}
                                         startTime={fight.startTime}
                                         figthers={fight.fighters.filter(f => f.contextualId < 0 && !f.stats.summoned && f.spawnInfo.teamId > 0).map(f => f.name)}
-                                        imgSrc={`${process.env.PUBLIC_URL  }/img/monsters/${  fight.fighters.find(f => f.contextualId < 0 && !f.stats.summoned && f.spawnInfo.teamId > 0)?.creatureGenericId}`}
+                                        imgSrc={`http://localhost:3980/img/monsters/${  fight.fighters.find(f => f.contextualId < 0 && !f.stats.summoned && f.spawnInfo.teamId > 0)?.creatureGenericId}`}
                                     />
                                 </Grid>
                             )}
