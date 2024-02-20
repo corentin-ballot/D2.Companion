@@ -146,6 +146,8 @@ export const SocketProvider = ({ children }: SocketPrividerProps): React.ReactEl
         case "TextInformationMessage":
           if (data.content.msgId === 65) // 65 = sale information message
             dispatchSales({ type: 'item_sold', payload: data.content });
+          if (data.content.msgId === 252) // 252 = buy information message
+            dispatchSales({ type: 'item_bought', payload: data.content });
           break;
         case "ExchangeOfflineSoldItemsMessage":
           dispatchSales({ type: 'items_offline_sold', payload: data.content });

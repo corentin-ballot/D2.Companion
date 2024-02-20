@@ -10,11 +10,13 @@ export interface Sale {
 interface SalesState {
     history: Sale[];
     returns: Sale[];
+    purchases: Sale[];
 }
 
 const initialState: SalesState = {
     history: JSON.parse(localStorage.getItem("Sales.history") || "[]"),
     returns: JSON.parse(localStorage.getItem("Sales.returns") || "[]"),
+    purchases: JSON.parse(localStorage.getItem("Sales.purchases") || "[]"),
 };
 
 const SalesContext = createContext<SalesState>(initialState)
@@ -70,6 +72,20 @@ const reducer = (state: SalesState, action: { type: string, payload: any }): Sal
                 ]
             }
         }
+        case 'item_bought': {
+            return {
+                ...state,
+                purchases: [
+                    ...state.purchases,
+                    {
+                        id: parseInt(action.payload.parameters[0], 10),
+                        date: Date.now(),
+                        quantity: parseInt(action.payload.parameters[2], 10),
+                        price: parseInt(action.payload.parameters[3], 10),
+                    }
+                ]
+            }
+        }
         default: {
             throw Error(`SalesContext unknown action: ${action.type}`)
         }
@@ -90,6 +106,10 @@ export const SalesProvider = ({ children }: SalesProviderProps): React.ReactElem
     useEffect(() => {
         localStorage.setItem("Sales.returns", JSON.stringify(state.returns))
     }, [state.returns])
+
+    useEffect(() => {
+        localStorage.setItem("Sales.purchases", JSON.stringify(state.purchases))
+    }, [state.purchases])
 
     return (
         <SalesContext.Provider value={state}>

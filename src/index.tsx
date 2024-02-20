@@ -33,7 +33,7 @@ persistQueryClient({
 })
 
 root.render(
-  <React.StrictMode>
+  // <React.StrictMode> // removed to avoid reducers called twice in dev mode
     <AuthProvider
       authority='https://home.cballot.fr/auth/realms/D2.Companion'
       client_id='corentin-ballot.github.io'
@@ -56,7 +56,7 @@ root.render(
         </ThemeProvider>
       </AuthorizationProvider>
     </AuthProvider>
-  </React.StrictMode>
+  // </React.StrictMode>
 )
 
 // If you want to start measuring performance in your app, pass a function
