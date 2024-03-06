@@ -23,7 +23,7 @@ const ItemComponent = ({ item, itemEffects, noImage = false, price }: ItemProps)
             <CardMedia
                 component="img"
                 sx={{ maxWidth: 60, margin: "auto" }}
-                image={`${process.env.PUBLIC_URL}/img/items/${item?.iconId}.png`}
+                image={`http://localhost:3980/img/items/${item?.iconId}`}
                 alt=""
             />
         </Box>}
@@ -45,7 +45,7 @@ const ItemComponent = ({ item, itemEffects, noImage = false, price }: ItemProps)
             <CardMedia
                 component="img"
                 sx={{ maxWidth: 60, margin: "auto" }}
-                image={`${process.env.PUBLIC_URL}/img/items/${item?.iconId}.png`}
+                image={`http://localhost:3980/img/items/${item?.iconId}`}
                 alt=""
             />
         </Box>}

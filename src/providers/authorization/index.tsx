@@ -1,11 +1,11 @@
 import React, { useState, createContext, useContext, useEffect } from 'react'
-import { useAuth } from 'react-oidc-context'
 import {
   Box,
   Typography,
   Backdrop,
   CircularProgress,
 } from '@mui/material'
+import { useAuth } from '../authentication'
 
 const initialState = {
   roles: [],
@@ -28,13 +28,13 @@ export const AuthorizationProvider = ({ children }: AuthorizationPrividerProps):
       const parsedAccessToken = JSON.parse(atob(auth?.user?.access_token?.split('.')[1] ?? '{"realm_access": { "roles": [] }}'))
 
       setState({
-        ...state, 
+        ...state,
         roles: parsedAccessToken.realm_access.roles,
         hasRole: (role: string) => (parsedAccessToken.realm_access.roles as string[]).includes(role)
       })
     }
   }, [auth.isAuthenticated])
-  
+
   if (!auth.isLoading && !auth.isAuthenticated) {
     auth.signinRedirect()
   }
@@ -49,7 +49,7 @@ export const AuthorizationProvider = ({ children }: AuthorizationPrividerProps):
   )
 
   return (
-    <AuthorizationContext.Provider value={ state }>
+    <AuthorizationContext.Provider value={state}>
       {children}
     </AuthorizationContext.Provider>
   )
