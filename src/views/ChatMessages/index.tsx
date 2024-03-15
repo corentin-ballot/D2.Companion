@@ -20,14 +20,14 @@ const ChatServers = () => {
     const items = useDofusItems().data
 
     const scopes = new Map<string, {id: number, name: string}[] | undefined>([
-        ["default", []],
+        ["text", []],
         ["monsters", monsters],
         ["items", items],
         ["achievements", achievements],
     ])
 
     // const scopes = ["monsters", "items", "achievements", "others"] as const;
-    const [selectedScope, setSelectedScope] = useState("default");
+    const [selectedScope, setSelectedScope] = useState("text");
     const [autoCompleteOptions, setautoCompleteOptions] = useState([] as {id: number, name: string}[]);
 
     const handleSelectChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -59,7 +59,7 @@ const ChatServers = () => {
                     n.matches.push(`{chatmonster,${inputNotificationRef.current.getAttribute("data-id")}}`);
                 } else if (selectedScope === "achievements") {
                     n.matches.push(`{chatachievement,${inputNotificationRef.current.getAttribute("data-id")}}`);
-                } else {
+                } else if (selectedScope === "items") {
                     n.matches.push(`${inputNotificationRef.current.getAttribute("data-id")}`);
                 }
             }
