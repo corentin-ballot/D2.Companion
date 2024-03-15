@@ -74,7 +74,7 @@ const Quests = () => {
                                             </ListItemIcon>
                                             <ListItemText
                                                 primary={<Box sx={{ display: "flex", justifyContent: "space-between" }}>
-                                                    <Link href={`https://dofusdb/fr/database/quest/${quest.id}`} target="_blank" rel="noreferrer" noWrap>{quest.name}</Link>
+                                                    <Link href={`https://dofusdb.fr/database/quest/${quest.id}`} target="_blank" rel="noreferrer" noWrap>{quest.name}</Link>
                                                     {almanaxDate && <Link href={`https://calendar.google.com/event?action=TEMPLATE&text=${quest.name}&dates=${almanaxDate?.replaceAll("-", "")}/${almanaxDate?.replaceAll("-", "")}&ctz=Europe%2FBrussels&trp=false&sprop=name:`} target="_blank" rel="noreferrer"><Avatar sx={{ width: 16, height: 16 }} src={`${process.env.PUBLIC_URL  }/img/pictos/calendar.png`} alt={almanaxDate} /></Link>}
                                                 </Box>}
                                             />
