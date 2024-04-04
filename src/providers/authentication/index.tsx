@@ -17,7 +17,7 @@ interface AuthenticationProviderProps {
 export const AuthenticationProvider = ({children}: AuthenticationProviderProps): React.ReactElement => {
     if (!process.env.NODE_ENV || process.env.NODE_ENV !== 'development') 
     return <AuthProvider
-    authority='https://home.cballot.fr/auth/realms/D2.Companion'
+    authority='https://auth.home.cballot.fr/realms/D2.Companion'
     client_id='corentin-ballot.github.io'
     redirect_uri={!process.env.NODE_ENV || process.env.NODE_ENV === 'production' ? "https://corentin-ballot.github.io/D2.Companion" : window.location.origin}
     onSigninCallback={(user) => {

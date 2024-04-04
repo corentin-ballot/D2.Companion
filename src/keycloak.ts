@@ -1,7 +1,7 @@
 import Keycloak from 'keycloak-js'
 
 const keycloak = new Keycloak({
-  url: 'https://home.cballot.fr/auth',
+  url: 'https://auth.home.cballot.fr',
   realm: 'D2.Companion',
   clientId: 'corentin-ballot.github.io'
 })
