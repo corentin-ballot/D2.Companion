@@ -10,8 +10,8 @@ import App from './App'
 // import reportWebVitals from './reportWebVitals'
 import theme from './mui.theme'
 import SocketProvider from './providers/sockets'
-import { AuthenticationProvider } from './providers/authentication'
-import { AuthorizationProvider } from './providers/authorization'
+// import { AuthenticationProvider } from './providers/authentication'
+// import { AuthorizationProvider } from './providers/authorization'
 
 const root = ReactDOM.createRoot(
   // eslint-disable-next-line @typescript-eslint/non-nullable-type-assertion-style
@@ -34,8 +34,8 @@ persistQueryClient({
 
 root.render(
   // <React.StrictMode> // removed to avoid reducers called twice in dev mode
-    <AuthenticationProvider>
-      <AuthorizationProvider>
+    // <AuthenticationProvider>
+      // <AuthorizationProvider>
         <ThemeProvider theme={theme}>
           <QueryClientProvider client={queryClient}>
             <SocketProvider>
@@ -45,8 +45,8 @@ root.render(
             </SocketProvider>
           </QueryClientProvider>
         </ThemeProvider>
-      </AuthorizationProvider>
-    </AuthenticationProvider>
+      // </AuthorizationProvider>
+    // </AuthenticationProvider>
   // </React.StrictMode>
 )
 

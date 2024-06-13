@@ -16,16 +16,17 @@ import {
 import { useLocation, Routes, Route, Link } from 'react-router-dom'
 import { NavigateNext } from '@mui/icons-material'
 import importedRoutes from './routes'
-import { useAuthorization } from './providers/authorization'
+// import { useAuthorization } from './providers/authorization'
 import Character from './components/Character'
 
 const drawerWidth = 240
 
 const App = (): React.ReactElement => {
-  const { hasRole } = useAuthorization()
+  // const { hasRole } = useAuthorization()
   const { pathname } = useLocation()
 
-  const routes = importedRoutes.filter(r => r.role ? hasRole(r.role) : false)
+  const routes = importedRoutes
+                  // .filter(r => r.role ? hasRole(r.role) : false)
 
   return (
     <Box sx={{ display: 'flex' }}>
