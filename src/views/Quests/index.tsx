@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, Paper, FormControlLabel, Checkbox, Link, Grid, Typography, Avatar, Accordion, AccordionDetails, AccordionSummary, List, ListItem, ListItemIcon, ListItemText } from '@mui/material';
+import { Box, Paper, FormControlLabel, Checkbox, Link, GridLegacy, Typography, Avatar, Accordion, AccordionDetails, AccordionSummary, List, ListItem, ListItemIcon, ListItemText } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import useDofusQuests from '../../hooks/dofus-data/useDofusQuests';
 import useDofusQuestCategories from '../../hooks/dofus-data/useDofusQuestCategories';
@@ -34,17 +34,17 @@ const Quests = () => {
     }
 
     return <Box sx={{ flexGrow: 1 }}>
-        <Grid container spacing={2}>
-            <Grid item xs={12}>
+        <GridLegacy container spacing={2}>
+            <GridLegacy item xs={12}>
                 <Paper sx={{ display: "flex", justifyContent: "space-between", padding: 1 }}>
                     {filters.map(filter => <Box key={filter.id}>
                         <FormControlLabel label={filter.label} control={<Checkbox id={filter.id} name={filter.id} checked={filter.value} onChange={handleFilterChanged} />} />
                     </Box>)}
                 </Paper>
-            </Grid>
+            </GridLegacy>
 
 
-            <Grid item xs={12}>
+            <GridLegacy item xs={12}>
                 {questCategories?.map(categorie => {
                     const categorieQuests = categorie.questIds.filter(questId => shouldDisplayQuest(questId));
                     const isHidden = categorieQuests.length <= 0;
@@ -85,8 +85,8 @@ const Quests = () => {
                         </AccordionDetails>
                     </Accordion>
                 })}
-            </Grid>
-        </Grid>
+            </GridLegacy>
+        </GridLegacy>
     </Box>
 }
 

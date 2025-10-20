@@ -1,31 +1,10 @@
 import { useQuery } from '@tanstack/react-query'
 
 export interface PossibleEffect {
-  _id: string
-  targetMask: string
   diceNum: number
-  visibleInBuffUi: boolean
-  baseEffectId: number
-  visibleInFightLog: boolean
-  targetId: number
-  effectElement: number
-  effectUid: number
-  dispellable: number
-  triggers: string
-  spellId: number
-  duration: number
-  random: number
-  effectId: number
-  delay: number
-  diceSide: number
   diceConst?: number
-  visibleOnTerrain: boolean
-  visibleInTooltip: boolean
-  rawZone: string
-  forClientOnly: boolean
-  value: number
-  order: number
-  group: number
+  effectId: number
+  diceSide: number
 }
 
 export interface Item {

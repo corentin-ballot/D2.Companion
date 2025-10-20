@@ -1,12 +1,36 @@
+/* eslint-disable func-names */
 import React from 'react';
+import { Box, Stack } from '@mui/material';
 import { CartesianGrid, Legend, Tooltip, XAxis, YAxis, LineChart, Line, ResponsiveContainer } from 'recharts';
-import { Fight, GameActionFightLifePointsLostMessage } from '../../providers/sockets/FightContext';
+import { Fight, Fighter } from '../../providers/sockets/FightContext';
+import FighterName from '../FighterName';
 
 const COLORS = ["#0073ba", "#ff7800", "#00a816", "#e60201", "#9e59c2", "#f365c4", "#7f7f7f", "#b9c301", "#00c1d3", "#935346", "#714501", "#0e2367", "#be012d", "#00b000", "#ff0001", "#f000ff", "#202a2a", "#bd8102", "#81028a", "#fb5b15"];
 
 interface RecievedDommagesPerRoundProps {
     fight: Fight;
-    fightersFilter: number[];
+    fightersFilter: string[];
+}
+
+const CustomTooltip = ({ active, payload }: any) => {
+    if (active && payload && payload.length) {
+        return (
+            <div style={{border: "solid lightgrey 1px", backgroundColor: "white", padding: "16px"}}>{payload[0].value}</div>
+        );
+    }
+    return null;
+};
+
+const renderLegend = (fighters: Fighter[]) => function ({ payload }: any) {
+    return <Stack direction="row" justifyContent="center">
+        {payload.map((entry: any) => {
+            const fighter = fighters.find(f => f.actorId === entry.value);
+            return <Box sx={{ color: entry.color }}>
+                <svg className="recharts-surface" width="14" height="14" style={{ display: "inline-block", verticalAlign: "middle", marginRight: "4px" }} viewBox="0 0 32 32"><path strokeWidth="4" fill="none" stroke="#0073ba" d="M0,16h10.666666666666666A5.333333333333333,5.333333333333333,0,1,1,21.333333333333332,16H32M21.333333333333332,16A5.333333333333333,5.333333333333333,0,1,1,10.666666666666666,16" className="recharts-legend-icon" /></svg>
+                <FighterName fighter={fighter} />
+            </Box>
+        })}
+    </Stack>
 }
 
 const RecievedDommagesPerRound = ({ fight, fightersFilter }: RecievedDommagesPerRoundProps) => {
@@ -15,9 +39,9 @@ const RecievedDommagesPerRound = ({ fight, fightersFilter }: RecievedDommagesPer
         const round = i + 1;
         return {
             round,
-            ...fight.turnList.map(id => ({
-                    [id]: fight.dommages.filter(d => d.targetId === id && d.round === round).reduce(
-                        (previousValue, currentValue: GameActionFightLifePointsLostMessage) => previousValue + currentValue.loss, 0)
+            ...fight.turnList.map(o => ({
+                    [o.id]: fight.actions.filter(d => d.lifePointsLost?.targetId === o.id && d.round === round).reduce(
+                        (value, action) => value + ((action.lifePointsLost?.loss || 0) + (action.lifePointsLost?.shieldLoss || 0)), 0)
                 })).reduce((p, c) => ({ ...p, ...c }), {})
         }
     });
@@ -27,10 +51,10 @@ const RecievedDommagesPerRound = ({ fight, fightersFilter }: RecievedDommagesPer
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="round" />
             <YAxis mirror />
-            <Tooltip />
-            <Legend />
+            <Tooltip content={<CustomTooltip />} />
+            <Legend content={renderLegend(fight.fighters)} />
             {
-                fight.turnList.filter(id => fightersFilter.includes(id)).map((id, i) => <Line type="monotone" key={id} strokeWidth={2} name={fight.fighters.find(f => f.contextualId === id)?.name} dataKey={id} stroke={COLORS[i]} />)
+                fight.turnList.filter(o => fightersFilter.includes(o.id)).map((o, i) => <Line type="monotone" key={o.id} strokeWidth={2} dataKey={o.id} stroke={COLORS[i]} />)
             }
         </LineChart>
     </ResponsiveContainer>

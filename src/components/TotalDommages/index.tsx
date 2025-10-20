@@ -1,59 +1,77 @@
 /* eslint-disable no-param-reassign */
-import React from 'react';
-import { BarChart, Bar, XAxis,  YAxis, ResponsiveContainer, Cell } from 'recharts';
-import { Fight, GameActionFightLifePointsLostMessage } from '../../providers/sockets/FightContext';
+/* eslint-disable react/function-component-definition */
+/* eslint-disable no-unused-vars */
+/* eslint-disable react/prop-types */
+/* eslint-disable max-classes-per-file */
+import React, { PureComponent } from 'react';
+import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Cell, Tooltip } from 'recharts';
+import { Fight, Fighter } from '../../providers/sockets/FightContext';
+import FighterName from '../FighterName';
 
-const tickFormater = (sum:number) => (value: number) => {
+const tickFormater = (sum: number) => (value: number) => {
     let tickedValue;
     if (value > 1000000000) {
-        tickedValue = `${(Math.round(value / 10000000)/100).toString()  }B`;
+        tickedValue = `${(Math.round(value / 10000000) / 100).toString()}B`;
     } else if (value > 1000000) {
-        tickedValue = `${(Math.round(value / 10000)/100).toString()  }M`;
+        tickedValue = `${(Math.round(value / 10000) / 100).toString()}M`;
     } else if (value > 1000) {
-        tickedValue = `${(Math.round(value / 10)/100).toString()  }K`;
+        tickedValue = `${(Math.round(value / 10) / 100).toString()}K`;
     } else {
         tickedValue = value.toString();
     }
-    return `${tickedValue} (${Math.round(value/sum*100)}%)`
+    return `${tickedValue} (${Math.round(value / sum * 100)}%)`
+}
+
+class NamesAxisTick extends PureComponent {
+    render() {
+        // @ts-ignore
+        const { x, y, stroke, payload, fighters } = this.props;
+
+        const fighter = fighters.find((f: Fighter) => f.actorId === payload.value)
+
+        return (
+            <g transform={`translate(${x},${y + 3})`}>
+                <g x={0} y={0} dy={16} textAnchor="end" fill="#666" style={{ fontSize: '.7rem' }}>
+                    <FighterName fighter={fighter} />
+                </g>
+            </g>
+        );
+    }
 }
 
 interface DommagesProps {
     fight: Fight;
 }
 
-const teamColor = ["#e60201", "#0073ba"]
+const teamColor = { TEAM_CHALLENGER: "#e60201", TEAM_DEFENDER: "#0073ba" }
 
 const TotalDommages = ({ fight }: DommagesProps) => {
+    if (!fight) return <div />
 
-    const data = fight?.turnList.map(id => {
-        const fighter = fight.fighters.find(f => f.contextualId === id);
-        return {
-            name: fighter ? fighter.name : id,
-            teamId: fighter?.spawnInfo.teamId,
-            ...fight.dommages.filter(d => d.sourceId === id).reduce(
-                (previousValue, currentValue: GameActionFightLifePointsLostMessage) => {
-                    if (currentValue.loss) {
-                        previousValue.total += currentValue.loss;
-                    }
-                    return previousValue;
-                }, { neutre: 0, feu: 0, eau: 0, air: 0, terre: 0, pou: 0, invoc: 0, total: 0 })
-        }
-    }).sort((a,b) => b.total - a.total);
+    const data = fight?.fighters.map(fighter => ({
+        id: fighter?.actorId,
+        teamId: fighter?.actorInformation.fighter.spawnInformation.team,
+        dommages: fight.actions.filter(action => action.sourceId === fighter.actorId && action.lifePointsLost).reduce((value, action) => value + ((action.lifePointsLost?.loss || 0) + (action.lifePointsLost?.shieldLoss || 0)), 0)
+    })
+    ).sort((a, b) => b.dommages - a.dommages);
 
-    const sum = data.reduce((p, c ) => p + c.total, 0);
+    const sum = data.reduce((p, c) => p + c.dommages, 0);
 
     return <div>
-        <ResponsiveContainer height={60 * fight.turnList.length}>
+        <ResponsiveContainer height={24 * fight.fighters.length}>
             <BarChart width={800} height={500} layout="vertical" data={data} margin={{ top: 0, right: 0, left: 0, bottom: 0 }}>
                 <XAxis hide type="number" />
                 {/* dmg deal */}
-                <Bar barSize={50} dataKey="total" stackId="a" fill="#9029ab">
+                <Bar barSize={15} dataKey="dommages" stackId="a" fill="#9029ab" radius={[0, 10, 10, 0]}>
                     {data.map((entry) => (
-                        <Cell key={entry.name} fill={teamColor[entry.teamId ? entry.teamId : 0]} />
+                        // @ts-ignore
+                        <Cell key={entry.name} fill={teamColor[entry.teamId]} />
                     ))}
                 </Bar>
-                <YAxis width={90} yAxisId={0} dataKey="total" axisLine={false} orientation="right" tickFormatter={tickFormater(sum)} tick={{fill: '#000'}} type="category"/>
-                <YAxis width={90} yAxisId={1} dataKey="name" axisLine={false} mirror orientation="left" tick={{fill: '#000'}} type="category"/>
+                {/* @ts-ignore */}
+                <YAxis width={90} yAxisId={0} dataKey="dommages" axisLine={false} orientation="right" tickFormatter={tickFormater(sum)} style={{ fontSize: '.7rem' }} type="category" minTickGap={0} />
+                {/* @ts-ignore */} 
+                <YAxis width={90} yAxisId={1} dataKey="id" tick={<NamesAxisTick fighters={fight?.fighters} />} type="category" minTickGap={0} />
             </BarChart>
         </ResponsiveContainer>
     </div>

@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Tab, Tabs, Box, Paper, Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Avatar, Typography, Button } from '@mui/material';
+import { Tab, Tabs, Box, Paper, GridLegacy, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Avatar, Typography, Button } from '@mui/material';
 // @ts-ignore
 import { exportCsv } from "json2csv-export";
 import EmptyState from '../../components/EmptyState';
 import { useSales } from '../../providers/sockets/SalesContext';
-import useDofusItems from '../../hooks/dofus-data/useDofusItems';
+import useDofusItems from '../../hooks/dofus-data/.useDofusItems';
 
 const Sales = () => {
     const sales = useSales();
@@ -75,27 +75,27 @@ const Sales = () => {
 
         {/* Sales */}
         <Box sx={{ display: tab === "sales" ? "block" : "none" }}>
-            <Grid container spacing={2}>
-                <Grid item xs={12}>
+            <GridLegacy container spacing={2}>
+                <GridLegacy item xs={12}>
                     <Paper sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: (theme) => theme.spacing(1) }}>
                         <Typography>Total: {new Intl.NumberFormat().format(sales.history.reduce((a, b) => a + b.price, 0))}</Typography>
                         <Button onClick={() => exportSheet(displayedSales)}>
                             Export
                         </Button>
                     </Paper>
-                </Grid>
+                </GridLegacy>
 
                 {/* Not mount to display */}
                 {displayedSales.length === 0 &&
-                    <Grid item xs={12}>
+                    <GridLegacy item xs={12}>
                         <EmptyState>
                             No sales registered for now.
                         </EmptyState>
-                    </Grid>
+                    </GridLegacy>
                 }
 
                 {displayedSales.length > 0 &&
-                    <Grid item xs={12}>
+                    <GridLegacy item xs={12}>
                         <TableContainer component={Paper}>
                             <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
                                 <TableHead>
@@ -126,7 +126,7 @@ const Sales = () => {
                                             sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                                         >
                                             <TableCell>
-                                                <Avatar sx={{ width: 32, height: 32, margin: "auto" }} variant="square" src={`http://localhost:3980/img/items/${sale.iconId}`} alt={sale.name} />
+                                                <Avatar sx={{ width: 32, height: 32, margin: "auto" }} variant="square" src={`http://localhost:3960/images/items/${sale.iconId}`} alt={sale.name} />
                                             </TableCell>
                                             <TableCell>{sale.name}</TableCell>
                                             <TableCell align="right">{sale.level}</TableCell>
@@ -138,34 +138,34 @@ const Sales = () => {
                                 </TableBody>
                             </Table>
                         </TableContainer>
-                    </Grid>
+                    </GridLegacy>
                 }
-            </Grid>
+            </GridLegacy>
         </Box>
 
         {/* Purchases */}
         <Box sx={{ display: tab === "purchases" ? "block" : "none" }}>
-            <Grid container spacing={2}>
-                <Grid item xs={12}>
+            <GridLegacy container spacing={2}>
+                <GridLegacy item xs={12}>
                     <Paper sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: (theme) => theme.spacing(1) }}>
                         <Typography>Total: {new Intl.NumberFormat().format(sales.purchases.reduce((a, b) => a + b.price, 0))}</Typography>
                         <Button onClick={() => exportSheet(displayedPurchases)}>
                             Export
                         </Button>
                     </Paper>
-                </Grid>
+                </GridLegacy>
 
                 {/* Not mount to display */}
                 {displayedPurchases.length === 0 &&
-                    <Grid item xs={12}>
+                    <GridLegacy item xs={12}>
                         <EmptyState>
                             No sales registered for now.
                         </EmptyState>
-                    </Grid>
+                    </GridLegacy>
                 }
 
                 {displayedPurchases.length > 0 &&
-                    <Grid item xs={12}>
+                    <GridLegacy item xs={12}>
                         <TableContainer component={Paper}>
                             <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
                                 <TableHead>
@@ -196,7 +196,7 @@ const Sales = () => {
                                             sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                                         >
                                             <TableCell>
-                                                <Avatar sx={{ width: 32, height: 32, margin: "auto" }} variant="square" src={`http://localhost:3980/img/items/${sale.iconId}`} alt={sale.name} />
+                                                <Avatar sx={{ width: 32, height: 32, margin: "auto" }} variant="square" src={`http://localhost:3960/images/items/${sale.iconId}`} alt={sale.name} />
                                             </TableCell>
                                             <TableCell>{sale.name}</TableCell>
                                             <TableCell align="right">{sale.level}</TableCell>
@@ -208,9 +208,9 @@ const Sales = () => {
                                 </TableBody>
                             </Table>
                         </TableContainer>
-                    </Grid>
+                    </GridLegacy>
                 }
-            </Grid>
+            </GridLegacy>
         </Box>
     </Box>
 }

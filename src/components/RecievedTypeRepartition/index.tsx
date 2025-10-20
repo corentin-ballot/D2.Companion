@@ -1,7 +1,7 @@
 /* eslint-disable no-param-reassign */
 import React from 'react';
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from 'recharts';
-import { Fight, GameActionFightLifePointsLostMessage } from '../../providers/sockets/FightContext';
+import { Fight } from '../../providers/sockets/FightContext';
 
 const colors = { neutre: "#bdc3c7", feu: "#e74c3c", eau: "#3498db", air: "#2ecc71", terre: "#e67e22", pou: "#9b59b6", invoc: "#f1c40f" }
 
@@ -23,32 +23,31 @@ const customTooltip = ({ position, viewBox, active, payload }: TooltipProps) => 
             <p style={{color: colors[name], fontWeight: "bold", margin: 0}}>{payload[0].value}</p>
         </div>;
     } 
-        return null;
     
+    return null;
 }
 
 interface TypeRepartitionProps {
     fight: Fight;
-    fightersFilter: number[];
+    fightersFilter: string[];
 }
 
 const RecievedTypeRepartition = ({fight, fightersFilter}: TypeRepartitionProps) => {
 
-    const data = fight.dommages.filter((d: { targetId: any; }) => fightersFilter.includes(d.targetId)).reduce(
-        (previousValue: { neutre: number; terre: number; feu: number; eau: number; air: number; invoc: number; pou: number; }, currentValue: GameActionFightLifePointsLostMessage) => {
-            if (currentValue.loss) {
-                if (currentValue.elementId === 0) previousValue.neutre += currentValue.loss;
-                if (currentValue.elementId === 1) previousValue.terre += currentValue.loss;
-                if (currentValue.elementId === 2) previousValue.feu += currentValue.loss;
-                if (currentValue.elementId === 3) previousValue.eau += currentValue.loss;
-                if (currentValue.elementId === 4) previousValue.air += currentValue.loss;
-                if (currentValue.elementId === 9) previousValue.invoc += currentValue.loss;
-                if (currentValue.elementId === 4294967295) previousValue.pou += currentValue.loss;
-            }
-            return previousValue;
-        }, { neutre: 0, feu: 0, eau: 0, air: 0, terre: 0, pou: 0, invoc: 0 }
-    );
+    const data = fight.actions.filter(action => fightersFilter.includes(action.lifePointsLost?.targetId || "") && action.lifePointsLost).reduce(
+            (value, action) => {
+                if (action.lifePointsLost?.elementId === 0) value.neutre += ((action.lifePointsLost?.loss || 0) + (action.lifePointsLost?.shieldLoss || 0));
+                if (action.lifePointsLost?.elementId === 1) value.terre += ((action.lifePointsLost?.loss || 0) + (action.lifePointsLost?.shieldLoss || 0));
+                if (action.lifePointsLost?.elementId === 2) value.feu += ((action.lifePointsLost?.loss || 0) + (action.lifePointsLost?.shieldLoss || 0));
+                if (action.lifePointsLost?.elementId === 3) value.eau += ((action.lifePointsLost?.loss || 0) + (action.lifePointsLost?.shieldLoss || 0));
+                if (action.lifePointsLost?.elementId === 4) value.air += ((action.lifePointsLost?.loss || 0) + (action.lifePointsLost?.shieldLoss || 0));
+                if (action.lifePointsLost?.elementId === 9) value.invoc += ((action.lifePointsLost?.loss || 0) + (action.lifePointsLost?.shieldLoss || 0));
+                if (action.lifePointsLost?.elementId === 4294967295) value.pou += ((action.lifePointsLost?.loss || 0) + (action.lifePointsLost?.shieldLoss || 0));
+                return {...value};
+            }, { neutre: 0, feu: 0, eau: 0, air: 0, terre: 0, pou: 0, invoc: 0 }
+        )
 
+    // @ts-ignore
     const formatedData = (Object.keys(data) as ["neutre"|"feu"|"eau"|"air"|"terre"|"pou"|"invoc"]).map((key) => ({ name: key, value: data[key] }));
 
     return <div>

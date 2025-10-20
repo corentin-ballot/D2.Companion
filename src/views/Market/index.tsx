@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Button, Chip, Grid, MenuItem, Stack, TextField, Typography } from '@mui/material';
+import { Box, Button, Chip, GridLegacy, MenuItem, Stack, TextField, Typography } from '@mui/material';
 import EmptyState from '../../components/EmptyState';
 import { useMarket } from '../../providers/sockets/MarketContext';
-import useDofusItems, { Item } from '../../hooks/dofus-data/useDofusItems';
 import ItemComponent from '../../components/Item';
 import Effect from '../../components/Effect';
-import useDofusEffects from '../../hooks/dofus-data/useDofusEffects';
+import useDofusEffects from '../../hooks/dofus-data/.useDofusEffects';
 
 interface StatFilterObject {
     id: number;
@@ -15,19 +14,20 @@ interface StatFilterObject {
 const ITEMS_EFFECT = [111,112,115,116,117,118,119,121,122,123,124,125,126,127,128,138,142,145,151,152,153,154,155,156,157,158,159,160,161,163,171,176,174,178,182,210,211,212,213,214,225,240,241,242,243,244,410,411,412,413,414,416,417,418,419,420,421,422,423,424,425,426,427,428,429,430,431,752,753,754,755,2800,2801,2802,2803,2804,2805,2806,2807,2808,2809,2812,2813]
 
 const Market = () => {
-    const d2items = useDofusItems().data;
     const effects = useDofusEffects().data;
     const { items } = useMarket();
-    const [displayedItems, setDisplayedItems] = useState([...items].sort((a, b) => a.prices[0] - b.prices[0]));
-    const [item, setItem] = useState<Item | undefined>(undefined);
+    const [displayedItems, setDisplayedItems] = useState([...items].sort((a, b) => parseInt(a.prices[0], 10) - parseInt(b.prices[0], 10)));
+    const [itemId, setItemId] = useState(0);
 
     useEffect(() => {
-        setDisplayedItems([...items].sort((a, b) => a.prices[0] - b.prices[0]));
+        setDisplayedItems([...items].sort((a, b) => parseInt(a.prices[0], 10) - parseInt(b.prices[0], 10)));
     }, [items]);
 
     useEffect(() => {
-        if (displayedItems && displayedItems.length > 0 && d2items && d2items.length > 0) setItem(d2items.find(i => i.id === displayedItems[0].objectGID))
-    }, [displayedItems, d2items]);
+        if(displayedItems && displayedItems.length > 0) {
+            setItemId(displayedItems[0].gid);
+        }
+    }, [displayedItems]);
 
     const [statFilters, setStatFilters] = useState([] as StatFilterObject[]);
     const [minStatInputValue, setMinStatInputValue] = useState("");
@@ -48,26 +48,24 @@ const Market = () => {
     }
 
     return <Box sx={{ flexGrow: 1 }}>
-        <Grid container spacing={2} sx={{ alignItems: "stretch" }}>
+        <GridLegacy container spacing={2} sx={{ alignItems: "stretch" }}>
             {/* Not item to display */}
             {displayedItems.length === 0 &&
-                <Grid item xs={12}>
+                <GridLegacy item xs={12}>
                     <EmptyState>
                         Go to the equipments shop to get advanced filters.
                     </EmptyState>
-                </Grid>
+                </GridLegacy>
             }
 
             {/* Items display */}
             {displayedItems && displayedItems.length > 0 &&
                 <>
-                    <Grid item xs={4}>
-                        <Typography variant="h2">{item?.name}</Typography>
-
+                    <GridLegacy item xs={4}>
                         {/* Default item */}
-                        <ItemComponent item={item} />
-                    </Grid>
-                    <Grid item xs={8}>
+                        <ItemComponent id={itemId} />
+                    </GridLegacy>
+                    <GridLegacy item xs={8}>
                         {/* Filters */}
                         <Box>
                             <Typography variant="h2">Filter items effects</Typography>
@@ -107,25 +105,25 @@ const Market = () => {
                                 {statFilters.map(stat => <Chip key={stat.id} label={<Effect id={stat.id} value={stat.min} key={stat.id} />} onDelete={() => removeStatFilter(stat)} />)}
                             </Stack>
                         </Box>
-                    </Grid>
+                    </GridLegacy>
 
                     {/* Item list */}
                     {displayedItems.filter(
                         i => i.effects.filter(
                             effect => statFilters.filter(
-                                filter => effect.actionId === filter.id && effect.value >= filter.min
+                                filter => effect.action === filter.id && effect.valueInt && effect.valueInt >= filter.min
                             ).length
                         ).length === statFilters.length
                     )
                         .map(i =>
-                            <Grid item xs={3} key={i.objectUID}>
-                                <ItemComponent noImage item={item} itemEffects={i.effects} price={i.prices[0]} />
-                            </Grid>
+                            <GridLegacy item xs={3} key={i.uid}>
+                                <ItemComponent key={i.uid} statsOnly id={i.gid} itemEffects={i.effects} price={parseInt(i.prices[0], 10)} />
+                            </GridLegacy>
                         )
                     }
                 </>
             }
-        </Grid>
+        </GridLegacy>
     </Box>
 }
 export default Market;

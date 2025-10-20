@@ -2,9 +2,9 @@ import React, { MutableRefObject, useRef, useState } from 'react';
 import { Typography, Box, Paper, TextField, Button, MenuItem, Autocomplete, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
 import EmptyState from '../../components/EmptyState';
 import { Notification, Redirection, useChatServer, useChatServerDispatch } from '../../providers/sockets/ChatServerContext';
-import useDofusMonsters from '../../hooks/dofus-data/useDofusMonsters';
-import useDofusAchievements from '../../hooks/dofus-data/useDofusAchievements';
-import useDofusItems from '../../hooks/dofus-data/useDofusItems';
+import useDofusMonsters from '../../hooks/dofus-data/.useDofusMonsters';
+import useDofusAchievements from '../../hooks/dofus-data/.useDofusAchievements';
+import useDofusItems from '../../hooks/dofus-data/.useDofusItems';
 
 const MAX_AUTOCOMPLETE = 20;
 
@@ -76,7 +76,7 @@ const ChatServers = () => {
         if (inputWebhookRef.current && inputChannelRef.current) {
             dispatchChatServer({type: 'add_redirection', redirection: {
               id: Math.random().toString(8).slice(2),
-              channel: Number.parseInt(inputChannelRef.current.value, 10),
+              channel: inputChannelRef.current.value,
               webhook: inputWebhookRef.current.value }
             });
         }
@@ -160,10 +160,24 @@ const ChatServers = () => {
                     select
                     inputRef={inputChannelRef}
                     sx={{ minWidth: 200 }}
-                    defaultValue="2"
+                    defaultValue="GUILD"
                 >
-                    <MenuItem key={2} value={2} selected>Guilde</MenuItem>
-                    <MenuItem key={6} value={6}>Recrutement</MenuItem>
+                    <MenuItem key={0} value='GLOBAL'>Global</MenuItem>
+                    <MenuItem key={1} value='TEAM'>Equipe</MenuItem>
+                    <MenuItem key={2} value='GUILD' selected>Guilde</MenuItem>
+                    <MenuItem key={3} value='ALLIANCE'>Alliance</MenuItem>
+                    <MenuItem key={4} value='PARTY'>Groupe</MenuItem>
+                    <MenuItem key={5} value='SALES'>Commerce</MenuItem>
+                    <MenuItem key={6} value='SEEK'>Recrutement</MenuItem>
+                    <MenuItem key={7} value='NOOB'>Noob</MenuItem>
+                    <MenuItem key={8} value='ADMIN'>Admin</MenuItem>
+                    <MenuItem key={9} value='PRIVATE'>Privé</MenuItem>
+                    <MenuItem key={10} value='INFO'>Info</MenuItem>
+                    <MenuItem key={11} value='FIGHT_LOG'>Fight log</MenuItem>
+                    <MenuItem key={12} value='ADS'>Pub</MenuItem>
+                    <MenuItem key={13} value='ARENA'>Arène</MenuItem>
+                    <MenuItem key={14} value='EVENT'>Event</MenuItem>
+                    <MenuItem key={14} value='EXCHANGE'>Exchange</MenuItem>
                 </TextField>
 
                 <TextField

@@ -1,5 +1,99 @@
 import React, { useContext, createContext, useReducer } from 'react'
 
+export interface BaseInformation {
+    gender: string
+}
+
+export interface SubEntityLook {
+    bonesId: number
+    skins: number[]
+    indexedColors: number[]
+    scales: number[]
+    subEntities: any[]
+}
+
+export interface SubEntity {
+    bindingPointCategory: string
+    bindingPointIndex: number
+    subEntityLook: SubEntityLook
+}
+
+export interface Look {
+    bonesId: number
+    skins: any[]
+    indexedColors: any[]
+    scales: any[]
+    subEntities: SubEntity[]
+}
+
+export interface CharacterLook {
+    look: Look
+    breedId: number
+    baseInformation: BaseInformation
+}
+
+export interface CharacterBasicInformation {
+    name: string
+    level: number
+    characterLook: CharacterLook
+}
+
+export interface Character {
+    id: string
+    characterBasicInformation: CharacterBasicInformation
+}
+
+export interface Success {
+    character: Character
+}
+
+export interface CharacterSelectionEvent {
+    success: Success
+}
+
+export interface AchievedAchievement {
+    achievementId: number
+    achievedBy: string
+    pioneerRank: number
+}
+
+export interface AchievementsEvent {
+    achievedAchievements: AchievedAchievement[]
+}
+
+export interface FinishedQuest {
+    questId: number
+    finishedCount: number
+}
+
+export interface Completion {
+    currentCompletion: number
+    maxCompletion: number
+}
+
+export interface Objective {
+    objectiveId: number
+    objectiveReached: boolean
+    dialogParams: any[]
+    completion?: Completion
+}
+
+export interface Details {
+    stepId: number
+    objectives: Objective[]
+}
+
+export interface ActiveQuest {
+    questId: number
+    details: Details
+}
+
+export interface QuestsEvent {
+    finishedQuests: FinishedQuest[]
+    activeQuests: ActiveQuest[]
+    reinitializedDoneQuestsId: number[]
+}
+
 interface CharacterState {
     infos: {
         id: number;
@@ -62,11 +156,11 @@ const reducer = (state: CharacterState, action: { type: string, payload: any }):
             return {
                 ...state,
                 infos: {
-                    id: action.payload.infos.id,
-                    name: action.payload.infos.name,
-                    breed: action.payload.infos.breed,
-                    level: action.payload.infos.level,
-                    sex: action.payload.infos.sex,
+                    id: parseInt(action.payload.success.character.id, 10),
+                    name: action.payload.success.character.characterBasicInformation.name,
+                    breed: action.payload.success.character.characterBasicInformation.characterLook.breedId,
+                    level: action.payload.success.character.characterBasicInformation.level,
+                    sex: action.payload.success.character.characterBasicInformation.characterLook.baseInformation.gender === "FEMALE",
                 },
                 achievements: JSON.parse(localStorage.getItem(`Character.achievements.${state.infos.id}`) ?? '{"finished":[]}'),
                 quests: JSON.parse(localStorage.getItem(`Character.quests.${state.infos.id}`) ?? '{"finished":[],"active":[],"reinit":[]}'),
@@ -76,7 +170,7 @@ const reducer = (state: CharacterState, action: { type: string, payload: any }):
             return {
                 ...state,
                 achievements: {
-                    finished: Array.from(new Set([...state.achievements.finished, ...action.payload.finishedAchievements.map((a: any) => a.id)]))
+                    finished: action.payload.achievedAchievements.map((a: AchievedAchievement) => a.achievementId)
                 }
             }
         }
@@ -84,9 +178,9 @@ const reducer = (state: CharacterState, action: { type: string, payload: any }):
             return {
                 ...state,
                 quests: {
-                    finished: action.payload.finishedQuestsIds,
-                    active: action.payload.activeQuests.map((q: any) => q.questId),
-                    reinit: action.payload.reinitDoneQuestsIds,
+                    finished: action.payload.finishedQuests.map((fq: FinishedQuest) => fq.questId),
+                    active: action.payload.activeQuests.map((aq: ActiveQuest) => aq.questId),
+                    reinit: action.payload.reinitializedDoneQuestsId,
                 }
             }
         }

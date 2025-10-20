@@ -1,25 +1,32 @@
 import React, { useContext, createContext, useReducer } from 'react'
-
-export interface ObjectEffect {
-    actionId: number;
-    value: number;
+  
+export interface _MinMax {
+    min: number
+    max: number
 }
 
-export interface BidExchangerObjectInfo {
-    effects: ObjectEffect[];
-    objectGID: number;
-    objectType: number;
-    objectUID: number;
-    prices: number[];
+export interface _Effect {
+    action: number
+    valueInt?: number
+    minMax?: _MinMax
+}
+
+export interface _ItemDescription {
+    uid: number
+    gid: number
+    type: number
+    effects: _Effect[]
+    prices: string[]
 }
 
 export interface ExchangeTypesItemsExchangerDescriptionForUserMessage {
-    itemTypeDescriptions: BidExchangerObjectInfo[];
-    objectType: number;
+    objectGid: number
+    objectType: number
+    itemDescriptions: _ItemDescription[]
 }
 
 interface MarketState {
-    items: BidExchangerObjectInfo[]
+    items: _ItemDescription[]
 }
 
 const initialState: MarketState = {
@@ -32,11 +39,11 @@ export const useMarket = (): MarketState => useContext(MarketContext)
 const MarketDispatchContext = createContext<React.Dispatch<any>>(() => null)
 export const useMarketDispatch = (): React.Dispatch<any> => useContext(MarketDispatchContext)
 
-const reducer = (state: MarketState, action: { type: string, payload: any }): MarketState => {
+const reducer = (state: MarketState, action: { type: string, payload: ExchangeTypesItemsExchangerDescriptionForUserMessage }): MarketState => {
     switch (action.type) {
         case 'item_viewed': {
             return {
-                items: [...action.payload.itemTypeDescriptions]
+                items: [...action.payload.itemDescriptions]
             }; 
         }
         default: {

@@ -1,102 +1,70 @@
 import React, { useContext, createContext, useReducer } from 'react'
 import Notifications from '../../utils/notification';
 
-export interface Durability {
-    durability: number;
-    durabilityMax: number;
+export interface ExchangeMountsPaddockRemoveEvent {
+    mountsId: number[]
 }
 
-export interface PaddockItemDescription {
-    cellId: number;
-    objectGID: number;
-    durability: Durability;
+export interface UpdatedCharacteristic {
+    characteristic: string
+    intValue: number
 }
 
-export interface GameDataPaddockObjectAddMessage {
-    paddockItemDescription: PaddockItemDescription;
+export interface MountUpdateCharacteristicsEvent {
+    rideId: number
+    updatedCharacteristics: UpdatedCharacteristic[]
 }
 
-export interface EffectList {
-    actionId: number;
-    value: number;
+export interface Effect {
+    action: number
+    valueInt: number
 }
 
-export interface MountsDescription {
-    sex: boolean;
-    isRideable: boolean;
-    isWild: boolean;
-    isFecondationReady: boolean;
-    useHarnessColors: boolean;
-    id: number;
-    model: number;
-    ancestor: number[];
-    behaviors: any[];
-    name: string;
-    ownerId: number;
-    experience: number;
-    experienceForLevel: number;
-    experienceForNextLevel: number;
-    level: number;
-    maxPods: number;
-    stamina: number;
-    staminaMax: number;
-    maturity: number;
-    maturityForAdult: number;
-    energy: number;
-    energyMax: number;
-    serenity: number;
-    aggressivityMax: number;
-    serenityMax: number;
-    love: number;
-    loveMax: number;
-    fecondationTime: number;
-    boostLimiter: number;
-    boostMax: number;
-    reproductionCount: number;
-    reproductionCountMax: number;
-    harnessGID: number;
-    effectList: EffectList[];
+export interface Mount {
+    id: string
+    modelId: number
+    ancestors: number[]
+    behaviors: number[]
+    name: string
+    gender: string
+    ownerId: string
+    experience: string
+    experienceForLevel: string
+    experienceForNextLevel: string
+    level: number
+    isRideable: boolean
+    maxPods: number
+    isWild: boolean
+    stamina: number
+    staminaMax: number
+    maturity: number
+    maturityForAdult: number
+    energy: number
+    energyMax: number
+    serenity: number
+    aggressivenessMax: number
+    serenityMax: number
+    love: number
+    loveMax: number
+    fertilizationTime: number
+    isFertilizationReady: boolean
+    boostLimiter: number
+    boostMax: string
+    reproductionCount: number
+    reproductionCountMax: string
+    harnessGid: number
+    useHarnessColors: boolean
+    effects: Effect[]
 }
 
-export interface ExchangeStartOkMountMessage {
-    stabledMountsDescription: MountsDescription[];
-    paddockedMountsDescription: MountsDescription[];
+export interface ExchangeMountsPaddockAddedEvent {
+    mounts: Mount[]
 }
 
-export interface BoostToUpdateList {
-    type: number;
-    value: number;
+export interface ExchangeMountWithoutPaddockStartedEvent {
+    stabledMounts?: Mount[]
+    paddockedMounts?: Mount[]
 }
-
-// eslint-disable-next-line no-shadow
-export enum BoostToUpdateType {
-    // eslint-disable-next-line no-unused-vars
-    energy = 1,         // sérénité
-    // eslint-disable-next-line no-unused-vars
-    serenity = 2,       // sérénité
-    // eslint-disable-next-line no-unused-vars
-    stamina = 3,        // endurance
-    // eslint-disable-next-line no-unused-vars
-    love = 4,           // amour
-    // eslint-disable-next-line no-unused-vars
-    maturity = 5,       // maturité
-    // eslint-disable-next-line no-unused-vars
-    boostLimiter = 6,   // fatigue
-}
-
-export interface UpdateMountCharacteristicsMessage {
-    rideId: number;
-    boostToUpdateList: BoostToUpdateList[];
-}
-
-export interface ExchangeMountsPaddockAddMessage {
-    mountDescription: MountsDescription[];
-}
-
-export interface ExchangeMountsPaddockRemoveMessage {
-    mountsId: number[];
-}
-
 
 interface Notification {
     enable: boolean
@@ -104,7 +72,7 @@ interface Notification {
 }
 
 interface PaddockState {
-    mounts: MountsDescription[]
+    mounts: Mount[]
     notifications: {
         serenity: Notification
         love: Notification
@@ -124,9 +92,9 @@ const initialState: PaddockState = {
         maturity: { enable: false, limit: 10000 },
         energy: { enable: false, limit: 5000 },
         boostLimiter: { enable: false, limit: 240 },
-        ...JSON.parse(localStorage.getItem("Breeding.notifications") || "{}")
+        ...JSON.parse(localStorage.getItem("Paddock.notifications") || "{}")
     }
-};;
+};
 
 const PaddockContext = createContext<PaddockState>(initialState)
 export const usePaddock = (): PaddockState => useContext(PaddockContext)
@@ -146,66 +114,73 @@ const reducer = (state: PaddockState, action: { type: string, payload: any }): P
             return state
         }
         case 'paddock_changed': {
+            const mounts = (action.payload as ExchangeMountWithoutPaddockStartedEvent)?.paddockedMounts || [];
+            mounts.forEach(mount => {
+                if(mount.ancestors && new Set(mount.ancestors).size > 1) {
+                    // new Notifications("A mount is not pure!").sendNative();
+                }
+            })
             return {
                 ...state,
-                mounts: action.payload.paddockedMountsDescription as MountsDescription[]
+                mounts
             }
         }
         case 'mount_changed': {
-            const payload = action.payload as UpdateMountCharacteristicsMessage
-            const mount = state.mounts.find(m => m.id === payload.rideId);
+            const payload = action.payload as MountUpdateCharacteristicsEvent
+            const mount = state.mounts.find(m => parseInt(m.id, 10) === payload.rideId);
 
-            if (state.notifications.serenity.enable && payload.boostToUpdateList.filter(boost =>
-                boost.type === BoostToUpdateType.serenity &&
-                (
-                    // @ts-ignore Female
-                    (mount?.sex && ((boost.value > mount[BoostToUpdateType[boost.type]] && boost.value > 0) || (boost.value < mount[BoostToUpdateType[boost.type]] && boost.value < -state.notifications.serenity.limit)))
-                    ||
-                    // @ts-ignore Male
-                    (!mount?.sex && ((boost.value < mount[BoostToUpdateType[boost.type]] && boost.value < 0) || (boost.value > mount[BoostToUpdateType[boost.type]] && boost.value > state.notifications.serenity.limit)))
-                )
-            ).length > 0) {
-                if (Notification.permission === 'granted') new Notifications(`A mount reached serenity limit.`).send();
-            }
-
-            if (state.notifications.energy.enable && payload.boostToUpdateList.filter(boost => boost.type === BoostToUpdateType.energy && boost.value >= state.notifications.energy.limit).length > 0) {
-                if (Notification.permission === 'granted') new Notifications(`A mount reached energy limit.`).send();
-            }
-
-            if (state.notifications.love.enable && payload.boostToUpdateList.filter(boost => boost.type === BoostToUpdateType.love && boost.value >= state.notifications.love.limit).length > 0) {
-                if (Notification.permission === 'granted') new Notifications(`A mount reached love limit.`).send();
-            }
-
-            if (state.notifications.stamina.enable && payload.boostToUpdateList.filter(boost => boost.type === BoostToUpdateType.stamina && boost.value >= state.notifications.stamina.limit).length > 0) {
-                if (Notification.permission === 'granted') new Notifications(`A mount reached stamina limit.`).send();
-            }
-
-            if (state.notifications.maturity.enable && payload.boostToUpdateList.filter(boost => boost.type === BoostToUpdateType.maturity && boost.value >= state.notifications.maturity.limit).length > 0) {
-                if (Notification.permission === 'granted') new Notifications(`A mount reached maturity limit.`).send();
-            }
-
-            if (state.notifications.boostLimiter.enable && payload.boostToUpdateList.filter(boost => boost.type === BoostToUpdateType.boostLimiter && boost.value >= state.notifications.boostLimiter.limit).length > 0) {
-                if (Notification.permission === 'granted') new Notifications(`A mount reached tiredness limit.`).send();
-            }
+            payload.updatedCharacteristics.forEach(i => {
+                if (i.characteristic === "SERENITY" && state.notifications.serenity.enable &&  payload.updatedCharacteristics.length <= 2) {
+                    if (mount?.gender === "FEMALE") {
+                        if ((i.intValue > mount.serenity && i.intValue > 0) || (i.intValue < mount.serenity && i.intValue < -state.notifications.serenity.limit)) {
+                            if (Notification.permission === 'granted') new Notifications(`A mount reached serenity limit.`).send();
+                        }
+                    } else if (mount?.gender === "MALE") {
+                        if ((i.intValue < mount.serenity && i.intValue < 0) || (i.intValue > mount.serenity && i.intValue > state.notifications.serenity.limit)) {
+                            if (Notification.permission === 'granted') new Notifications(`A mount reached serenity limit.`).send();
+                        }
+                    }
+                } else if (i.characteristic === "ENERGIY" && state.notifications.energy.enable) {
+                    if (i.intValue > state.notifications.energy.limit && Notification.permission === 'granted') {
+                        new Notifications(`A mount reached energy limit.`).send();
+                    }
+                } else if (i.characteristic === "LOVE" && state.notifications.love.enable) {
+                    if (i.intValue > state.notifications.love.limit && Notification.permission === 'granted') {
+                        new Notifications(`A mount reached love limit.`).send();
+                    }
+                } else if (i.characteristic === "STAMINA" && state.notifications.stamina.enable) {
+                    if (i.intValue > state.notifications.stamina.limit && Notification.permission === 'granted') {
+                        new Notifications(`A mount reached stamina limit.`).send();
+                    }
+                } else if (i.characteristic === "MATURITY" && state.notifications.maturity.enable) {
+                    if (i.intValue > state.notifications.maturity.limit && Notification.permission === 'granted') {
+                        new Notifications(`A mount reached maturity limit.`).send();
+                    }
+                } else if (i.characteristic === "TIREDNESS" && state.notifications.boostLimiter.enable) {
+                    if (i.intValue > state.notifications.boostLimiter.limit && Notification.permission === 'granted') {
+                        new Notifications(`A mount reached tiredness limit.`).send();
+                    }
+                }
+            })
 
             return {
                 ...state,
-                mounts: state.mounts.map(m => m.id !== payload.rideId ? m : {
+                mounts: state.mounts.map(m => parseInt(m.id, 10) !== payload.rideId ? m : {
                     ...m,
-                    ...payload.boostToUpdateList.reduce((prev, boost) => ({ ...prev, [BoostToUpdateType[boost.type]]: boost.value }), {})
+                    ...payload.updatedCharacteristics.reduce((prev, boost) => ({ ...prev, [boost.characteristic === "TIREDNESS" ? "boostLimiter" : boost.characteristic.toString().toLocaleLowerCase()]: boost.intValue }), {})
                 })
             }
         }
         case 'mounts_added': {
             return {
                 ...state,
-                mounts: [...state.mounts, ...action.payload.mountDescription]
+                mounts: [...state.mounts, ...action.payload.mounts]
             }
         }
         case 'mounts_removed': {
             return {
                 ...state,
-                mounts: [...state.mounts.filter(mount => !action.payload.mountsId.includes(mount.id))]
+                mounts: state.mounts.filter(mount => !action.payload.mountsId.includes(parseInt(mount.id, 10)))
             }
         }
         case 'notifications_changed': {
@@ -228,7 +203,7 @@ export const PaddockProvider = ({ children }: PaddockProviderProps): React.React
     const [state, dispatch] = useReducer(reducer, initialState)
 
     React.useEffect(() => {
-        localStorage.setItem('Breeding.notifications', JSON.stringify(state.notifications));
+        localStorage.setItem('Paddock.notifications', JSON.stringify(state.notifications));
     }, [state.notifications])
 
     return (

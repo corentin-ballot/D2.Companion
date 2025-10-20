@@ -1,15 +1,15 @@
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable default-case */
 import React, { useState, createContext } from 'react'
-import { io } from 'socket.io-client'
 import { useChatServerDispatch } from './ChatServerContext'
 import { useCharacterDispatch } from './CharacterContext'
 import { usePaddockDispatch } from './PaddockContext'
-import { useForgemagieDispatch } from './ForgemagieContext'
+// import { useForgemagieDispatch } from './ForgemagieContext'
 import { useMarketDispatch } from './MarketContext'
 import { useStorageDispatch } from './StorageContext'
-import { useSalesDispatch } from './SalesContext'
+// import { useSalesDispatch } from './SalesContext'
 import { useFightDispatch } from './FightContext'
+import ReconnectingWebsocket from '../../utils/websocket'
 
 export const SocketContext = createContext({
   connecting: true,
@@ -28,10 +28,10 @@ export const SocketProvider = ({ children }: SocketPrividerProps): React.ReactEl
   const dispatchChatServer = useChatServerDispatch()
   const dispatchCharacter = useCharacterDispatch()
   const dispatchPaddock = usePaddockDispatch()
-  const dispatchForgemagie = useForgemagieDispatch()
+  // const dispatchForgemagie = useForgemagieDispatch()
   const dispatchMarket = useMarketDispatch()
   const dispatchStorage = useStorageDispatch()
-  const dispatchSales = useSalesDispatch()
+  // const dispatchSales = useSalesDispatch()
   const dispatchFight = useFightDispatch()
 
   const isInit = React.useRef(false)
@@ -40,108 +40,96 @@ export const SocketProvider = ({ children }: SocketPrividerProps): React.ReactEl
     if (isInit.current) return
     isInit.current = true
 
-    const socket = io('http://localhost:3960')
+    const socket = new ReconnectingWebsocket("ws://localhost:3960")
 
-    socket.on('connect', () => {
+    socket.onopen = () => {
       setState({
         connecting: false,
         connected: true
       })
-    })
+    }
 
-    socket.on('close', () => {
+    socket.onclose = () => {
       setState({
         connecting: false,
         connected: false
       })
-    })
+    }
 
-    socket.on('data', (data: any) => {
-      switch (data.content.__name) {
-        case undefined:
-        case 'BasicPingMessage':
-        case 'BasicPongMessage':
-        case 'BasicNoOperationMessage':
-        case 'BasicAckMessage':
-        case 'GameMapMovementMessage':
-        case 'GameMapMovementConfirmMessage':
-        case 'GameContextRefreshEntityLookMessage':
-        case 'SetCharacterRestrictionsMessage':
-        case 'GameContextRemoveElementMessage':
-        case 'UpdateMapPlayersAgressableStatusMessage':
-        case 'GameRolePlayShowActorMessageInteractiveUsedMessage':
-        case 'InteractiveUsedMessage':
-        case 'GameRolePlayShowActorMessage':
-        case 'GameRolePlayDelayedObjectUseMessage':
-        case 'GameRolePlayDelayedActionFinishedMessage':
-        case 'PrismsListUpdateMessage':
-        case 'BasicTimeMessage':
-        case 'GameMapChangeOrientationMessage':
-        case 'MapComplementaryInformationsDataMessage':
-        case 'JobMultiCraftAvailableSkillsMessage':
-        case 'ExchangeBidHouseInListUpdatedMessage':
-        case 'CurrentMapMessage':
-        case 'ListMapNpcsQuestStatusUpdateMessage':
-        case 'GuildMemberOnlineStatusMessage':
-          // ignore
-          break
-
-        // ChatServer
-        case 'ChatServerMessage':
-        case 'ChatServerWithObjectMessage':
-          dispatchChatServer({ type: 'new_message', message: data.content })
+    socket.onmessage = (event: any) => {
+      const data = JSON.parse(event.data)
+      switch (data.type) {
+        /* Dofus 3 */
+        // Chat
+        case 'ChatChannelMessageEvent':
+          dispatchChatServer({ type: 'new_message', message: data.value })
           break;
-
-        // Character
-        case "CharacterSelectedSuccessMessage":
-          dispatchCharacter({ type: 'character_changed', payload: data.content });
+        // HDV
+        case 'ExchangeTypesItemsExchangerDescriptionForUserEvent':
+          dispatchMarket({ type: 'item_viewed', payload: data.value })
           break;
-        case "QuestListMessage":
-          dispatchCharacter({ type: 'quests_changed', payload: data.content });
-          break;
-        case "AchievementDetailedListMessage":
-          dispatchCharacter({ type: 'achievements_changed', payload: data.content });
-          break;
-
-        // Breeding
-        case "GameDataPaddockObjectAddMessage":
-          dispatchPaddock({ type: 'object_changed', payload: data.content })
-          break;
-        case "ExchangeStartOkMountMessage":
-          dispatchPaddock({ type: 'paddock_changed', payload: data.content })
-          break;
-        case "UpdateMountCharacteristicsMessage":
-          dispatchPaddock({ type: 'mount_changed', payload: data.content })
-          break;
-        case "ExchangeMountsPaddockAddMessage":
-          dispatchPaddock({ type: 'mounts_added', payload: data.content })
-          break;
-        case "ExchangeMountsPaddockRemoveMessage":
-          dispatchPaddock({ type: 'mounts_removed', payload: data.content })
-          break;
-        case "GameDataPlayFarmObjectAnimationMessage": break; // useless message
-
-        // Forgemagie
-        case "ExchangeStartOkCraftWithInformationMessage": break; // open craft bench
-        case "ExchangeObjectAddedMessage":
-          dispatchForgemagie({ type: 'item_changed', payload: data.content })
-          break;
-        case "ExchangeCraftResultMagicWithObjectDescMessage":
-          dispatchForgemagie({ type: 'rune_passed', payload: data.content })
-          break;
-
-        // Market
-        case "ExchangeStartedBidBuyerMessage": break; // Open HDV 
-        case "ExchangeTypesExchangerDescriptionForUserMessage": break; // Filter HDV  
-        case "ExchangeTypesItemsExchangerDescriptionForUserMessage":
-          dispatchMarket({ type: 'item_viewed', payload: data.content })
-          break;
-
         // Storage
-        case "StorageInventoryContentMessage":
-          dispatchStorage({ type: 'storage_updated', payload: data.content });
+        case "StorageInventoryContentEvent":
+          dispatchStorage({ type: 'storage_updated', payload: data.value });
+          break;
+        // Paddock
+        case "MountUpdateCharacteristicsEvent":
+          dispatchPaddock({ type: 'mount_changed', payload: data.value })
+          break;
+        case "ExchangeMountWithoutPaddockStartedEvent":
+          dispatchPaddock({ type: 'paddock_changed', payload: data.value })
+          break;
+        case "ExchangeMountsPaddockAddedEvent":
+          dispatchPaddock({ type: 'mounts_added', payload: data.value })
+          break;
+        case "ExchangeMountsPaddockRemoveEvent":
+          dispatchPaddock({ type: 'mounts_removed', payload: data.value })
+          break;
+        // durability update
+        // case "GameDataPaddockObjectAddMessage":
+        //   dispatchPaddock({ type: 'object_changed', payload: data.value })
+        //   break;
+        // Character
+        case "CharacterSelectionEvent":
+          dispatchCharacter({ type: 'character_changed', payload: data.value });
+          break;
+        case "AchievementsEvent":
+          dispatchCharacter({ type: 'achievements_changed', payload: data.value });
+          break;
+        case "QuestsEvent":
+          dispatchCharacter({ type: 'quests_changed', payload: data.value });
           break;
 
+        // Fights
+        case "FightJoinEvent":
+          dispatchFight({ type: "fight_start", payload: data.value });
+          break;
+        case "FightMapInformationEvent":
+          dispatchFight({ type: "fight_map", payload: data.value });
+          break;
+        case "FightSynchronizeEvent":
+          dispatchFight({ type: "fight_fighters", payload: data.value });
+          break;
+        case "FightNewRoundEvent":
+          dispatchFight({ type: "fight_round", payload: data.value });
+          break;
+        case "GameActionFightEvent":
+          dispatchFight({ type: "fight_action", payload: data.value });
+          break;
+        case "MapMovementEvent":
+          dispatchFight({ type: "fight_movement", payload: data.value });
+          break;
+        case "FightEndEvent":
+          dispatchFight({ type: "fight_end", payload: data.value });
+          break;
+        case "FightTurnListEvent":
+          dispatchFight({ type: "fight_turn_list", payload: data.value });
+          break;
+
+        default:
+          break;
+
+        /* Dofus 2
         // Sales
         case "TextInformationMessage":
           if (data.content.msgId === 65) // 65 = sale information message
@@ -156,24 +144,7 @@ export const SocketProvider = ({ children }: SocketPrividerProps): React.ReactEl
           dispatchSales({ type: 'items_not_sold', payload: data.content });
           break;
 
-        /* Fights */
-        case "GameFightJoinMessage":
-          dispatchFight({ type: "fight_start", payload: data.content });
-          break;
-        case "GameFightTurnListMessage":
-          dispatchFight({ type: "fight_turn_list", payload: data.content });
-          break;
-        case "GameFightSynchronizeMessage":
-          dispatchFight({ type: "fight_fighters", payload: data.content });
-          break;
-        case "RefreshCharacterStatsMessage":
-          break;
-        case "GameFightNewRoundMessage":
-          dispatchFight({ type: "fight_round", payload: data.content });
-          break;
-        case "GameFightEndMessage":
-          dispatchFight({ type: "fight_end", payload: data.content });
-          break;
+        // Fights
         case "GameActionFightLifePointsLostMessage":
           dispatchFight({ type: "fight_dommage", payload: data.content });
           break;
@@ -186,8 +157,9 @@ export const SocketProvider = ({ children }: SocketPrividerProps): React.ReactEl
         case "GameActionFightMultipleSummonMessage":
           dispatchFight({ type: "fight_summon", payload: data.content });
           break;
+          */
       }
-    })
+    }
   }, [])
 
   return (

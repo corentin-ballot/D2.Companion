@@ -3,7 +3,6 @@ import { SocketProvider } from './SocketContext'
 import { ChatServerProvider } from './ChatServerContext'
 import { CharacterProvider } from './CharacterContext'
 import { PaddockProvider } from './PaddockContext'
-import { ForgemagieProvider } from './ForgemagieContext'
 import { MarketProvider } from './MarketContext'
 import { StorageProvider } from './StorageContext'
 import { SalesProvider } from './SalesContext'
@@ -17,19 +16,17 @@ const Provider = ({ children }: PrividerProps): React.ReactElement =>
   <SalesProvider>
     <StorageProvider>
       <MarketProvider>
-        <ForgemagieProvider>
-          <PaddockProvider>
-            <CharacterProvider>
-              <FightProvider>
-                <ChatServerProvider>
-                  <SocketProvider>
-                    {children}
-                  </SocketProvider>
-                </ChatServerProvider>
-              </FightProvider>
-            </CharacterProvider>
-          </PaddockProvider>
-        </ForgemagieProvider>
+        <PaddockProvider>
+          <CharacterProvider>
+            <FightProvider>
+              <ChatServerProvider>
+                <SocketProvider>
+                  {children}
+                </SocketProvider>
+              </ChatServerProvider>
+            </FightProvider>
+          </CharacterProvider>
+        </PaddockProvider>
       </MarketProvider>
     </StorageProvider>
   </SalesProvider>

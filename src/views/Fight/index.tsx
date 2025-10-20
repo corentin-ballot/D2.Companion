@@ -1,26 +1,35 @@
-/* eslint-disable no-unsafe-optional-chaining */
-/* eslint-disable no-nested-ternary */
+// /* eslint-disable no-unsafe-optional-chaining */
+// /* eslint-disable no-nested-ternary */
+// /* eslint-disable jsx-a11y/click-events-have-key-events */
 import { useState, useEffect } from 'react';
-import { Box } from '@mui/system';
-import { Grid, Link, Typography, Paper, Avatar, Tooltip, useTheme } from '@mui/material';
-import Stack from '@mui/material/Stack';
+import {
+    GridLegacy,
+    Link,
+    Typography,
+    Paper,
+    useTheme,
+    Stack,
+    Box
+} from '@mui/material';
 
 import RecievedDommagesPerRound from '../../components/RecievedDommagesPerRound';
 import TotalDommages from '../../components/TotalDommages';
-import SpellsLog from '../../components/SpellsLog';
 import RecievedTypeRepartition from '../../components/RecievedTypeRepartition';
 import DealedTypeRepartition from '../../components/DealedTypeRepartition';
 import DealedDommagesPerRound from '../../components/DealedDommagesPerRound';
 import EmptyState from '../../components/EmptyState';
 import HistoryCard from '../../components/HistoryCard';
 import { initialFight, useFight } from '../../providers/sockets/FightContext';
+import FighterAvatar from '../../components/FighterAvatar';
+import FightAction from '../../components/FightAction';
+import FightMap from '../../components/FightMap';
 
 const Fight = () => {
     const theme = useTheme();
     const { currentFight, history } = useFight();
 
     const [displayedFight, setDisplayedFight] = useState(initialFight);
-    const [fightersFilter, setFightersFilter] = useState([] as number[]);
+    const [fightersFilter, setFightersFilter] = useState([] as string[]);
 
 
     // Avoid history check when fighting
@@ -29,153 +38,129 @@ const Fight = () => {
     }, [currentFight]);
 
     return <Box sx={{ flexGrow: 1 }}>
-        <Grid container spacing={2}>
+        <GridLegacy container spacing={2}>
             {/* Not fighting */}
             {displayedFight.round === -1 &&
-                <Grid item xs={12}>
+                <GridLegacy item xs={12}>
                     <EmptyState>
                         No active fight, start fighting{history && history.length ? " or select a fight in the history" : ""} to see statistics.
                     </EmptyState>
-                </Grid>
+                </GridLegacy>
             }
 
             {/* Fight preparation */}
             {displayedFight.round === 0 &&
-                <Grid item xs={12}>
+                <GridLegacy item xs={12}>
                     <EmptyState>
                         Preparation phase, get ready!
                     </EmptyState>
-                </Grid>
+                </GridLegacy>
             }
 
             {/* Fight view */}
             {displayedFight.round > 0 &&
                 <>
                     {/* Main Graph (dealed dommages with types) */}
-                    <Grid item xs={12}>
+                    <GridLegacy item xs={12}>
                         <Paper sx={{ padding: 2 }}>
-                            <Grid container justifyContent="space-between" alignItems="center">
+                            <GridLegacy container justifyContent="space-between" alignItems="center">
                                 <Typography variant="h2">Dommages dealed</Typography>
                                 {/* Dofensive */}
-                                <Link target="_blank" rel="noreferrer" href={`https://dofensive.com/fr/monster/${displayedFight.fighters.map(fighter => fighter.creatureGenericId).join(",")}`}>Voir les monstres sur Dofensive</Link>
-                            </Grid>
+                                <Link target="_blank" rel="noreferrer" href={`https://dofensive.com/fr/monster/${displayedFight.fighters.map(fighter => fighter.actorInformation.fighter.aiFighter?.monsterFighterInformation.monsterGid).filter(v => typeof v !== "undefined").join(",")}`}>Voir les monstres sur Dofensive</Link>
+                            </GridLegacy>
                             <TotalDommages fight={displayedFight} />
                         </Paper>
-                    </Grid>
+                    </GridLegacy>
 
                     {/* Fighters display filter */}
-                    <Grid item xs={12}>
+                    <GridLegacy item xs={12}>
                         <Stack direction="row" justifyContent="center" spacing={4} flexWrap="wrap">
-                            {displayedFight.turnList.map(fighterId => {
-                                const fighter = displayedFight.fighters.find(f => f.contextualId === fighterId);
-                                return (
-                                    <Tooltip title={fighter?.name}>
-                                        <Avatar
-                                            alt={fighter?.name}
-                                            sx={{
-                                                width: 96, height: 96,
-                                                cursor: "pointer",
-                                                bgcolor: fightersFilter.includes(fighterId) ? theme.palette.primary.main : theme.palette.grey[100],
-                                                ":hover": {
-                                                    bgcolor: fightersFilter.includes(fighterId) ? theme.palette.primary.main : theme.palette.grey[300],
-                                                    "img": {
-                                                        transform: "scale(1.6)",
-                                                    }
-                                                }
-                                            }}
-                                            onClick={() => setFightersFilter(fightersFilter.includes(fighterId) ? fightersFilter.filter(f => f !== fighterId) : [fighterId])}
-                                            data-img={(fighter?.masterId ? fighter?.img : fighter?.creatureGenericId ? `http://localhost:3980/img/monsters/${fighter?.creatureGenericId}` : `${process.env.PUBLIC_URL}/img/classes/${fighter?.breed}-${fighter?.sex ? 'female' : 'male'}.png`)} 
-                                            src={(fighter?.masterId ? fighter?.img : fighter?.creatureGenericId ? `http://localhost:3980/img/monsters/${fighter?.creatureGenericId}` : `${process.env.PUBLIC_URL}/img/classes/${fighter?.breed}-${fighter?.sex ? 'female' : 'male'}.png`)} />
-                                    </Tooltip>
-                                )
+                            {displayedFight.turnList.map(f => {
+                                const fighter = displayedFight.fighters.find(fi => fi.actorId === f.id);
+                                return <FighterAvatar fighter={fighter} isHighlighted={fightersFilter.includes(fighter?.actorId || "")} key={fighter?.actorId} onClick={() => setFightersFilter(fightersFilter.includes(f.id) ? fightersFilter.filter(fi => fi !== f.id) : [f.id])} />
                             })}
                         </Stack>
-                    </Grid>
+                    </GridLegacy>
 
                     {/* Graph (dealed dommages per round) */}
-                    {fightersFilter.length > 0 && 
-                    <Grid item xs={12} md={6}>
-                        <Paper sx={{ padding: 2 }}>
-                            <Typography variant="h2">Dommages dealed per round</Typography>
-                            <DealedDommagesPerRound fight={displayedFight} fightersFilter={fightersFilter} />
-                        </Paper>
-                    </Grid>}
+                    {fightersFilter.length > 0 &&
+                        <GridLegacy item xs={12} md={6}>
+                            <Paper sx={{ padding: 2 }}>
+                                <Typography variant="h2">Dommages dealed per round</Typography>
+                                <DealedDommagesPerRound fight={displayedFight} fightersFilter={fightersFilter} />
+                            </Paper>
+                        </GridLegacy>}
 
                     {/* Graph (recieved dommages per round) */}
-                    {fightersFilter.length > 0 && 
-                    <Grid item xs={12} md={6}>
-                        <Paper sx={{ padding: 2 }}>
-                            <Typography variant="h2">Dommages recieved per round</Typography>
-                            <RecievedDommagesPerRound fight={displayedFight} fightersFilter={fightersFilter} />
-                        </Paper>
-                    </Grid>}
+                    {fightersFilter.length > 0 &&
+                        <GridLegacy item xs={12} md={6}>
+                            <Paper sx={{ padding: 2 }}>
+                                <Typography variant="h2">Dommages recieved per round</Typography>
+                                <RecievedDommagesPerRound fight={displayedFight} fightersFilter={fightersFilter} />
+                            </Paper>
+                        </GridLegacy>}
 
                     {/* Type repartition deal */}
-                    {fightersFilter.length > 0 && 
-                    <Grid item xs={12} md={6}>
-                        <Paper sx={{ padding: 2 }}>
-                            <Typography variant="h2">Type repartition dealed</Typography>
-                            <DealedTypeRepartition fight={displayedFight} fightersFilter={fightersFilter} />
-                        </Paper>
-                    </Grid>}
+                    {fightersFilter.length > 0 &&
+                        <GridLegacy item xs={12} md={6}>
+                            <Paper sx={{ padding: 2 }}>
+                                <Typography variant="h2">Type repartition dealed</Typography>
+                                <DealedTypeRepartition fight={displayedFight} fightersFilter={fightersFilter} />
+                            </Paper>
+                        </GridLegacy>}
 
                     {/* Type repartition recieves */}
-                    {fightersFilter.length > 0 && 
-                    <Grid item xs={12} md={6}>
-                        <Paper sx={{ padding: 2 }}>
-                            <Typography variant="h2">Type repartition recieves</Typography>
-                            <RecievedTypeRepartition fight={displayedFight} fightersFilter={fightersFilter} />
-                        </Paper>
-                    </Grid>}
+                    {fightersFilter.length > 0 &&
+                        <GridLegacy item xs={12} md={6}>
+                            <Paper sx={{ padding: 2 }}>
+                                <Typography variant="h2">Type repartition recieves</Typography>
+                                <RecievedTypeRepartition fight={displayedFight} fightersFilter={fightersFilter} />
+                            </Paper>
+                        </GridLegacy>}
 
-                    {/* Spells */}
-                    <Grid item xs={12} md={6}>
+                    {/* Map */}
+                    <GridLegacy item xs={12} md={6}>
                         <Paper sx={{ padding: 2 }}>
-                            <Typography variant="h2">Spells</Typography>
-                            <SpellsLog fight={displayedFight} fightersFilter={fightersFilter} />
+                            <Typography variant="h2">Map</Typography>
+                            <FightMap fight={displayedFight} height={300}/>
                         </Paper>
-                    </Grid>
+                    </GridLegacy>
+
+                    {/* Logs */}
+                    <GridLegacy item xs={12} md={6}>
+                        <Paper sx={{ padding: 2 }}>
+                            <Typography variant="h2">Logs</Typography>
+                            <Box style={{ maxHeight: 300, overflow: 'auto' }}>
+                                {displayedFight.actions.map((action: any, index: number) =>
+                                    // eslint-disable-next-line react/no-array-index-key
+                                    <FightAction action={action} fighters={displayedFight.fighters} key={index} />
+                                )}
+                            </Box>
+                        </Paper>
+                    </GridLegacy>
                 </>
             }
 
             {/* History */}
             {history && history.length > 0 &&
-                <Grid item xs={12}>
+                <GridLegacy item xs={12}>
                     <Box>
                         <Typography variant="h2">History</Typography>
-                        {/* <div>
-                        {currentFight.round > 0 && <button className={styles.fightsHisotry__item} onClick={() => setDisplayedFight(currentFight)}>Current fight</button>}
-                        <button onClick={async () => {
-                            const fileName = "file";
-                            const json = JSON.stringify(history);
-                            const blob = new Blob([json], { type: 'application/json' });
-                            const href = await URL.createObjectURL(blob);
-                            const link = document.createElement('a');
-                            link.href = href;
-                            link.target = "_blank"
-                            link.download = fileName + ".json";
-                            document.body.appendChild(link);
-                            link.click();
-                            document.body.removeChild(link);
-                        }}>Save</button>
-                    </div> */}
 
-                        <Grid container spacing={2} sx={{ alignItems: "stretch", flexWrap: "nowrap", overflow: "auto", whiteSpace: "nowrap", width: "100%", paddingBottom: theme.spacing(.25) }}>
+                        <GridLegacy container spacing={2} sx={{ alignItems: "stretch", flexWrap: "nowrap", overflow: "auto", whiteSpace: "nowrap", width: "100%", paddingBottom: theme.spacing(.25) }}>
                             {history.map(fight =>
-                                <Grid item xs={2} onClick={() => setDisplayedFight(fight)} sx={{ flexShrink: 0 }}>
+                                <GridLegacy item xs={2} onClick={() => setDisplayedFight(fight)} sx={{ flexShrink: 0 }} key={`${fight.startTime}-${fight.endTime}`}>
                                     <HistoryCard
                                         key={fight.startTime}
-                                        startTime={fight.startTime}
-                                        figthers={fight.fighters.filter(f => f.contextualId < 0 && !f.stats.summoned && f.spawnInfo.teamId > 0).map(f => f.name)}
-                                        imgSrc={`http://localhost:3980/img/monsters/${  fight.fighters.find(f => f.contextualId < 0 && !f.stats.summoned && f.spawnInfo.teamId > 0)?.creatureGenericId}`}
+                                        fight={fight}
                                     />
-                                </Grid>
+                                </GridLegacy>
                             )}
-                        </Grid>
+                        </GridLegacy>
                     </Box>
-                </Grid>
+                </GridLegacy>
             }
-        </Grid>
+        </GridLegacy>
     </Box>
 }
 

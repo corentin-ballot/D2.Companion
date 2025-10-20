@@ -30,6 +30,7 @@ const App = (): React.ReactElement => {
 
   return (
     <Box sx={{ display: 'flex' }}>
+      {/* Top menu */}
       <AppBar position="fixed" sx={{ zIndex: 1500 }}>
         <Toolbar>
           <Breadcrumbs separator={<NavigateNext fontSize="small" />} sx={{ flexGrow: 1, color: 'inherit' }}>
@@ -46,6 +47,8 @@ const App = (): React.ReactElement => {
           </Box>
         </Toolbar>
       </AppBar>
+
+      {/* Left menu */}
       <Drawer
         sx={{
           width: drawerWidth,
@@ -90,6 +93,7 @@ const App = (): React.ReactElement => {
         </Box>
       </Drawer>
 
+      {/* Main content */}
       <Box component="main" sx={{ flexGrow: 1, p: 3, overflow: 'hidden' }}>
         <Toolbar />
         <Routes>

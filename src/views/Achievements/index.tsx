@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Paper, FormControlLabel, Checkbox, Grid, Typography, Avatar, Accordion, AccordionDetails, AccordionSummary, List, ListItem, ListItemIcon, ListItemText, Button } from '@mui/material';
+import { Box, Paper, FormControlLabel, Checkbox, GridLegacy, Typography, Avatar, Accordion, AccordionDetails, AccordionSummary, List, ListItem, ListItemIcon, ListItemText, Button } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 // @ts-ignore
 import { exportCsv } from "json2csv-export";
 import { useCharacter } from '../../providers/sockets/CharacterContext';
-import useDofusAchievements, { Achievement } from '../../hooks/dofus-data/useDofusAchievements';
-import useDofusAchievementCategories, { AchievementCategory } from '../../hooks/dofus-data/useDofusAchievementCategories';
+import useDofusAchievements, { Achievement } from '../../hooks/dofus-data/.useDofusAchievements';
+import useDofusAchievementCategories, { AchievementCategory } from '../../hooks/dofus-data/.useDofusAchievementCategories';
 
 const Achievements = () => {
     const [achievementIds, setAchievementIds] = useState<any[]>([]);
@@ -70,18 +70,18 @@ const Achievements = () => {
     }
 
     return <Box sx={{ flexGrow: 1 }}>
-        <Grid container spacing={2}>
+        <GridLegacy container spacing={2}>
             {/* Filters */}
-            <Grid item xs={12}>
+            <GridLegacy item xs={12}>
                 <Paper sx={{ display: "flex", justifyContent: "space-between", padding: 1 }}>
                     {filters.map(filter => <Box key={filter.id}>
                         <FormControlLabel label={filter.label} control={<Checkbox id={filter.id} name={filter.id} checked={filter.value} onChange={handleFilterChanged} />} />
                     </Box>)}
                 </Paper>
-            </Grid>
+            </GridLegacy>
 
 
-            <Grid item xs={12}>
+            <GridLegacy item xs={12}>
                 {achievementIds.map((categorie: AchievementCategory) => {
                     const categorieAchievements = categorie.achievementIds.filter(aid => shouldDisplayAchievement(achievements?.find(a => a.id === aid)));
                     // @ts-ignore
@@ -117,7 +117,7 @@ const Achievements = () => {
                                                     }
 
                                                 }}
-                                                src={`http://localhost:3980/img/achievements/${achievement.iconId}`}
+                                                src={`http://localhost:3960/images/achievements/${achievement.iconId}`}
                                             />
                                         </ListItemIcon>
                                         <ListItemText
@@ -151,7 +151,7 @@ const Achievements = () => {
                                                             }
 
                                                         }}
-                                                        src={`http://localhost:3980/img/achievements/${achievement.iconId}`}
+                                                        src={`http://localhost:3960/images/achievements/${achievement.iconId}`}
                                                     />
                                                 </ListItemIcon>
                                                 <ListItemText
@@ -165,8 +165,8 @@ const Achievements = () => {
                         </AccordionDetails>
                     </Accordion>
                 })}
-            </Grid>
-        </Grid>
+            </GridLegacy>
+        </GridLegacy>
     </Box>
 }
 

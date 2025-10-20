@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, Paper, FormControlLabel, Checkbox, TextField, Grid, Typography, Button } from '@mui/material';
+import { Box, Paper, FormControlLabel, Checkbox, TextField, GridLegacy, Typography, Button } from '@mui/material';
 
 import Notifications from '../../utils/notification';
 
@@ -21,8 +21,8 @@ const Settings = () => {
 
 
     return <Box sx={{ flexGrow: 1 }}>
-        <Grid container spacing={2}>
-            <Grid item xs={12}>
+        <GridLegacy container spacing={2}>
+            <GridLegacy item xs={12}>
                 <Typography variant="h1">Notifications</Typography>
 
                 <Paper sx={{ padding: "8px" }}>
@@ -32,8 +32,8 @@ const Settings = () => {
 
                     <Button onClick={() => new Notifications("Test").sendNative()}>Test</Button>
                 </Paper>
-            </Grid>
-            <Grid item xs={12}>
+            </GridLegacy>
+            <GridLegacy item xs={12}>
                 <Paper sx={{ padding: "8px" }}>
                     <Typography variant="h2">Discord</Typography>
 
@@ -42,15 +42,15 @@ const Settings = () => {
                     <TextField id="Notifications.discord.webhook" variant="outlined" defaultValue={discordWebhook} onChange={handleInputChange} label="Discord webhook" />
                     <Button onClick={() => new Notifications("Test").sendDiscord()}>Test</Button>
                 </Paper>
-            </Grid>
-            <Grid item xs={12}>
+            </GridLegacy>
+            <GridLegacy item xs={12}>
                 <Paper sx={{ padding: "8px" }}>
                     <Typography variant="h2">Houses</Typography>
 
                     <FormControlLabel control={<Checkbox id="Notifications.houses.sellable" checked={housesSellableNotifications} onChange={handleInputChange} />} label="Enable abandonned house sellable notification" />
                 </Paper>
-            </Grid>
-        </Grid>
+            </GridLegacy>
+        </GridLegacy>
     </Box>
 }
 

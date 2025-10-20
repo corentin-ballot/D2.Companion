@@ -1,12 +1,35 @@
 import React, { useContext, createContext, useReducer } from 'react'
-import { PossibleEffect } from '../../hooks/dofus-data/useDofusItems'
+
+export interface MinMax {
+    min: number
+    max: number
+}
+
+export interface Dice {
+    num: string
+    side: number
+    const: number
+}
+
+export interface Effect {
+    action: number
+    dice?: Dice
+    valueInt?: number
+    minMax?: MinMax
+}
+
+export interface Item {
+    uid: number
+    quantity: number
+    gid: string
+    effects: Effect[]
+}
 
 export interface Object {
     position: number
-    objectGID: number
-    effects: PossibleEffect[]
-    objectUID: number
-    quantity: number
+    item: Item
+    favorite: boolean
+    tagStorageUuids: any[]
 }
 
 interface StorageState {
