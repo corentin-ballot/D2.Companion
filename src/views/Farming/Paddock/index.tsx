@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Paper, FormControlLabel, Checkbox, TextField, GridLegacy, Typography } from '@mui/material';
 
-import EmptyState from '../../components/EmptyState';
-import { usePaddock, usePaddockDispatch } from '../../providers/sockets/PaddockContext';
-import Mount from '../../components/Mount';
+import EmptyState from '../../../components/EmptyState';
+import { usePaddock, usePaddockDispatch } from '../../../providers/sockets/PaddockContext';
+import Mount from '../../../components/Mount';
 
 const NOTIFICATION_KEYS = [
     { name: "Sérénité", key: "serenity" },

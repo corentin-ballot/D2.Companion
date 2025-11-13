@@ -25,6 +25,17 @@ export const fetchDofusItem = async (id: number) => {
   return await response.json() as Item;
 }
 
+export interface Price {
+  date: string
+  price: number
+}
+
+export const fetchDofusItemPrices = async (id: number) => {
+  const response = await fetch(`http://localhost:3960/items/${id}/averagePrices`);
+  return await response.json() as Price[];
+}
+
 export const useDofusItem = (id: number) => useQuery({ queryKey: ["DofusItem", id], queryFn: () => fetchDofusItem(id) });
+export const useDofusItemPrices = (id: number) => useQuery({ queryKey: ["DofusItemPrices", id], queryFn: () => fetchDofusItemPrices(id) });
 
 export default useDofusItem;

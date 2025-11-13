@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box, Paper, GridLegacy, TableRow, TableCell, Avatar, TableContainer, TableBody, Table, TableHead } from '@mui/material';
-import useDofusItem, { Item } from '../../hooks/dofus-data/useDofusItem';
+import useDofusItem, { Item } from '../../../hooks/dofus-data/useDofusItem';
 
 const TableHeader = ({iconId}: {iconId: number|undefined}) => <TableHead >
     <TableRow>

@@ -1,0 +1,60 @@
+/* eslint-disable func-names */
+import React from 'react';
+import { CartesianGrid, XAxis, YAxis, LineChart, ResponsiveContainer, Line, Legend, Tooltip } from 'recharts';
+
+const COLORS = ["#0073ba", "#ff7800", "#00a816", "#e60201", "#9e59c2", "#f365c4", "#7f7f7f", "#b9c301", "#00c1d3", "#935346", "#714501", "#0e2367", "#be012d", "#00b000", "#ff0001", "#f000ff", "#202a2a", "#bd8102", "#81028a", "#fb5b15"];
+
+// const CustomTooltip = ({ active, payload }: any) => {
+//     if (active && payload && payload.length) {
+//         return (
+//             <div style={{border: "solid lightgrey 1px", backgroundColor: "white", padding: "16px"}}>{payload[0].value}</div>
+//         );
+//     }
+//     return null;
+// };
+
+// const renderLegend = (fighters: Fighter[]) => function ({ payload }: any) {
+//     return <Stack direction="row" justifyContent="center">
+//         {payload.map((entry: any) => {
+//             const fighter = fighters.find(f => f.actorId === entry.value);
+//             return <Box sx={{ color: entry.color }}>
+//                 <svg className="recharts-surface" width="14" height="14" style={{ display: "inline-block", verticalAlign: "middle", marginRight: "4px" }} viewBox="0 0 32 32"><path strokeWidth="4" fill="none" stroke="#0073ba" d="M0,16h10.666666666666666A5.333333333333333,5.333333333333333,0,1,1,21.333333333333332,16H32M21.333333333333332,16A5.333333333333333,5.333333333333333,0,1,1,10.666666666666666,16" className="recharts-legend-icon" /></svg>
+//                 <FighterName fighter={fighter} />
+//             </Box>
+//         })}
+//     </Stack>
+// }
+
+interface PricesOverDaysProps {
+    data: any[];
+    keys: any[];
+    colors?: string[];
+}
+
+const PricesOverDays = ({ data, keys, colors }: PricesOverDaysProps) => {
+    const effectiveColors = typeof colors === "undefined" ? COLORS : colors;
+    // const data = Array(fight.round > 0 ? fight.round : 0).fill(0).map((e, i) => {
+    //     const round = i + 1;
+    //     return {
+    //         round,
+    //         ...fight.turnList.map(o => ({
+    //                 [o.id]: fight.actions.filter(d => d.lifePointsLost?.targetId === o.id && d.round === round).reduce(
+    //                     (value, action) => value + ((action.lifePointsLost?.loss || 0) + (action.lifePointsLost?.shieldLoss || 0)), 0)
+    //             })).reduce((p, c) => ({ ...p, ...c }), {})
+    //     }
+    // });
+
+    return <ResponsiveContainer height={500}>
+        <LineChart width={730} height={250} data={data} margin={{ top: 5, right: 5, left: 0, bottom: 90 }}>
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="date" angle={-70} height={90} textAnchor="end"/>
+            <YAxis />
+            <Legend />
+            <Tooltip />
+            {keys.map((key, i) => <Line type="monotone" dataKey={key} stroke={effectiveColors[i]} />)}
+            
+        </LineChart>
+    </ResponsiveContainer>
+}
+
+export default PricesOverDays;
