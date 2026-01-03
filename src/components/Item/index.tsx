@@ -20,8 +20,8 @@ const ItemComponent = ({ id, itemEffects, statsOnly = false, price }: ItemProps)
     if(itemRequest.isPending) return <span>Loading...</span>;
 
     const possibleEffectZeros = itemRequest.data?.possibleEffects.filter(pe => !itemEffects?.map((ie: { action: any; }) => ie.action).includes(pe.effectId))
-
-    if (!itemEffects) return <Card sx={{ height: "100%" }}>
+    
+    if (!itemEffects) return <Card sx={{ height: "100%", padding: 2, boxSizing: 'border-box' }}>
         {!statsOnly && <Typography variant="h2" align="center">{itemRequest.data?.name.fr}</Typography>}
         <Box sx={{ display: 'flex' }}>
             {!statsOnly && <Box sx={{ width: "100%", margin: "auto" }}>

@@ -17,9 +17,10 @@ const Effect = ({ id, value, possibleEffect }: EffectProps) => {
     if (typeof value === "undefined") return <Typography component="span" sx={{ fontWeight: 300, color: "inherit" }}>
         {effect?.characteristicOperator === '/'
             ? `${effect?.description.fr.replace('#4', `${possibleEffect?.diceSide}`)}`
-            : `${effect?.description.fr.replace(/[-]{0,1}#1{~1~2/, `${(possibleEffect?.diceNum ?? 0) * (effect?.characteristicOperator === '-' ? -1 : 1)}`)
-                .replace(/[-]{0,1}}#2/, `${(possibleEffect?.diceSide ?? 0) * (effect?.characteristicOperator === '-' ? -1 : 1)}`)
-                .replace('{~ps}{~zs}', (possibleEffect?.diceSide ?? 0) > 1 ? 's' : '')}`}
+            : `${effect?.description.fr.replace(/[-]{0,1}#1{{~1~2/, `${(possibleEffect?.diceNum ?? 0) * (effect?.characteristicOperator === '-' ? -1 : 1)}`)
+                .replace(/[-]{0,1}}}#2/, `${(possibleEffect?.diceSide ?? 0) * (effect?.characteristicOperator === '-' ? -1 : 1)}`)
+                .replace(' à 0', '')
+                .replace('{{~ps}}{{~zs}}', (possibleEffect?.diceSide ?? 0) > 1 ? 's' : '')}`}
     </Typography>
 
     const exo = typeof possibleEffect === "undefined";
