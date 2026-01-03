@@ -1,37 +1,53 @@
 import React from 'react';
-import { Tab, Tabs, Box } from '@mui/material';
+import { useRoutes, Navigate, useLocation, Link } from 'react-router-dom';
+import { Tab, Tabs, Box, Paper } from '@mui/material';
 import Paddock from './Paddock';
 import BreedingObjects from './BreedingObjects';
 import Prices from './Prices';
 
-const Farming = () => {
-    const [tab, setTab] = React.useState('paddock');
+const defaultTab = "paddock";
 
-    const handleTabChange = (event: React.SyntheticEvent, newTab: string) => {
-        setTab(newTab);
-    };
+const Farming = () => {
+    const location = useLocation();
+
+    const tabRoutes = [
+        {
+            // Redirects the base URL (/settings) to the default tab (/settings/overview)
+            path: '/', 
+            element: <Navigate to="paddock" replace /> 
+        },
+        {
+            path: 'paddock',
+            element: <Paddock/>,
+        },
+        {
+            path: 'objects',
+            element: <BreedingObjects />,
+        },
+        {
+            path: 'prices',
+            element: <Prices />,
+        }
+    ];
+    
+    const element = useRoutes(tabRoutes);
+
+    const currentValue = location.pathname.split('/').pop() || defaultTab;
 
     return <Box sx={{ flexGrow: 1 }}>
-        <Tabs
-            value={tab}
-            onChange={handleTabChange}
-        >
-            <Tab label="Paddock" value="paddock" />
-            <Tab label="Farming objects" value="objects" />
-            <Tab label="Prices" value="prices" />
-        </Tabs>
+        <Paper sx={{marginBottom: 2}}>
+            <Tabs
+                value={currentValue}
+                // onChange={handleTabChange}
+            >
+                <Tab label="Paddock" value='paddock' component={Link} to='paddock' />
+                <Tab label="Farming objects" value="objects" component={Link} to='objects' />
+                <Tab label="Prices" value="prices" component={Link} to='prices' />
+            </Tabs>
+        </Paper>
 
-        {/* Paddock */}
-        <Box sx={{ display: tab === "paddock" ? "block" : "none" }}>
-            <Paddock/>
-        </Box>
-        {/* Farming objects */}
-        <Box sx={{ display: tab === "objects" ? "block" : "none" }}>
-            <BreedingObjects />
-        </Box>
-        {/* Prices */}
-        <Box sx={{ display: tab === "prices" ? "block" : "none" }}>
-            <Prices />
+        <Box>
+            {element}
         </Box>
     </Box>;
 }

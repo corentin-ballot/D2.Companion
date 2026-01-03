@@ -64,7 +64,7 @@ const App = (): React.ReactElement => {
               <ListItem disablePadding key={route.path}>
                 <ListItemButton
                   aria-current={pathname.startsWith(route.path)} component={Link} key={route.path}
-                  to={route.path}
+                  to={route.path.replace('/*', '')}
                 >
                   <ListItemIcon>
                     {route.icon}
